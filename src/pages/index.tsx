@@ -1,10 +1,13 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
+import { RoomContainer } from '../components/RoomContainer';
 
 const Home: NextPage = () => {
-	return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <div className='container mx-auto'>
+      <h1>ああ</h1>
+      <RoomContainer/>
+    </div>
+  );
 };
 
 export default Home;
