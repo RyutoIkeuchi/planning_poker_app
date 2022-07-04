@@ -65,6 +65,11 @@ const PokerRoom = () => {
 		<div>
 			<h1>プランニングポーカー{router.query.id}</h1>
 			<button onClick={handleLeaveTheRoom}>部屋を退出する</button>
+			<ul>
+				{users.map((user) => (
+					<li key={user.id}>{user.name}</li>
+				))}
+			</ul>
 		</div>
 	);
 };
