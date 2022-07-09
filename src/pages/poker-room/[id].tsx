@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { LocalStorageRoomDataType, UserType } from '../../types/interface';
@@ -11,7 +11,7 @@ const PokerRoom = () => {
 	const [users, setUsers] = useState<Array<UserType>>([]);
 
 	const checkRoomId = async (queryId: string) => {
-		if (roomDataToLocalStorage.room_id != queryId) {
+		if (roomDataToLocalStorage?.room_id != queryId) {
 			console.log('あ');
 			router.replace('/');
 		}
@@ -21,7 +21,7 @@ const PokerRoom = () => {
 			);
 			setUsers(response.data.users);
 		} catch (error) {
-			if (error.response.status == 404) {
+			if ((error as AxiosError).response?.status == 404) {
 				console.log('部屋が見つかりません');
 				router.push('/');
 			}

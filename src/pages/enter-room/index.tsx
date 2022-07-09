@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { UserType } from '../../types/interface';
 
 const EnterRoom = () => {
-	const [roomId, setRoomId] = useState();
-	const [userName, setUserName] = useState('');
+	const [roomId, setRoomId] = useState<string>('');
+	const [userName, setUserName] = useState<string>('');
 	const [dbUsers, setDbUsers] = useState<Array<UserType>>([]);
 	const router = useRouter();
 
@@ -26,11 +26,11 @@ const EnterRoom = () => {
 		}
 	};
 
-	const changeRoomId = (e) => {
+	const changeRoomId = (e: ChangeEvent<HTMLInputElement>) => {
 		setRoomId(e.target.value);
 	};
 
-	const changeUserName = (e) => {
+	const changeUserName = (e: ChangeEvent<HTMLInputElement>) => {
 		setUserName(e.target.value);
 	};
 

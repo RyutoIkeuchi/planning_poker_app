@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
 const CreateRoom = () => {
-	const [userName, setUserName] = useState('');
+	const [userName, setUserName] = useState<string>('');
 	const router = useRouter();
 
 	const handleCreateRoomId = async () => {
@@ -21,13 +21,13 @@ const CreateRoom = () => {
 		}
 	};
 
-	const changeUserName = (e) => {
+	const changeUserName = (e: ChangeEvent<HTMLInputElement>) => {
 		setUserName(e.target.value);
 	};
 
 	return (
 		<div className="flex items-center justify-center flex-col min-h-screen">
-			<div className='w-full mb-10'>
+			<div className="w-full mb-10">
 				<input
 					type="text"
 					onChange={changeUserName}
@@ -35,7 +35,7 @@ const CreateRoom = () => {
 					placeholder="ユーザー名"
 				/>
 			</div>
-			<div className='w-full'>
+			<div className="w-full">
 				<button
 					onClick={handleCreateRoomId}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-4"
