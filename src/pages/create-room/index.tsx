@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import CreateRoomIcon from '../../../public/images/CreateRoom_Flatline.svg';
 
 const CreateRoom = () => {
 	const [userName, setUserName] = useState<string>('');
@@ -26,7 +27,10 @@ const CreateRoom = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-center flex-col min-h-screen">
+		<div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
+			<div className='mb-10'>
+			<CreateRoomIcon />
+			</div>
 			<div className="w-full mb-10">
 				<input
 					type="text"

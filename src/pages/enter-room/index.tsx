@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { UserType } from '../../types/interface';
+import EnterRoomIcon from '../../../public/images/EnterRoom_Flatline.svg';
 
 const EnterRoom = () => {
 	const [roomId, setRoomId] = useState<string>('');
@@ -21,7 +22,7 @@ const EnterRoom = () => {
 			});
 			if (response.status == 200) {
 				localStorage.setItem('ROOM_DATA', JSON.stringify(data));
-				router.push(`/poker-ßroom/${roomId}`);
+				router.push(`/poker-room/${roomId}`);
 			}
 		}
 	};
@@ -44,7 +45,10 @@ const EnterRoom = () => {
 	}, []);
 
 	return (
-		<div className="flex items-center justify-center flex-col min-h-screen">
+		<div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
+			<div className="mb-10">
+				<EnterRoomIcon />
+			</div>
 			<div className="w-full mb-4">
 				<input
 					type="text"
