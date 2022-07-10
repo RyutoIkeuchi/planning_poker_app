@@ -40,6 +40,18 @@ const PokerRoom = () => {
 			`http://localhost:8000/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
+			if (users.length == 1) {
+				return await handleDeleteRoom();
+			}
+			router.push('/');
+		}
+	};
+
+	const handleDeleteRoom = async () => {
+		const response = await axios.delete(
+			`http://localhost:8000/pokers/${queryId}`
+		);
+		if (response.status == 204) {
 			router.push('/');
 		}
 	};
