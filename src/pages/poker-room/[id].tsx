@@ -1,18 +1,17 @@
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { LocalStorageRoomDataType, UserType } from '../../types/interface';
+import { UserType } from '../../types/interface';
 
 const PokerRoom = () => {
 	const router = useRouter();
 	const [queryId, setQueryId] = useState('');
 	const [roomDataToLocalStorage, setRoomDataToLocalStorage] =
-		useState<LocalStorageRoomDataType>();
+		useState<UserType>();
 	const [users, setUsers] = useState<Array<UserType>>([]);
 
 	const checkRoomId = async (queryId: string) => {
-		if (roomDataToLocalStorage?.room_id != queryId) {
-			console.log('あ');
+		if (roomDataToLocalStorage?.owner_id != queryId) {
 			router.replace('/');
 		}
 		try {
@@ -38,7 +37,7 @@ const PokerRoom = () => {
 	const handleLeaveTheRoom = async () => {
 		localStorage.removeItem('ROOM_DATA');
 		const response = await axios.delete(
-			`http://localhost:8000/pokers/${queryId}`
+			`http://localhost:8000/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
 			router.push('/');

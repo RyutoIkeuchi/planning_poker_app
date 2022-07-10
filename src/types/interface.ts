@@ -4,7 +4,3 @@ export type UserType = {
 	owner_id: string;
 };
 
-export type LocalStorageRoomDataType = {
-	room_id: string;
-	name: string;
-};

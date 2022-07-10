@@ -21,7 +21,7 @@ const EnterRoom = () => {
 				headers: { 'content-type': 'application/json' },
 			});
 			if (response.status == 200) {
-				localStorage.setItem('ROOM_DATA', JSON.stringify(data));
+				localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
 				router.push(`/poker-room/${roomId}`);
 			}
 		}
