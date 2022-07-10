@@ -15,10 +15,8 @@ const CreateRoom = () => {
 			headers: { 'content-type': 'application/json' },
 		});
 		if (response.status == 200) {
-			console.log(response.data);
-			const roomData = { room_id: response.data.room_id, name: userName };
-			localStorage.setItem('ROOM_DATA', JSON.stringify(roomData));
-			router.push(`/poker-room/${response.data.room_id}`);
+			localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
+			router.push(`/poker-room/${response.data.owner_id}`);
 		}
 	};
 
@@ -28,8 +26,8 @@ const CreateRoom = () => {
 
 	return (
 		<div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
-			<div className='mb-10'>
-			<CreateRoomIcon />
+			<div className="mb-10">
+				<CreateRoomIcon />
 			</div>
 			<div className="w-full mb-10">
 				<input
