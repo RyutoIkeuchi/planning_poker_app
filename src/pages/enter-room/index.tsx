@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import EnterRoomIcon from '../../../public/images/EnterRoom_Flatline.svg';
+import { api } from '../../service/api';
 
 const EnterRoom = () => {
 	const [roomId, setRoomId] = useState<string>('');
@@ -12,8 +12,8 @@ const EnterRoom = () => {
 		const data = {
 			name: userName,
 		};
-		const response = await axios.post(
-			`http://localhost:8000/pokers/${roomId}/users`,
+		const response = await api.post(
+			`/pokers/${roomId}/users`,
 			data,
 			{
 				headers: { 'content-type': 'application/json' },

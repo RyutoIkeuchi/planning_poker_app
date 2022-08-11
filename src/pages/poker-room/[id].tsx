@@ -1,7 +1,8 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { UserType } from '../../types/interface';
+import { api } from '../../service/api';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -15,9 +16,7 @@ const PokerRoom = () => {
 			router.replace('/');
 		}
 		try {
-			const response = await axios.get(
-				`http://localhost:8000/pokers/${queryId}`
-			);
+			const response = await api.get(`/pokers/${queryId}`);
 			setUsers(response.data.users);
 		} catch (error) {
 			if ((error as AxiosError).response?.status == 404) {
@@ -36,8 +35,8 @@ const PokerRoom = () => {
 
 	const handleLeaveTheRoom = async () => {
 		localStorage.removeItem('ROOM_DATA');
-		const response = await axios.delete(
-			`http://localhost:8000/pokers/${roomDataToLocalStorage?.owner_id}/users/${roomDataToLocalStorage?.id}`
+		const response = await api.delete(
+			`/pokers/${roomDataToLocalStorage?.owner_id}/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
 			if (users.length == 1) {
@@ -48,8 +47,8 @@ const PokerRoom = () => {
 	};
 
 	const handleDeleteRoom = async () => {
-		const response = await axios.delete(
-			`http://localhost:8000/pokers/${queryId}`
+		const response = await api.delete(
+			`/pokers/${queryId}`
 		);
 		if (response.status == 204) {
 			router.push('/');

@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import CreateRoomIcon from '../../../public/images/CreateRoom_Flatline.svg';
+import { api } from '../../service/api';
 
 const CreateRoom = () => {
 	const [userName, setUserName] = useState<string>('');
@@ -11,9 +11,7 @@ const CreateRoom = () => {
 		const data = {
 			name: userName,
 		};
-		const response = await axios.post('http://localhost:8000/pokers', data, {
-			headers: { 'content-type': 'application/json' },
-		});
+		const response = await api.post('/pokers', data);
 		if (response.status == 200) {
 			localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
 			router.push(`/poker-room/${response.data.owner_id}`);
