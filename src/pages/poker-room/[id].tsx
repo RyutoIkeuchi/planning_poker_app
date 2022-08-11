@@ -37,7 +37,7 @@ const PokerRoom = () => {
 	const handleLeaveTheRoom = async () => {
 		localStorage.removeItem('ROOM_DATA');
 		const response = await axios.delete(
-			`http://localhost:8000/users/${roomDataToLocalStorage?.id}`
+			`http://localhost:8000/pokers/${roomDataToLocalStorage?.owner_id}/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
 			if (users.length == 1) {

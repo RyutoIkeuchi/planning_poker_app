@@ -1,29 +1,27 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { UserType } from '../../types/interface';
 import EnterRoomIcon from '../../../public/images/EnterRoom_Flatline.svg';
 
 const EnterRoom = () => {
 	const [roomId, setRoomId] = useState<string>('');
 	const [userName, setUserName] = useState<string>('');
-	const [dbUsers, setDbUsers] = useState<Array<UserType>>([]);
 	const router = useRouter();
 
 	const handleEnterTheRoom = async () => {
-		const sameName = dbUsers.find((user) => user.name == userName);
-		if (sameName == undefined) {
-			const data = {
-				room_id: roomId,
-				name: userName,
-			};
-			const response = await axios.post('http://localhost:8000/users', data, {
+		const data = {
+			name: userName,
+		};
+		const response = await axios.post(
+			`http://localhost:8000/pokers/${roomId}/users`,
+			data,
+			{
 				headers: { 'content-type': 'application/json' },
-			});
-			if (response.status == 200) {
-				localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
-				router.push(`/poker-room/${roomId}`);
 			}
+		);
+		if (response.status == 200) {
+			localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
+			router.push(`/poker-room/${roomId}`);
 		}
 	};
 
@@ -34,15 +32,6 @@ const EnterRoom = () => {
 	const changeUserName = (e: ChangeEvent<HTMLInputElement>) => {
 		setUserName(e.target.value);
 	};
-
-	const getUsers = async () => {
-		const response = await axios.get('http://localhost:8000/users');
-		setDbUsers(response.data);
-	};
-
-	useEffect(() => {
-		getUsers();
-	}, []);
 
 	return (
 		<div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
