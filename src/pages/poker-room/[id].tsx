@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { UserType } from '../../types/interface';
 import io from 'socket.io-client';
 import { api } from '../../service/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -12,6 +14,8 @@ const PokerRoom = () => {
 		useState<UserType>();
 	const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
 	const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
+	const [isConfirmModal, setIsConfirmModal] = useState(false);
+	const [selectCard, setSelectCard] = useState('');
 
 	const [message, setMessage] = useState('');
 	const didLogRef = useRef(false);
@@ -104,6 +108,19 @@ const PokerRoom = () => {
 		}
 	};
 
+	const handleConfirmModal = (number) => {
+		setIsConfirmModal(true);
+		setSelectCard(number);
+	};
+
+	const generateFibonacci = (num: number): number => {
+		if (num < 2) {
+			return num;
+		} else {
+			return generateFibonacci(num - 1) + generateFibonacci(num - 2);
+		}
+	};
+
 	useEffect(() => {
 		if (router.asPath !== router.route) {
 			if (router.query.id != undefined) {
@@ -133,6 +150,42 @@ const PokerRoom = () => {
 					部屋を退出する
 				</button>
 			</div>
+			<div className="mb-10">
+				<div className="mb-4">
+					<p className="text-xl">カードを選択</p>
+				</div>
+				<ul className="flex justify-start mb-4">
+					{[...Array(11)].map((d, i) => {
+						return (
+							<li key={i}>
+								<button
+									className="hover:transform hover:duration-500 hover:-translate-y-5"
+									onClick={() => handleConfirmModal(generateFibonacci(i + 1))}
+								>
+									<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+										<p className="text-3xl">
+											{i === 0 ? '?' : generateFibonacci(i + 1)}
+										</p>
+									</div>
+								</button>
+							</li>
+						);
+					})}
+				</ul>
+				<hr />
+			</div>
+			{isConfirmModal && (
+				<ConfirmModal
+					selecetCard={selectCard}
+					isConfirmModal={isConfirmModal}
+					setIsConfirmModal={setIsConfirmModal}
+				/>
+			)}
+			<div>
+				<input type="text" onChange={(e) => setMessage(e.target.value)} />
+				<button onClick={handleSubmit}>送信</button>
+				<button onClick={() => socket.disconnect()}>削除</button>
+			</div>
 			<ul className="flex justify-start">
 				{myRoomUsers.map((user) => {
 					if (roomDataToLocalStorage?.name == user.name) {
@@ -156,6 +209,35 @@ const PokerRoom = () => {
 				})}
 			</ul>
 		</div>
+	);
+};
+
+const ConfirmModal = ({ selecetCard, isConfirmModal, setIsConfirmModal }) => {
+	return (
+		<>
+			<div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+				<div className="relative w-auto my-6 max-w-3xl">
+					<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-64 bg-white outline-none focus:outline-none h-96">
+						<div className="flex justify-between items-center py-1 px-2 border-b">
+							<button onClick={() => setIsConfirmModal(false)}>
+								<FontAwesomeIcon icon={faXmark} />
+							</button>
+							<button
+								className="text-blue-600 font-bold text-sm hover:text-blue-400 p-2"
+								type="button"
+								onClick={() => setIsConfirmModal(false)}
+							>
+								送信する
+							</button>
+						</div>
+						<div className="mx-auto h-full flex items-center">
+							<p className="text-6xl">{selecetCard}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+		</>
 	);
 };
 
