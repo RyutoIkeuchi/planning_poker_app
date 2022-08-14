@@ -10,8 +10,8 @@ const PokerRoom = () => {
 	const [queryId, setQueryId] = useState('');
 	const [roomDataToLocalStorage, setRoomDataToLocalStorage] =
 		useState<UserType>();
-	const [users, setUsers] = useState<Array<UserType>>([]);
-	const [newChat, setNewChat] = useState<UserType>({});
+	const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
+	const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
 
 	const [message, setMessage] = useState('');
 	const didLogRef = useRef(false);
@@ -35,7 +35,7 @@ const PokerRoom = () => {
 				});
 
 				socket.on('add_user_response', (data) => {
-					setNewChat({ name: data.user_name, owner_id: data.room_id });
+					setNewMyRoomUser({ name: data.user_name, owner_id: data.room_id });
 				});
 
 				socket.on('message_response', (data) => {
@@ -54,11 +54,13 @@ const PokerRoom = () => {
 	}, [roomDataToLocalStorage]);
 
 	useEffect(() => {
-		if (users.some((user) => user.name === newChat.name)) {
-			return;
+		if (
+			newMyRoomUser &&
+			!myRoomUsers.some((user) => user.name === newMyRoomUser.name)
+		) {
+			setMyRoomUsers([...myRoomUsers, newMyRoomUser]);
 		}
-		setUsers([...users, newChat]);
-	}, [newChat]);
+	}, [newMyRoomUser]);
 
 	const checkRoomId = async (queryId: string) => {
 		if (roomDataToLocalStorage?.owner_id != queryId) {
@@ -66,7 +68,7 @@ const PokerRoom = () => {
 		}
 		try {
 			const response = await api.get(`/pokers/${queryId}`);
-			setUsers(response.data.users);
+			setMyRoomUsers(response.data.users);
 		} catch (error) {
 			if ((error as AxiosError).response?.status == 404) {
 				console.log('部屋が見つかりません');
@@ -88,7 +90,7 @@ const PokerRoom = () => {
 			`/pokers/${roomDataToLocalStorage?.owner_id}/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
-			if (users.length == 1) {
+			if (myRoomUsers.length == 1) {
 				return await handleDeleteRoom();
 			}
 			router.push('/');
@@ -132,7 +134,7 @@ const PokerRoom = () => {
 				</button>
 			</div>
 			<ul className="flex justify-start">
-				{users.map((user) => {
+				{myRoomUsers.map((user) => {
 					if (roomDataToLocalStorage?.name == user.name) {
 						return (
 							<li key={user.name} className="text-red-600">
