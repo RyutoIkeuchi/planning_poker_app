@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UserType } from '../../types/interface';
+import io from 'socket.io-client';
 import { api } from '../../service/api';
 
 const PokerRoom = () => {
@@ -10,6 +11,54 @@ const PokerRoom = () => {
 	const [roomDataToLocalStorage, setRoomDataToLocalStorage] =
 		useState<UserType>();
 	const [users, setUsers] = useState<Array<UserType>>([]);
+	const [newChat, setNewChat] = useState<UserType>({});
+
+	const [message, setMessage] = useState('');
+	const didLogRef = useRef(false);
+
+	const socket = io('ws://localhost:8000', {
+		path: '/ws/socket.io/',
+		transports: ['websocket', 'polling'],
+	});
+
+	const handleSubmit = () => {
+		socket.emit('send_message', { message: message, room_id: queryId });
+	};
+
+	useEffect(() => {
+		if (didLogRef.current === false) {
+			didLogRef.current = true;
+			socket.on('connect', () => {
+				socket.emit('join', {
+					room_id: roomDataToLocalStorage?.owner_id,
+					user_name: roomDataToLocalStorage?.name,
+				});
+
+				socket.on('add_user_response', (data) => {
+					setNewChat({ name: data.user_name, owner_id: data.room_id });
+				});
+
+				socket.on('message_response', (data) => {
+					console.log('メッセージが送信されました');
+				});
+			});
+		} else {
+			didLogRef.current = false;
+		}
+
+		return () => {
+			if (didLogRef.current === false) {
+				socket.disconnect();
+			}
+		};
+	}, [roomDataToLocalStorage]);
+
+	useEffect(() => {
+		if (users.some((user) => user.name === newChat.name)) {
+			return;
+		}
+		setUsers([...users, newChat]);
+	}, [newChat]);
 
 	const checkRoomId = async (queryId: string) => {
 		if (roomDataToLocalStorage?.owner_id != queryId) {
@@ -47,9 +96,7 @@ const PokerRoom = () => {
 	};
 
 	const handleDeleteRoom = async () => {
-		const response = await api.delete(
-			`/pokers/${queryId}`
-		);
+		const response = await api.delete(`/pokers/${queryId}`);
 		if (response.status == 204) {
 			router.push('/');
 		}
@@ -88,7 +135,7 @@ const PokerRoom = () => {
 				{users.map((user) => {
 					if (roomDataToLocalStorage?.name == user.name) {
 						return (
-							<li key={user.id} className="text-red-600">
+							<li key={user.name} className="text-red-600">
 								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 									<p className="text-3xl">?</p>
 								</div>
@@ -97,7 +144,7 @@ const PokerRoom = () => {
 						);
 					}
 					return (
-						<li key={user.id}>
+						<li key={user.name}>
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 								<p className="text-3xl">?</p>
 							</div>
