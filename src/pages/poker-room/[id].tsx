@@ -20,10 +20,7 @@ const PokerRoom = () => {
 	const [message, setMessage] = useState('');
 	const didLogRef = useRef(false);
 
-	const socket = io('ws://localhost:8000', {
-		path: '/ws/socket.io/',
-		transports: ['websocket', 'polling'],
-	});
+	const socket = io('http://localhost:4000');
 
 	const handleSubmit = () => {
 		socket.emit('send_message', { message: message, room_id: queryId });
@@ -33,17 +30,19 @@ const PokerRoom = () => {
 		if (didLogRef.current === false) {
 			didLogRef.current = true;
 			socket.on('connect', () => {
+				console.log('接続したよ！')
 				socket.emit('join', {
 					room_id: roomDataToLocalStorage?.owner_id,
 					user_name: roomDataToLocalStorage?.name,
 				});
 
 				socket.on('add_user_response', (data) => {
+					console.log('user', data);
 					setNewMyRoomUser({ name: data.user_name, owner_id: data.room_id });
 				});
 
 				socket.on('message_response', (data) => {
-					console.log('メッセージが送信されました');
+					console.log('メッセージが送信されました',data);
 				});
 			});
 		} else {
