@@ -33,21 +33,25 @@ const PokerRoom = () => {
 			socket.on('connect', () => {
 				console.log('接続したよ！');
 				socket.emit('join', {
-					room_id: roomDataToLocalStorage?.owner_id,
-					user_name: roomDataToLocalStorage?.name,
+					room_id: roomDataToLocalStorage?.roomId,
+					user_name: roomDataToLocalStorage?.userName,
 				});
 
 				socket.on('add_user_response', (data) => {
 					console.log('user', data);
-					setNewMyRoomUser({ name: data.user_name, owner_id: data.room_id });
+					setNewMyRoomUser({
+						userName: data.user_name,
+						roomId: data.room_id,
+						selectCard: '',
+					});
 				});
 
 				socket.on('select_number_response', (data) => {
 					console.log('選んだ番号が送信されました', data);
 					setNewSelectCard({
-						name: data.user_name,
-						owner_id: data.room_id,
-						select_card: data.select_card,
+						userName: data.user_name,
+						roomId: data.room_id,
+						selectCard: data.select_card,
 					});
 				});
 
@@ -69,7 +73,7 @@ const PokerRoom = () => {
 	useEffect(() => {
 		if (
 			newMyRoomUser &&
-			!myRoomUsers.some((user) => user.name === newMyRoomUser.name)
+			!myRoomUsers.some((user) => user.userName === newMyRoomUser.userName)
 		) {
 			setMyRoomUsers([...myRoomUsers, newMyRoomUser]);
 		}
@@ -78,8 +82,8 @@ const PokerRoom = () => {
 	useEffect(() => {
 		if (newSelectCard) {
 			const upDataMyRoomUserStatus = myRoomUsers.map((user) => {
-				if (user.name === newSelectCard.name) {
-					return { ...user, select_card: newSelectCard.select_card };
+				if (user.userName === newSelectCard.userName) {
+					return { ...user, selectCard: newSelectCard.selectCard };
 				}
 				return user;
 			});
@@ -88,12 +92,18 @@ const PokerRoom = () => {
 	}, [newSelectCard]);
 
 	const checkRoomId = async (queryId: string) => {
-		if (roomDataToLocalStorage?.owner_id != queryId) {
+		if (roomDataToLocalStorage?.roomId != queryId) {
 			router.replace('/');
 		}
 		try {
 			const response = await api.get(`/pokers/${queryId}`);
-			setMyRoomUsers(response.data.users);
+			const convertToCamelCase = response.data.users.map((res: any) => ({
+				id: res.id,
+				userName: res.user_name,
+				roomId: res.owner_id,
+				selectCard: '',
+			}));
+			setMyRoomUsers(convertToCamelCase);
 		} catch (error) {
 			if ((error as AxiosError).response?.status == 404) {
 				console.log('部屋が見つかりません');
@@ -112,7 +122,7 @@ const PokerRoom = () => {
 	const handleLeaveTheRoom = async () => {
 		localStorage.removeItem('ROOM_DATA');
 		const response = await api.delete(
-			`/pokers/${roomDataToLocalStorage?.owner_id}/users/${roomDataToLocalStorage?.id}`
+			`/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
 			if (myRoomUsers.length == 1) {
@@ -175,7 +185,7 @@ const PokerRoom = () => {
 					selectCard={selectCard}
 					socket={socket}
 					roomId={queryId}
-					userName={roomDataToLocalStorage?.name || ''}
+					userName={roomDataToLocalStorage?.userName || ''}
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
@@ -186,22 +196,22 @@ const PokerRoom = () => {
 			</div>
 			<ul className="flex justify-start">
 				{myRoomUsers.map((user) => {
-					if (roomDataToLocalStorage?.name == user.name) {
+					if (user.userName === roomDataToLocalStorage?.userName) {
 						return (
-							<li key={user.name} className="text-red-600">
+							<li key={user.userName} className="text-red-600">
 								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-									<p className="text-3xl">{user.select_card || '?'}</p>
+									<p className="text-3xl">{user.selectCard || '?'}</p>
 								</div>
-								<p className="text-center">{user.name}</p>
+								<p className="text-center">{user.userName}</p>
 							</li>
 						);
 					}
 					return (
-						<li key={user.name}>
+						<li key={user.userName}>
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-								<p className="text-3xl">{user.select_card || '?'}</p>
+								<p className="text-3xl">{user.selectCard || '?'}</p>
 							</div>
-							<p className="text-center">{user.name}</p>
+							<p className="text-center">{user.userName}</p>
 						</li>
 					);
 				})}

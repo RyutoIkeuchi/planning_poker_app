@@ -9,11 +9,18 @@ const CreateRoom = () => {
 
 	const handleCreateRoomId = async () => {
 		const data = {
-			name: userName,
+			user_name: userName,
 		};
 		const response = await api.post('/pokers', data);
 		if (response.status == 200) {
-			localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
+			const convertToCamelCase = {
+				id: response.data.id,
+				userName: response.data.user_name,
+				roomId: response.data.owner_id,
+				selectCard: '',
+			};
+
+			localStorage.setItem('ROOM_DATA', JSON.stringify(convertToCamelCase));
 			router.push(`/poker-room/${response.data.owner_id}`);
 		}
 	};

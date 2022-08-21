@@ -1,6 +1,6 @@
 export type UserType = {
-	name: string;
+	userName: string;
 	id?: number;
-	owner_id: string;
-	select_card?: string;
+	roomId: string;
+	selectCard?: string;
 };

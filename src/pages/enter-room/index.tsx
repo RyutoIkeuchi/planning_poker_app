@@ -12,15 +12,18 @@ const EnterRoom = () => {
 		const data = {
 			name: userName,
 		};
-		const response = await api.post(
-			`/pokers/${roomId}/users`,
-			data,
-			{
-				headers: { 'content-type': 'application/json' },
-			}
-		);
+		const response = await api.post(`/pokers/${roomId}/users`, data, {
+			headers: { 'content-type': 'application/json' },
+		});
 		if (response.status == 200) {
-			localStorage.setItem('ROOM_DATA', JSON.stringify(response.data));
+			const convertToCamelCase = {
+				id: response.data.id,
+				userName: response.data.user_name,
+				roomId: response.data.owner_id,
+				selectCard: '',
+			};
+
+			localStorage.setItem('ROOM_DATA', JSON.stringify(convertToCamelCase));
 			router.push(`/poker-room/${roomId}`);
 		}
 	};
