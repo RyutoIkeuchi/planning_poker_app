@@ -19,7 +19,7 @@ const PokerRoom = () => {
 	const [message, setMessage] = useState('');
 	const didLogRef = useRef(false);
 
- const socket = io('http://localhost:4000');
+	const socket = io('http://localhost:4000');
 
 	const handleSubmit = () => {
 		socket.emit('send_message', { message: message, room_id: queryId });
@@ -29,7 +29,7 @@ const PokerRoom = () => {
 		if (didLogRef.current === false) {
 			didLogRef.current = true;
 			socket.on('connect', () => {
-				console.log('接続したよ！')
+				console.log('接続したよ！');
 				socket.emit('join', {
 					room_id: roomDataToLocalStorage?.owner_id,
 					user_name: roomDataToLocalStorage?.name,
@@ -41,11 +41,11 @@ const PokerRoom = () => {
 				});
 
 				socket.on('select_number_response', (data) => {
-					console.log('選んだ番号が送信されました',data);
+					console.log('選んだ番号が送信されました', data);
 				});
 
 				socket.on('message_response', (data) => {
-					console.log('メッセージが送信されました',data);
+					console.log('メッセージが送信されました', data);
 				});
 			});
 		} else {
@@ -162,7 +162,9 @@ const PokerRoom = () => {
 							<li key={i}>
 								<button
 									className="hover:transform hover:duration-500 hover:-translate-y-5"
-									onClick={() => handleConfirmModal(generateFibonacci(i + 1))}
+									onClick={() =>
+										handleConfirmModal(i === 0 ? '?' : generateFibonacci(i + 1))
+									}
 								>
 									<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 										<p className="text-3xl">
