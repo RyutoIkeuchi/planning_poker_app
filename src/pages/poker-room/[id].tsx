@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { UserType } from '../../types/interface';
+import { SelectCardUserType, UserType } from '../../types/interface';
 import io from 'socket.io-client';
 import { api } from '../../service/api';
 import { ConfirmSelectNumberModal } from '../../components/ConfirmSelectNumberModal';
@@ -14,7 +14,7 @@ const PokerRoom = () => {
 		useState<UserType>();
 	const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
 	const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
-	const [newSelectCard, setNewSelectCard] = useState<UserType>();
+	const [newSelectCard, setNewSelectCard] = useState<SelectCardUserType>();
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
 
@@ -37,14 +37,18 @@ const PokerRoom = () => {
 				console.log('接続したよ！');
 				socket.emit('join', {
 					room_id: roomDataToLocalStorage?.roomId,
+					id: roomDataToLocalStorage?.id,
 					user_name: roomDataToLocalStorage?.userName,
+					host_user: roomDataToLocalStorage?.hostUser,
 				});
 
 				socket.on('add_user_response', (data) => {
 					console.log('user', data);
 					setNewMyRoomUser({
-						userName: data.user_name,
 						roomId: data.room_id,
+						id: data.id,
+						userName: data.user_name,
+						hostUser: data.host_user,
 						selectCard: '',
 					});
 				});
