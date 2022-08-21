@@ -5,6 +5,7 @@ import { UserType } from '../../types/interface';
 import io from 'socket.io-client';
 import { api } from '../../service/api';
 import { ConfirmSelectNumberModal } from '../../components/ConfirmSelectNumberModal';
+import { FibonacciNumbers } from '../../components/FibonacciNumbers';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -110,17 +111,9 @@ const PokerRoom = () => {
 		}
 	};
 
-	const handleConfirmModal = (number) => {
+	const handleOpenConfirmModal = (selectNumber: string) => {
 		setIsConfirmModal(true);
-		setSelectCard(number);
-	};
-
-	const generateFibonacci = (num: number): number => {
-		if (num < 2) {
-			return num;
-		} else {
-			return generateFibonacci(num - 1) + generateFibonacci(num - 2);
-		}
+		setSelectCard(selectNumber);
 	};
 
 	useEffect(() => {
@@ -156,26 +149,7 @@ const PokerRoom = () => {
 				<div className="mb-4">
 					<p className="text-xl">カードを選択</p>
 				</div>
-				<ul className="flex justify-start mb-4">
-					{[...Array(11)].map((d, i) => {
-						return (
-							<li key={i}>
-								<button
-									className="hover:transform hover:duration-500 hover:-translate-y-5"
-									onClick={() =>
-										handleConfirmModal(i === 0 ? '?' : generateFibonacci(i + 1))
-									}
-								>
-									<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-										<p className="text-3xl">
-											{i === 0 ? '?' : generateFibonacci(i + 1)}
-										</p>
-									</div>
-								</button>
-							</li>
-						);
-					})}
-				</ul>
+				<FibonacciNumbers handleOpenConfirmModal={handleOpenConfirmModal} />
 				<hr />
 			</div>
 			{isConfirmModal && (
