@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { UserType } from '../../types/interface';
 import io from 'socket.io-client';
 import { api } from '../../service/api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { ConfirmSelectNumberModal } from '../../components/ConfirmSelectNumberModal';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -20,7 +19,7 @@ const PokerRoom = () => {
 	const [message, setMessage] = useState('');
 	const didLogRef = useRef(false);
 
-	const socket = io('http://localhost:4000');
+ const socket = io('http://localhost:4000');
 
 	const handleSubmit = () => {
 		socket.emit('send_message', { message: message, room_id: queryId });
@@ -39,6 +38,10 @@ const PokerRoom = () => {
 				socket.on('add_user_response', (data) => {
 					console.log('user', data);
 					setNewMyRoomUser({ name: data.user_name, owner_id: data.room_id });
+				});
+
+				socket.on('select_number_response', (data) => {
+					console.log('選んだ番号が送信されました',data);
 				});
 
 				socket.on('message_response', (data) => {
@@ -174,9 +177,11 @@ const PokerRoom = () => {
 				<hr />
 			</div>
 			{isConfirmModal && (
-				<ConfirmModal
-					selecetCard={selectCard}
-					isConfirmModal={isConfirmModal}
+				<ConfirmSelectNumberModal
+					selectCard={selectCard}
+					socket={socket}
+					roomId={queryId}
+					userId={roomDataToLocalStorage?.id || 0}
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
@@ -208,35 +213,6 @@ const PokerRoom = () => {
 				})}
 			</ul>
 		</div>
-	);
-};
-
-const ConfirmModal = ({ selecetCard, isConfirmModal, setIsConfirmModal }) => {
-	return (
-		<>
-			<div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-				<div className="relative w-auto my-6 max-w-3xl">
-					<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-64 bg-white outline-none focus:outline-none h-96">
-						<div className="flex justify-between items-center py-1 px-2 border-b">
-							<button onClick={() => setIsConfirmModal(false)}>
-								<FontAwesomeIcon icon={faXmark} />
-							</button>
-							<button
-								className="text-blue-600 font-bold text-sm hover:text-blue-400 p-2"
-								type="button"
-								onClick={() => setIsConfirmModal(false)}
-							>
-								送信する
-							</button>
-						</div>
-						<div className="mx-auto h-full flex items-center">
-							<p className="text-6xl">{selecetCard}</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-		</>
 	);
 };
 
