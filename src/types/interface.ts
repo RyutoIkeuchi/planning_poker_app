@@ -1,6 +1,7 @@
 export type UserType = {
-	userName: string;
 	id?: number;
+	userName: string;
+	hostUser?: boolean;
 	roomId: string;
 	selectCard?: string;
 };

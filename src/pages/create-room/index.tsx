@@ -10,12 +10,14 @@ const CreateRoom = () => {
 	const handleCreateRoomId = async () => {
 		const data = {
 			user_name: userName,
+			host_user: true,
 		};
 		const response = await api.post('/pokers', data);
 		if (response.status == 200) {
 			const convertToCamelCase = {
 				id: response.data.id,
 				userName: response.data.user_name,
+				hostUser: response.data.host_user,
 				roomId: response.data.owner_id,
 				selectCard: '',
 			};

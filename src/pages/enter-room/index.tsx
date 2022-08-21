@@ -10,7 +10,8 @@ const EnterRoom = () => {
 
 	const handleEnterTheRoom = async () => {
 		const data = {
-			name: userName,
+			user_name: userName,
+			host_user: false,
 		};
 		const response = await api.post(`/pokers/${roomId}/users`, data, {
 			headers: { 'content-type': 'application/json' },
@@ -19,6 +20,7 @@ const EnterRoom = () => {
 			const convertToCamelCase = {
 				id: response.data.id,
 				userName: response.data.user_name,
+				hostUser: response.data.host_user,
 				roomId: response.data.owner_id,
 				selectCard: '',
 			};

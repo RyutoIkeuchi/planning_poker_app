@@ -18,13 +18,16 @@ const PokerRoom = () => {
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
 
-	const [message, setMessage] = useState('');
+	const [agendaTitle, setAgendaTitle] = useState('');
 	const didLogRef = useRef(false);
 
 	const socket = io('http://localhost:4000');
 
-	const handleSubmit = () => {
-		socket.emit('send_message', { message: message, room_id: queryId });
+	const handleAgendaTitleSubmit = () => {
+		socket.emit('send_agenda_title', {
+			agenda_title: agendaTitle,
+			room_id: queryId,
+		});
 	};
 
 	useEffect(() => {
@@ -47,7 +50,7 @@ const PokerRoom = () => {
 				});
 
 				socket.on('select_number_response', (data) => {
-					console.log('選んだ番号が送信されました', data);
+					console.log('他のユーザーが選んだ番号を受信しました', data);
 					setNewSelectCard({
 						userName: data.user_name,
 						roomId: data.room_id,
@@ -55,8 +58,8 @@ const PokerRoom = () => {
 					});
 				});
 
-				socket.on('message_response', (data) => {
-					console.log('メッセージが送信されました', data);
+				socket.on('agenda_title_response', (data) => {
+					console.log('議題タイトルを受信しました', data);
 				});
 			});
 		} else {
@@ -100,6 +103,7 @@ const PokerRoom = () => {
 			const convertToCamelCase = response.data.users.map((res: any) => ({
 				id: res.id,
 				userName: res.user_name,
+				hostUser: res.host_user,
 				roomId: res.owner_id,
 				selectCard: '',
 			}));
@@ -115,6 +119,7 @@ const PokerRoom = () => {
 	const getRoomDataToLocalStorage = () => {
 		const response = localStorage.getItem('ROOM_DATA');
 		if (typeof response == 'string') {
+			console.log('res', response);
 			setRoomDataToLocalStorage(JSON.parse(response));
 		}
 	};
@@ -189,11 +194,12 @@ const PokerRoom = () => {
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
-			<div>
-				<input type="text" onChange={(e) => setMessage(e.target.value)} />
-				<button onClick={handleSubmit}>送信</button>
-				<button onClick={() => socket.disconnect()}>削除</button>
-			</div>
+			{roomDataToLocalStorage?.hostUser && (
+				<div>
+					<input type="text" onChange={(e) => setAgendaTitle(e.target.value)} />
+					<button onClick={handleAgendaTitleSubmit}>送信</button>
+				</div>
+			)}
 			<ul className="flex justify-start">
 				{myRoomUsers.map((user) => {
 					if (user.userName === roomDataToLocalStorage?.userName) {
@@ -202,7 +208,10 @@ const PokerRoom = () => {
 								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 									<p className="text-3xl">{user.selectCard || '?'}</p>
 								</div>
-								<p className="text-center">{user.userName}</p>
+								<p className="text-center">
+									{user.hostUser && '[ホスト]'}
+									{user.userName}
+								</p>
 							</li>
 						);
 					}
@@ -211,7 +220,10 @@ const PokerRoom = () => {
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 								<p className="text-3xl">{user.selectCard || '?'}</p>
 							</div>
-							<p className="text-center">{user.userName}</p>
+							<p className="text-center">
+								{user.hostUser && '[ホスト]'}
+								{user.userName}
+							</p>
 						</li>
 					);
 				})}
