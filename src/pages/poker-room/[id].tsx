@@ -14,6 +14,7 @@ const PokerRoom = () => {
 		useState<UserType>();
 	const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
 	const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
+	const [newSelectCard, setNewSelectCard] = useState<UserType>();
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
 
@@ -43,6 +44,11 @@ const PokerRoom = () => {
 
 				socket.on('select_number_response', (data) => {
 					console.log('選んだ番号が送信されました', data);
+					setNewSelectCard({
+						name: data.user_name,
+						owner_id: data.room_id,
+						select_card: data.select_card,
+					});
 				});
 
 				socket.on('message_response', (data) => {
@@ -68,6 +74,18 @@ const PokerRoom = () => {
 			setMyRoomUsers([...myRoomUsers, newMyRoomUser]);
 		}
 	}, [newMyRoomUser]);
+
+	useEffect(() => {
+		if (newSelectCard) {
+			const upDataMyRoomUserStatus = myRoomUsers.map((user) => {
+				if (user.name === newSelectCard.name) {
+					return { ...user, select_card: newSelectCard.select_card };
+				}
+				return user;
+			});
+			setMyRoomUsers(upDataMyRoomUserStatus);
+		}
+	}, [newSelectCard]);
 
 	const checkRoomId = async (queryId: string) => {
 		if (roomDataToLocalStorage?.owner_id != queryId) {
@@ -111,9 +129,9 @@ const PokerRoom = () => {
 		}
 	};
 
-	const handleOpenConfirmModal = (selectNumber: string) => {
+	const handleOpenConfirmModal = (selectCard: string) => {
 		setIsConfirmModal(true);
-		setSelectCard(selectNumber);
+		setSelectCard(selectCard);
 	};
 
 	useEffect(() => {
@@ -157,7 +175,7 @@ const PokerRoom = () => {
 					selectCard={selectCard}
 					socket={socket}
 					roomId={queryId}
-					userId={roomDataToLocalStorage?.id || 0}
+					userName={roomDataToLocalStorage?.name || ''}
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
@@ -172,7 +190,7 @@ const PokerRoom = () => {
 						return (
 							<li key={user.name} className="text-red-600">
 								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-									<p className="text-3xl">?</p>
+									<p className="text-3xl">{user.select_card || '?'}</p>
 								</div>
 								<p className="text-center">{user.name}</p>
 							</li>
@@ -181,7 +199,7 @@ const PokerRoom = () => {
 					return (
 						<li key={user.name}>
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-								<p className="text-3xl">?</p>
+								<p className="text-3xl">{user.select_card || '?'}</p>
 							</div>
 							<p className="text-center">{user.name}</p>
 						</li>

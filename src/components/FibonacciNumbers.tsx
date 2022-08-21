@@ -1,5 +1,5 @@
 type Props = {
-	handleOpenConfirmModal: (selectNumber: string) => void;
+	handleOpenConfirmModal: (selectCard: string) => void;
 };
 
 const FIBONACCI_NUMBERS = [...Array(11)].map((d, i) => {
