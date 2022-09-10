@@ -182,13 +182,6 @@ const PokerRoom = () => {
 					部屋を退出する
 				</button>
 			</div>
-			<div className="mb-10">
-				<div className="mb-4">
-					<p className="text-xl">カードを選択</p>
-				</div>
-				<FibonacciNumbers handleOpenConfirmModal={handleOpenConfirmModal} />
-				<hr />
-			</div>
 			{isConfirmModal && (
 				<ConfirmSelectNumberModal
 					selectCard={selectCard}
@@ -232,6 +225,13 @@ const PokerRoom = () => {
 					);
 				})}
 			</ul>
+			<div className="fixed bottom-0 left-1/2 -translate-x-1/2">
+				<div className="mb-4">
+					<p className="text-xl">カードを選択</p>
+				</div>
+				<FibonacciNumbers handleOpenConfirmModal={handleOpenConfirmModal} />
+				<hr />
+			</div>
 		</div>
 	);
 };
