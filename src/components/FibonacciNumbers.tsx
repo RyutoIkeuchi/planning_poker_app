@@ -10,7 +10,7 @@ const FIBONACCI_NUMBERS = [...Array(11)].map((d, i) => {
 			return generateFibonacci(num - 1) + generateFibonacci(num - 2);
 		}
 	};
-	return i === 0 ? '?' : generateFibonacci(i + 1).toString();
+	return i === 0 ? '/' : generateFibonacci(i + 1).toString();
 });
 
 export const FibonacciNumbers = ({ handleOpenConfirmModal }: Props) => {
