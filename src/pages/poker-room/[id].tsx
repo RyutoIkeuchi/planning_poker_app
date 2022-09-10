@@ -15,10 +15,13 @@ const PokerRoom = () => {
 	const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
 	const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
 	const [newSelectCard, setNewSelectCard] = useState<SelectCardUserType>();
+	const [newAgendaTitle, setNewAgendaTitle] = useState<string>('');
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
+	const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] =
+		useState<boolean>(false);
 
-	const [agendaTitle, setAgendaTitle] = useState('');
+	const [agendaTitle, setAgendaTitle] = useState('未設定');
 	const didLogRef = useRef(false);
 
 	const socket = io('http://localhost:4000');
@@ -28,6 +31,10 @@ const PokerRoom = () => {
 			agenda_title: agendaTitle,
 			room_id: queryId,
 		});
+	};
+
+	const handleCancelSubmitDisabled = () => {
+		setIsAgendaTitleSubmitDisabled(false);
 	};
 
 	useEffect(() => {
@@ -64,6 +71,7 @@ const PokerRoom = () => {
 
 				socket.on('agenda_title_response', (data) => {
 					console.log('議題タイトルを受信しました', data);
+					setNewAgendaTitle(data.agenda_title);
 				});
 			});
 		} else {
@@ -97,6 +105,13 @@ const PokerRoom = () => {
 			setMyRoomUsers(upDataMyRoomUserStatus);
 		}
 	}, [newSelectCard]);
+
+	useEffect(() => {
+		if (newAgendaTitle != '未設定') {
+			setAgendaTitle(newAgendaTitle);
+			setIsAgendaTitleSubmitDisabled(true);
+		}
+	}, [newAgendaTitle]);
 
 	const checkRoomId = async (queryId: string) => {
 		if (roomDataToLocalStorage?.roomId != queryId) {
@@ -191,10 +206,25 @@ const PokerRoom = () => {
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
-			{roomDataToLocalStorage?.hostUser && (
+			{roomDataToLocalStorage?.hostUser ? (
 				<div>
 					<input type="text" onChange={(e) => setAgendaTitle(e.target.value)} />
-					<button onClick={handleAgendaTitleSubmit}>送信</button>
+					<button
+						onClick={handleAgendaTitleSubmit}
+						disabled={isAgendaTitleSubmitDisabled}
+					>
+						決定
+					</button>
+					<button
+						onClick={handleCancelSubmitDisabled}
+						disabled={!isAgendaTitleSubmitDisabled}
+					>
+						取り消し
+					</button>
+				</div>
+			) : (
+				<div>
+					<h3>{agendaTitle}</h3>
 				</div>
 			)}
 			<ul className="flex justify-start">
@@ -229,7 +259,10 @@ const PokerRoom = () => {
 				<div className="mb-4">
 					<p className="text-xl">カードを選択</p>
 				</div>
-				<FibonacciNumbers handleOpenConfirmModal={handleOpenConfirmModal} />
+				<FibonacciNumbers
+					handleOpenConfirmModal={handleOpenConfirmModal}
+					isSelectNumberCard={!isAgendaTitleSubmitDisabled}
+				/>
 				<hr />
 			</div>
 		</div>

@@ -1,5 +1,6 @@
 type Props = {
 	handleOpenConfirmModal: (selectCard: string) => void;
+	isSelectNumberCard: boolean;
 };
 
 const FIBONACCI_NUMBERS = [...Array(11)].map((d, i) => {
@@ -13,15 +14,23 @@ const FIBONACCI_NUMBERS = [...Array(11)].map((d, i) => {
 	return i === 0 ? '/' : generateFibonacci(i + 1).toString();
 });
 
-export const FibonacciNumbers = ({ handleOpenConfirmModal }: Props) => {
+export const FibonacciNumbers = ({
+	handleOpenConfirmModal,
+	isSelectNumberCard,
+}: Props) => {
 	return (
 		<ul className="flex justify-start mb-4">
 			{FIBONACCI_NUMBERS.map((d, i) => {
 				return (
 					<li key={i}>
 						<button
-							className="hover:transform hover:duration-500 hover:-translate-y-5"
+							className={`${
+								isSelectNumberCard
+									? 'cursor-not-allowed'
+									: 'hover:transform hover:duration-500 hover:-translate-y-5'
+							}`}
 							onClick={() => handleOpenConfirmModal(d)}
+							disabled={isSelectNumberCard}
 						>
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 								<p className="text-3xl">{d}</p>
