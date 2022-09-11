@@ -107,7 +107,7 @@ const PokerRoom = () => {
 	}, [newSelectCard]);
 
 	useEffect(() => {
-		if (newAgendaTitle != '未設定') {
+		if (newAgendaTitle !== '') {
 			setAgendaTitle(newAgendaTitle);
 			setIsAgendaTitleSubmitDisabled(true);
 		}
@@ -206,27 +206,50 @@ const PokerRoom = () => {
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
-			{roomDataToLocalStorage?.hostUser ? (
-				<div>
-					<input type="text" onChange={(e) => setAgendaTitle(e.target.value)} />
-					<button
-						onClick={handleAgendaTitleSubmit}
-						disabled={isAgendaTitleSubmitDisabled}
-					>
-						決定
-					</button>
-					<button
-						onClick={handleCancelSubmitDisabled}
-						disabled={!isAgendaTitleSubmitDisabled}
-					>
-						取り消し
-					</button>
-				</div>
-			) : (
-				<div>
-					<h3>{agendaTitle}</h3>
-				</div>
-			)}
+			<div className="bg-orange-400 p-4 mb-4">
+				{roomDataToLocalStorage?.hostUser ? (
+					<div className="flex justify-between items-center">
+						<div className="flex justify-start items-center w-5/6">
+							<div className="mr-4 w-1/2">
+								<input
+									type="text"
+									className="bg-orange-400 border p-2 w-full"
+									onChange={(e) => setAgendaTitle(e.target.value)}
+								/>
+							</div>
+							<div className="mr-4">
+								<button
+									className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+									onClick={handleAgendaTitleSubmit}
+									disabled={isAgendaTitleSubmitDisabled}
+								>
+									決定
+								</button>
+							</div>
+							<button
+								className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+								onClick={handleCancelSubmitDisabled}
+								disabled={!isAgendaTitleSubmitDisabled}
+							>
+								取り消し
+							</button>
+						</div>
+						<div>
+							<button
+								className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+								onClick={handleCancelSubmitDisabled}
+								disabled={!isAgendaTitleSubmitDisabled}
+							>
+								結果を見る
+							</button>
+						</div>
+					</div>
+				) : (
+					<div className='p-2'>
+						<h3 className='text-xl'>{agendaTitle}</h3>
+					</div>
+				)}
+			</div>
 			<ul className="flex justify-start">
 				{myRoomUsers.map((user) => {
 					if (user.userName === roomDataToLocalStorage?.userName) {
