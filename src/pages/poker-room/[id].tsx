@@ -22,6 +22,10 @@ const PokerRoom = () => {
 	const [selectCard, setSelectCard] = useState('');
 	const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] =
 		useState<boolean>(false);
+	const [isSelectNumberResult, setIsSelectNumberResult] =
+		useState<boolean>(false);
+	const [isResultButtonDisabled, setIsResultButtonDisabled] =
+		useState<boolean>(false);
 
 	const [agendaTitle, setAgendaTitle] = useState('未設定');
 	const didLogRef = useRef(false);
@@ -37,6 +41,10 @@ const PokerRoom = () => {
 
 	const handleCancelSubmitDisabled = () => {
 		setIsAgendaTitleSubmitDisabled(false);
+	};
+
+	const handleSelectNumberResult = () => {
+		setIsSelectNumberResult(true);
 	};
 
 	useEffect(() => {
@@ -58,6 +66,7 @@ const PokerRoom = () => {
 						id: data.id,
 						userName: data.user_name,
 						hostUser: data.host_user,
+						isSelected: false,
 						selectCard: '',
 					});
 				});
@@ -100,11 +109,22 @@ const PokerRoom = () => {
 		if (newSelectCard) {
 			const upDataMyRoomUserStatus = myRoomUsers.map((user) => {
 				if (user.userName === newSelectCard.userName) {
-					return { ...user, selectCard: newSelectCard.selectCard };
+					return {
+						...user,
+						isSelected: true,
+						selectCard: newSelectCard.selectCard,
+					};
 				}
 				return user;
 			});
 			setMyRoomUsers(upDataMyRoomUserStatus);
+
+			const checkNumberNotSelected = myRoomUsers.some(
+				(user) => !user.isSelected
+			);
+			if (!checkNumberNotSelected) {
+				setIsResultButtonDisabled(true);
+			}
 		}
 	}, [newSelectCard]);
 
@@ -126,6 +146,7 @@ const PokerRoom = () => {
 				userName: res.user_name,
 				hostUser: res.host_user,
 				roomId: res.owner_id,
+				isSelected: false,
 				selectCard: '',
 			}));
 			setMyRoomUsers(convertToCamelCase);
@@ -239,8 +260,8 @@ const PokerRoom = () => {
 						<div>
 							<button
 								className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-								onClick={handleCancelSubmitDisabled}
-								disabled={!isAgendaTitleSubmitDisabled}
+								onClick={handleSelectNumberResult}
+								disabled={!isResultButtonDisabled}
 							>
 								結果を見る
 							</button>
@@ -258,7 +279,7 @@ const PokerRoom = () => {
 						return (
 							<li key={user.userName} className="text-red-600">
 								<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-									<p className="text-3xl">{user.selectCard || '?'}</p>
+									{isSelectNumberResult ? user.selectCard : '?'}
 								</div>
 								<div className="flex justify-center items-center">
 									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
@@ -270,7 +291,9 @@ const PokerRoom = () => {
 					return (
 						<li key={user.userName}>
 							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-								<p className="text-3xl">{user.selectCard || '?'}</p>
+								<p className="text-3xl">
+									{isSelectNumberResult ? user.selectCard : '?'}
+								</p>
 							</div>
 							<div className="flex justify-center items-center">
 								{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
