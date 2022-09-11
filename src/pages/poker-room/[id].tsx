@@ -6,6 +6,8 @@ import io from 'socket.io-client';
 import { api } from '../../service/api';
 import { ConfirmSelectNumberModal } from '../../components/ConfirmSelectNumberModal';
 import { FibonacciNumbers } from '../../components/FibonacciNumbers';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -245,8 +247,8 @@ const PokerRoom = () => {
 						</div>
 					</div>
 				) : (
-					<div className='p-2'>
-						<h3 className='text-xl'>{agendaTitle}</h3>
+					<div className="p-2">
+						<h3 className="text-xl">{agendaTitle}</h3>
 					</div>
 				)}
 			</div>
@@ -255,13 +257,13 @@ const PokerRoom = () => {
 					if (user.userName === roomDataToLocalStorage?.userName) {
 						return (
 							<li key={user.userName} className="text-red-600">
-								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+								<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 									<p className="text-3xl">{user.selectCard || '?'}</p>
 								</div>
-								<p className="text-center">
-									{user.hostUser && '[ホスト]'}
-									{user.userName}
-								</p>
+								<div className="flex justify-center items-center">
+									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
+									<p className="text-center">{user.userName}</p>
+								</div>
 							</li>
 						);
 					}
