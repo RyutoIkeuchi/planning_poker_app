@@ -1,4 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction, useCallback } from 'react';
+import { PrimaryButton } from '../Common/PrimaryButton';
 
 type Props = {
 	agendaTitle: string;
@@ -24,7 +25,6 @@ export const AgendaTitle = (props: Props) => {
 	const handleChangeAgendaTitle = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
 			const inputAgendaTitle = e.target.value;
-			console.log(e.target.value);
 			setAgendaTitle(inputAgendaTitle);
 			if (inputAgendaTitle !== '') {
 				setIsAgendaTitleSubmitDisabled(false);
@@ -46,29 +46,21 @@ export const AgendaTitle = (props: Props) => {
 				/>
 			</div>
 			<div className="mr-4">
-				<button
-					className={`bg-green-500 text-white font-bold py-2 px-4 rounded ${
-						isAgendaTitleSubmitDisabled
-							? 'cursor-not-allowed'
-							: 'pointer hover:bg-green-700'
-					}`}
-					onClick={handleSubmitAgendaTitle}
+				<PrimaryButton
+					buttonColor="green"
+					handleClickMethod={handleSubmitAgendaTitle}
 					disabled={isAgendaTitleSubmitDisabled}
 				>
 					決定
-				</button>
+				</PrimaryButton>
 			</div>
-			<button
-				className={`bg-orange-500 text-white font-bold py-2 px-4 rounded ${
-					isCancelAgendaTitleDisabled
-						? 'cursor-not-allowed'
-						: 'pointer hover:bg-orange-700'
-				}`}
-				onClick={handleCancelAgendaTitle}
+			<PrimaryButton
+				buttonColor="orange"
+				handleClickMethod={handleCancelAgendaTitle}
 				disabled={isCancelAgendaTitleDisabled}
 			>
 				取り消し
-			</button>
+			</PrimaryButton>
 		</div>
 	);
 };
