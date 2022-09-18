@@ -42,6 +42,10 @@ const PokerRoom = () => {
 
 	const handleCancelSubmitDisabled = () => {
 		setAgendaTitle('');
+		socket.emit('send_agenda_title', {
+			agenda_title: '',
+			room_id: queryId,
+		});
 	};
 
 	const handleSelectNumberResult = () => {
@@ -144,6 +148,8 @@ const PokerRoom = () => {
 			setAgendaTitle(newAgendaTitle);
 			setIsAgendaTitleSubmitDisabled(true);
 			setIsSelectNumberCard(false);
+		} else {
+			setIsSelectNumberCard(true);
 		}
 	}, [newAgendaTitle]);
 
