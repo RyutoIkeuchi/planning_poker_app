@@ -292,6 +292,14 @@ const PokerRoom = () => {
 					</div>
 				)}
 			</div>
+				<div className="text-center p-10">
+					<div className="mb-4">
+						<p className="text-xl">スプリントポイント</p>
+					</div>
+					<p className="text-6xl font-bold">
+						{isSelectNumberResult ? '5.5' : '?'}
+					</p>
+				</div>
 			<ul className="flex justify-start">
 				{myRoomUsers.map((user) => {
 					if (user.userName === roomDataToLocalStorage?.userName) {
