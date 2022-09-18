@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { SelectCardUserType, UserType } from '../../types/interface';
 import io from 'socket.io-client';
 import { api } from '../../service/api';
@@ -21,7 +21,7 @@ const PokerRoom = () => {
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
 	const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] =
-		useState<boolean>(false);
+		useState<boolean>(true);
 	const [isSelectNumberResult, setIsSelectNumberResult] =
 		useState<boolean>(false);
 	const [isResultButtonDisabled, setIsResultButtonDisabled] =
@@ -40,7 +40,7 @@ const PokerRoom = () => {
 	};
 
 	const handleCancelSubmitDisabled = () => {
-		setIsAgendaTitleSubmitDisabled(false);
+		setAgendaTitle('');
 	};
 
 	const handleSelectNumberResult = () => {
@@ -95,6 +95,16 @@ const PokerRoom = () => {
 			}
 		};
 	}, [roomDataToLocalStorage]);
+
+	const handleChangeAgendaTitle = (e: ChangeEvent<HTMLInputElement>) => {
+		const inputAgendaTitle = e.target.value;
+		setAgendaTitle(inputAgendaTitle);
+		if (inputAgendaTitle !== '') {
+			setIsAgendaTitleSubmitDisabled(false);
+		} else {
+			setIsAgendaTitleSubmitDisabled(true);
+		}
+	};
 
 	useEffect(() => {
 		if (
@@ -245,8 +255,9 @@ const PokerRoom = () => {
 							<div className="mr-4 w-1/2">
 								<input
 									type="text"
+									value={agendaTitle}
 									className="bg-orange-400 border p-2 w-full"
-									onChange={(e) => setAgendaTitle(e.target.value)}
+									onChange={handleChangeAgendaTitle}
 								/>
 							</div>
 							<div className="mr-4">
