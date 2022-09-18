@@ -279,7 +279,9 @@ const PokerRoom = () => {
 						return (
 							<li key={user.userName} className="text-red-600">
 								<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+										<p className="text-3xl">
 									{isSelectNumberResult ? user.selectCard : '?'}
+										</p>
 								</div>
 								<div className="flex justify-center items-center">
 									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
