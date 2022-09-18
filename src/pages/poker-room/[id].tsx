@@ -191,6 +191,15 @@ const PokerRoom = () => {
 		setSelectCard(selectCard);
 	};
 
+	const handleResetSelectCard = () => {
+		setIsSelectNumberResult(false);
+		const resetIsSelectedUsers = myRoomUsers.map((user) => ({
+			...user,
+			isSelected: false,
+		}));
+		setMyRoomUsers(resetIsSelectedUsers);
+	};
+
 	useEffect(() => {
 		if (router.asPath !== router.route) {
 			if (router.query.id != undefined) {
@@ -257,6 +266,7 @@ const PokerRoom = () => {
 								取り消し
 							</button>
 						</div>
+						<div className="flex justify-start">
 						<div>
 							<button
 								className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
@@ -265,6 +275,15 @@ const PokerRoom = () => {
 							>
 								結果を見る
 							</button>
+						</div>
+							<div>
+								<button
+									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+									onClick={handleResetSelectCard}
+								>
+									もう一度
+								</button>
+							</div>
 						</div>
 					</div>
 				) : (
