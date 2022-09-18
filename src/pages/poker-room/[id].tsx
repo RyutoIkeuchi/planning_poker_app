@@ -248,15 +248,15 @@ const PokerRoom = () => {
 					setIsConfirmModal={setIsConfirmModal}
 				/>
 			)}
-			<div className="bg-orange-400 p-4 mb-4">
+			<div className="py-4 mb-4">
 				{roomDataToLocalStorage?.hostUser ? (
 					<div className="flex justify-between items-center">
-						<div className="flex justify-start items-center w-5/6">
+						<div className="flex justify-start items-center w-2/3">
 							<div className="mr-4 w-1/2">
 								<input
 									type="text"
 									value={agendaTitle}
-									className="bg-orange-400 border p-2 w-full"
+									className="border p-2 w-full"
 									onChange={handleChangeAgendaTitle}
 								/>
 							</div>
@@ -278,15 +278,15 @@ const PokerRoom = () => {
 							</button>
 						</div>
 						<div className="flex justify-start">
-						<div>
-							<button
-								className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-								onClick={handleSelectNumberResult}
-								disabled={!isResultButtonDisabled}
-							>
-								結果を見る
-							</button>
-						</div>
+							<div>
+								<button
+									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+									onClick={handleSelectNumberResult}
+									disabled={!isResultButtonDisabled}
+								>
+									結果を見る
+								</button>
+							</div>
 							<div>
 								<button
 									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
@@ -303,6 +303,7 @@ const PokerRoom = () => {
 					</div>
 				)}
 			</div>
+			<div className="mb-4">
 				<div className="text-center p-10">
 					<div className="mb-4">
 						<p className="text-xl">スプリントポイント</p>
@@ -311,15 +312,31 @@ const PokerRoom = () => {
 						{isSelectNumberResult ? '5.5' : '?'}
 					</p>
 				</div>
-			<ul className="flex justify-start">
-				{myRoomUsers.map((user) => {
-					if (user.userName === roomDataToLocalStorage?.userName) {
-						return (
-							<li key={user.userName} className="text-red-600">
-								<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+			</div>
+			<div>
+				<ul className="flex justify-start">
+					{myRoomUsers.map((user) => {
+						if (user.userName === roomDataToLocalStorage?.userName) {
+							return (
+								<li key={user.userName} className="text-red-600">
+									<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
 										<p className="text-3xl">
-									{isSelectNumberResult ? user.selectCard : '?'}
+											{isSelectNumberResult ? user.selectCard : '?'}
 										</p>
+									</div>
+									<div className="flex justify-center items-center">
+										{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
+										<p className="text-center">{user.userName}</p>
+									</div>
+								</li>
+							);
+						}
+						return (
+							<li key={user.userName}>
+								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+									<p className="text-3xl">
+										{isSelectNumberResult ? user.selectCard : '?'}
+									</p>
 								</div>
 								<div className="flex justify-center items-center">
 									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
@@ -327,22 +344,9 @@ const PokerRoom = () => {
 								</div>
 							</li>
 						);
-					}
-					return (
-						<li key={user.userName}>
-							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
-								<p className="text-3xl">
-									{isSelectNumberResult ? user.selectCard : '?'}
-								</p>
-							</div>
-							<div className="flex justify-center items-center">
-								{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-								<p className="text-center">{user.userName}</p>
-							</div>
-						</li>
-					);
-				})}
-			</ul>
+					})}
+				</ul>
+			</div>
 			<div className="fixed bottom-0 left-1/2 -translate-x-1/2">
 				<div className="mb-4">
 					<p className="text-xl">カードを選択</p>
