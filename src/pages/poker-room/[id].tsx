@@ -30,12 +30,12 @@ const PokerRoom = () => {
 		useState<boolean>(false);
 	const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
 
-	const [agendaTitle, setAgendaTitle] = useState('未設定');
+	const [agendaTitle, setAgendaTitle] = useState('');
 	const didLogRef = useRef(false);
 
 	const socket = io('http://localhost:4000');
 
-	const handleAgendaTitleSubmit = () => {
+	const handleSubmitAgendaTitle = () => {
 		socket.emit('send_agenda_title', {
 			agenda_title: agendaTitle,
 			room_id: queryId,
@@ -43,7 +43,7 @@ const PokerRoom = () => {
 		setIsCancelAgendaTitleDisabled(false);
 	};
 
-	const handleCancelSubmitDisabled = () => {
+	const handleCancelAgendaTitle = () => {
 		setAgendaTitle('');
 		setIsCancelAgendaTitleDisabled(true);
 		socket.emit('send_agenda_title', {
@@ -52,7 +52,7 @@ const PokerRoom = () => {
 		});
 	};
 
-	const handleSelectNumberResult = () => {
+	const handleResultSelectNumber = () => {
 		setIsSelectNumberResult(true);
 	};
 
@@ -275,7 +275,7 @@ const PokerRoom = () => {
 							<div className="mr-4">
 								<button
 									className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-									onClick={handleAgendaTitleSubmit}
+									onClick={handleSubmitAgendaTitle}
 									disabled={isAgendaTitleSubmitDisabled}
 								>
 									決定
@@ -283,7 +283,7 @@ const PokerRoom = () => {
 							</div>
 							<button
 								className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-								onClick={handleCancelSubmitDisabled}
+								onClick={handleCancelAgendaTitle}
 								disabled={isCancelAgendaTitleDisabled}
 							>
 								取り消し
@@ -293,7 +293,7 @@ const PokerRoom = () => {
 							<div>
 								<button
 									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-									onClick={handleSelectNumberResult}
+									onClick={handleResultSelectNumber}
 									disabled={!isResultButtonDisabled}
 								>
 									結果を見る
