@@ -26,6 +26,7 @@ const PokerRoom = () => {
 		useState<boolean>(false);
 	const [isResultButtonDisabled, setIsResultButtonDisabled] =
 		useState<boolean>(false);
+	const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
 
 	const [agendaTitle, setAgendaTitle] = useState('未設定');
 	const didLogRef = useRef(false);
@@ -142,6 +143,7 @@ const PokerRoom = () => {
 		if (newAgendaTitle !== '') {
 			setAgendaTitle(newAgendaTitle);
 			setIsAgendaTitleSubmitDisabled(true);
+			setIsSelectNumberCard(false);
 		}
 	}, [newAgendaTitle]);
 
@@ -353,7 +355,7 @@ const PokerRoom = () => {
 				</div>
 				<FibonacciNumbers
 					handleOpenConfirmModal={handleOpenConfirmModal}
-					isSelectNumberCard={!isAgendaTitleSubmitDisabled}
+					isSelectNumberCard={isSelectNumberCard}
 				/>
 				<hr />
 			</div>
