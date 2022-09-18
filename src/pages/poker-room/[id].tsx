@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SelectCardUserType, UserType } from 'src/types/interface';
 import io from 'socket.io-client';
 import { api } from 'src/service/api';
@@ -8,6 +8,7 @@ import { ConfirmSelectNumberModal } from 'src/components/ConfirmSelectNumberModa
 import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -104,16 +105,6 @@ const PokerRoom = () => {
 			}
 		};
 	}, [roomDataToLocalStorage]);
-
-	const handleChangeAgendaTitle = (e: ChangeEvent<HTMLInputElement>) => {
-		const inputAgendaTitle = e.target.value;
-		setAgendaTitle(inputAgendaTitle);
-		if (inputAgendaTitle !== '') {
-			setIsAgendaTitleSubmitDisabled(false);
-		} else {
-			setIsAgendaTitleSubmitDisabled(true);
-		}
-	};
 
 	useEffect(() => {
 		if (
@@ -263,32 +254,15 @@ const PokerRoom = () => {
 			<div className="py-4 mb-4">
 				{roomDataToLocalStorage?.hostUser ? (
 					<div className="flex justify-between items-center">
-						<div className="flex justify-start items-center w-2/3">
-							<div className="mr-4 w-1/2">
-								<input
-									type="text"
-									value={agendaTitle}
-									className="border p-2 w-full"
-									onChange={handleChangeAgendaTitle}
-								/>
-							</div>
-							<div className="mr-4">
-								<button
-									className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-									onClick={handleSubmitAgendaTitle}
-									disabled={isAgendaTitleSubmitDisabled}
-								>
-									決定
-								</button>
-							</div>
-							<button
-								className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-								onClick={handleCancelAgendaTitle}
-								disabled={isCancelAgendaTitleDisabled}
-							>
-								取り消し
-							</button>
-						</div>
+						<AgendaTitle
+							agendaTitle={agendaTitle}
+							setAgendaTitle={setAgendaTitle}
+							handleSubmitAgendaTitle={handleSubmitAgendaTitle}
+							isAgendaTitleSubmitDisabled={isAgendaTitleSubmitDisabled}
+							setIsAgendaTitleSubmitDisabled={setIsAgendaTitleSubmitDisabled}
+							handleCancelAgendaTitle={handleCancelAgendaTitle}
+							isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
+						/>
 						<div className="flex justify-start">
 							<div>
 								<button
