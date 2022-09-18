@@ -68,7 +68,7 @@ const PokerRoom = () => {
 					host_user: roomDataToLocalStorage?.hostUser,
 				});
 
-				socket.on('add_user_response', (data) => {
+				socket.on('response_add_user', (data) => {
 					console.log('user', data);
 					setNewMyRoomUser({
 						roomId: data.room_id,
@@ -80,7 +80,7 @@ const PokerRoom = () => {
 					});
 				});
 
-				socket.on('select_number_response', (data) => {
+				socket.on('response_select_number', (data) => {
 					console.log('他のユーザーが選んだ番号を受信しました', data);
 					setNewSelectCard({
 						userName: data.user_name,
@@ -89,7 +89,7 @@ const PokerRoom = () => {
 					});
 				});
 
-				socket.on('agenda_title_response', (data) => {
+				socket.on('response_agenda_title', (data) => {
 					console.log('議題タイトルを受信しました', data);
 					setNewAgendaTitle(data.agenda_title);
 				});
