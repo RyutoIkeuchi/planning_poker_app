@@ -22,6 +22,8 @@ const PokerRoom = () => {
 	const [selectCard, setSelectCard] = useState('');
 	const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] =
 		useState<boolean>(true);
+	const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] =
+		useState<boolean>(true);
 	const [isSelectNumberResult, setIsSelectNumberResult] =
 		useState<boolean>(false);
 	const [isResultButtonDisabled, setIsResultButtonDisabled] =
@@ -38,10 +40,12 @@ const PokerRoom = () => {
 			agenda_title: agendaTitle,
 			room_id: queryId,
 		});
+		setIsCancelAgendaTitleDisabled(false);
 	};
 
 	const handleCancelSubmitDisabled = () => {
 		setAgendaTitle('');
+		setIsCancelAgendaTitleDisabled(true);
 		socket.emit('send_agenda_title', {
 			agenda_title: '',
 			room_id: queryId,
@@ -280,7 +284,7 @@ const PokerRoom = () => {
 							<button
 								className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
 								onClick={handleCancelSubmitDisabled}
-								disabled={!isAgendaTitleSubmitDisabled}
+								disabled={isCancelAgendaTitleDisabled}
 							>
 								取り消し
 							</button>
