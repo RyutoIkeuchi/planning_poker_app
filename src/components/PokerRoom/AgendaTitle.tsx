@@ -41,13 +41,17 @@ export const AgendaTitle = (props: Props) => {
 				<input
 					type="text"
 					value={agendaTitle}
-					className="border p-2 w-full"
+					className="border p-2 w-full rounded"
 					onChange={handleChangeAgendaTitle}
 				/>
 			</div>
 			<div className="mr-4">
 				<button
-					className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+					className={`bg-green-500 text-white font-bold py-2 px-4 rounded ${
+						isAgendaTitleSubmitDisabled
+							? 'cursor-not-allowed'
+							: 'pointer hover:bg-green-700'
+					}`}
 					onClick={handleSubmitAgendaTitle}
 					disabled={isAgendaTitleSubmitDisabled}
 				>
@@ -55,7 +59,11 @@ export const AgendaTitle = (props: Props) => {
 				</button>
 			</div>
 			<button
-				className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+				className={`bg-orange-500 text-white font-bold py-2 px-4 rounded ${
+					isCancelAgendaTitleDisabled
+						? 'cursor-not-allowed'
+						: 'pointer hover:bg-orange-700'
+				}`}
 				onClick={handleCancelAgendaTitle}
 				disabled={isCancelAgendaTitleDisabled}
 			>
