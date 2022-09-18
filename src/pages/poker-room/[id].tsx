@@ -246,7 +246,7 @@ const PokerRoom = () => {
 				</h3>
 				<button
 					onClick={handleLeaveTheRoom}
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
 				>
 					部屋を退出する
 				</button>
@@ -274,7 +274,7 @@ const PokerRoom = () => {
 							</div>
 							<div className="mr-4">
 								<button
-									className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+									className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
 									onClick={handleAgendaTitleSubmit}
 									disabled={isAgendaTitleSubmitDisabled}
 								>
@@ -282,7 +282,7 @@ const PokerRoom = () => {
 								</button>
 							</div>
 							<button
-								className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+								className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
 								onClick={handleCancelSubmitDisabled}
 								disabled={isCancelAgendaTitleDisabled}
 							>
