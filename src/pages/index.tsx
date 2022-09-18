@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { SelectRoomContainer } from '../components/SelectRoomContainer';
+import { SelectRoomContainer } from 'src/components/SelectRoomContainer';
 
 const Home: NextPage = () => {
 	return <SelectRoomContainer />;

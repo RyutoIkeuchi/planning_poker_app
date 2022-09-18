@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import EnterRoomIcon from '../../public/images/EnterRoom_Flatline.svg';
-import CreateRoomIcon from '../../public/images/CreateRoom_Flatline.svg';
+import EnterRoomIcon from 'public/images/EnterRoom_Flatline.svg';
+import CreateRoomIcon from 'public/images/CreateRoom_Flatline.svg';
 
 export const SelectRoomContainer = () => {
 	return (

@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import EnterRoomIcon from '../../../public/images/EnterRoom_Flatline.svg';
-import { api } from '../../service/api';
+import EnterRoomIcon from 'public/images/EnterRoom_Flatline.svg';
+import { api } from 'src/service/api';
 
 const EnterRoom = () => {
 	const [roomId, setRoomId] = useState<string>('');

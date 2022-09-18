@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { SelectCardUserType, UserType } from '../../types/interface';
+import { SelectCardUserType, UserType } from 'src/types/interface';
 import io from 'socket.io-client';
-import { api } from '../../service/api';
-import { ConfirmSelectNumberModal } from '../../components/ConfirmSelectNumberModal';
-import { FibonacciNumbers } from '../../components/FibonacciNumbers';
+import { api } from 'src/service/api';
+import { ConfirmSelectNumberModal } from 'src/components/ConfirmSelectNumberModal';
+import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 
