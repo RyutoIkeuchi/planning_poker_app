@@ -9,6 +9,7 @@ import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
+import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -28,7 +29,9 @@ const PokerRoom = () => {
 	const [isSelectNumberResult, setIsSelectNumberResult] =
 		useState<boolean>(false);
 	const [isResultButtonDisabled, setIsResultButtonDisabled] =
-		useState<boolean>(false);
+		useState<boolean>(true);
+	const [isAgainButtonDisabled, setIsAgainButtonDisabled] =
+		useState<boolean>(true);
 	const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
 
 	const [agendaTitle, setAgendaTitle] = useState('');
@@ -117,6 +120,7 @@ const PokerRoom = () => {
 
 	useEffect(() => {
 		if (newSelectCard) {
+			setIsAgainButtonDisabled(false);
 			const upDataMyRoomUserStatus = myRoomUsers.map((user) => {
 				if (user.userName === newSelectCard.userName) {
 					return {
@@ -133,7 +137,7 @@ const PokerRoom = () => {
 				(user) => !user.isSelected
 			);
 			if (!checkNumberNotSelected) {
-				setIsResultButtonDisabled(true);
+				setIsResultButtonDisabled(false);
 			}
 		}
 	}, [newSelectCard]);
@@ -263,25 +267,12 @@ const PokerRoom = () => {
 							handleCancelAgendaTitle={handleCancelAgendaTitle}
 							isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
 						/>
-						<div className="flex justify-start">
-							<div>
-								<button
-									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-									onClick={handleResultSelectNumber}
-									disabled={!isResultButtonDisabled}
-								>
-									結果を見る
-								</button>
-							</div>
-							<div>
-								<button
-									className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-									onClick={handleResetSelectCard}
-								>
-									もう一度
-								</button>
-							</div>
-						</div>
+						<ResultAndAgainButton
+							handleResultSelectNumber={handleResultSelectNumber}
+							isResultButtonDisabled={isResultButtonDisabled}
+							handleResetSelectCard={handleResetSelectCard}
+							isAgainButtonDisabled={isAgainButtonDisabled}
+						/>
 					</div>
 				) : (
 					<div className="p-2">
