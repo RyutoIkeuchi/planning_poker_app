@@ -133,7 +133,7 @@ const PokerRoom = () => {
 			});
 			setMyRoomUsers(upDataMyRoomUserStatus);
 
-			const checkNumberNotSelected = myRoomUsers.some(
+			const checkNumberNotSelected = upDataMyRoomUserStatus.some(
 				(user) => !user.isSelected
 			);
 			if (!checkNumberNotSelected) {
