@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction, useCallback } from 'react';
-import { PrimaryButton } from '../Common/PrimaryButton';
+import { PrimaryButton } from 'src/components/Common/PrimaryButton';
 
 type Props = {
 	agendaTitle: string;
