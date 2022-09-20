@@ -234,7 +234,7 @@ const PokerRoom = () => {
 	}, [queryId]);
 
 	return (
-		<div>
+		<div className='relative'>
 			<div className="my-6 flex justify-between items-center">
 				<h3 className="">
 					Room ID : <span className="font-bold text-xl">{router.query.id}</span>
@@ -295,36 +295,36 @@ const PokerRoom = () => {
 					{myRoomUsers.map((user) => {
 						if (user.userName === roomDataToLocalStorage?.userName) {
 							return (
-								<li key={user.userName} className="text-red-600">
-									<div className="w-28 h-40 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+								<li key={user.userName} className="text-red-600 w-28 h-40 mr-10">
+									<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
 										<p className="text-3xl">
 											{isSelectNumberResult ? user.selectCard : '?'}
 										</p>
 									</div>
 									<div className="flex justify-center items-center">
 										{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-										<p className="text-center">{user.userName}</p>
+										<p className="text-center ml-1">{user.userName}</p>
 									</div>
 								</li>
 							);
 						}
 						return (
-							<li key={user.userName}>
-								<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+							<li key={user.userName} className="w-28 h-40 mr-10">
+								<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
 									<p className="text-3xl">
 										{isSelectNumberResult ? user.selectCard : '?'}
 									</p>
 								</div>
 								<div className="flex justify-center items-center">
 									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-									<p className="text-center">{user.userName}</p>
+									<p className="text-center ml-1">{user.userName}</p>
 								</div>
 							</li>
 						);
 					})}
 				</ul>
 			</div>
-			<div className="fixed bottom-0 left-1/2 -translate-x-1/2">
+			<div className="fixed bottom-0">
 				<div className="mb-4">
 					<p className="text-xl">カードを選択</p>
 				</div>
