@@ -234,7 +234,7 @@ const PokerRoom = () => {
 	}, [queryId]);
 
 	return (
-		<div className='relative'>
+		<div className="relative">
 			<div className="my-6 flex justify-between items-center">
 				<h3 className="">
 					Room ID : <span className="font-bold text-xl">{router.query.id}</span>
@@ -276,7 +276,7 @@ const PokerRoom = () => {
 					</div>
 				) : (
 					<div className="p-2">
-						<h3 className="text-xl">{agendaTitle}</h3>
+						<h3 className="text-2xl text-center">議題：{agendaTitle != '' ? agendaTitle : '未設定'}</h3>
 					</div>
 				)}
 			</div>
@@ -293,33 +293,37 @@ const PokerRoom = () => {
 			<div>
 				<ul className="flex justify-start">
 					{myRoomUsers.map((user) => {
-						if (user.userName === roomDataToLocalStorage?.userName) {
-							return (
-								<li key={user.userName} className="text-red-600 w-28 h-40 mr-10">
-									<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
-										<p className="text-3xl">
-											{isSelectNumberResult ? user.selectCard : '?'}
-										</p>
-									</div>
-									<div className="flex justify-center items-center">
-										{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-										<p className="text-center ml-1">{user.userName}</p>
-									</div>
-								</li>
-							);
-						}
 						return (
-							<li key={user.userName} className="w-28 h-40 mr-10">
-								<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
-									<p className="text-3xl">
-										{isSelectNumberResult ? user.selectCard : '?'}
-									</p>
-								</div>
-								<div className="flex justify-center items-center">
-									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-									<p className="text-center ml-1">{user.userName}</p>
-								</div>
-							</li>
+							<>
+								{user.userName === roomDataToLocalStorage?.userName ? (
+									<li
+										key={user.userName}
+										className="text-red-600 w-28 h-40 mr-10"
+									>
+										<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
+											<p className="text-3xl">
+												{isSelectNumberResult ? user.selectCard : '?'}
+											</p>
+										</div>
+										<div className="flex justify-center items-center">
+											{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
+											<p className="text-center ml-1">{user.userName}</p>
+										</div>
+									</li>
+								) : (
+									<li key={user.userName} className="w-28 h-40 mr-10">
+										<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
+											<p className="text-3xl">
+												{isSelectNumberResult ? user.selectCard : '?'}
+											</p>
+										</div>
+										<div className="flex justify-center items-center">
+											{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
+											<p className="text-center ml-1">{user.userName}</p>
+										</div>
+									</li>
+								)}
+							</>
 						);
 					})}
 				</ul>
