@@ -148,6 +148,7 @@ const PokerRoom = () => {
 			setIsAgendaTitleSubmitDisabled(true);
 			setIsSelectNumberCard(false);
 		} else {
+			setAgendaTitle('');
 			setIsSelectNumberCard(true);
 		}
 	}, [newAgendaTitle]);
@@ -257,7 +258,7 @@ const PokerRoom = () => {
 			)}
 			<div className="py-4 mb-4">
 				{roomDataToLocalStorage?.hostUser ? (
-					<div className="flex justify-between items-center">
+					<div className="flex justify-between items-center bg-gray-300 px-2 py-4">
 						<AgendaTitle
 							agendaTitle={agendaTitle}
 							setAgendaTitle={setAgendaTitle}
@@ -275,8 +276,10 @@ const PokerRoom = () => {
 						/>
 					</div>
 				) : (
-					<div className="p-2">
-						<h3 className="text-2xl text-center">議題：{agendaTitle != '' ? agendaTitle : '未設定'}</h3>
+					<div className="px-2 py-4 bg-gray-300">
+						<h3 className="text-2xl text-center">
+							議題：{agendaTitle !== '' ? agendaTitle : '未設定'}
+						</h3>
 					</div>
 				)}
 			</div>
@@ -292,14 +295,11 @@ const PokerRoom = () => {
 			</div>
 			<div>
 				<ul className="flex justify-start">
-					{myRoomUsers.map((user) => {
+					{myRoomUsers.map((user, index) => {
 						return (
 							<>
 								{user.userName === roomDataToLocalStorage?.userName ? (
-									<li
-										key={user.userName}
-										className="text-red-600 w-28 h-40 mr-10"
-									>
+									<li key={index} className="text-red-600 w-28 h-40 mr-10">
 										<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
 											<p className="text-3xl">
 												{isSelectNumberResult ? user.selectCard : '?'}
@@ -311,7 +311,7 @@ const PokerRoom = () => {
 										</div>
 									</li>
 								) : (
-									<li key={user.userName} className="w-28 h-40 mr-10">
+									<li key={index} className="w-28 h-40 mr-10">
 										<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
 											<p className="text-3xl">
 												{isSelectNumberResult ? user.selectCard : '?'}

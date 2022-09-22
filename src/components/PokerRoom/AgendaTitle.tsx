@@ -43,6 +43,7 @@ export const AgendaTitle = (props: Props) => {
 					value={agendaTitle}
 					className="border p-2 w-full rounded"
 					onChange={handleChangeAgendaTitle}
+					placeholder='議題を入力'
 				/>
 			</div>
 			<div className="mr-4">
