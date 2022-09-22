@@ -50,6 +50,7 @@ const PokerRoom = () => {
 	const handleCancelAgendaTitle = () => {
 		setAgendaTitle('');
 		setIsCancelAgendaTitleDisabled(true);
+		setIsSelectNumberResult(false);
 		socket.emit('send_agenda_title', {
 			agenda_title: '',
 			room_id: queryId,
@@ -59,6 +60,8 @@ const PokerRoom = () => {
 	const handleResultSelectNumber = () => {
 		setIsSelectNumberResult(true);
 	};
+
+	console.log(myRoomUsers);
 
 	useEffect(() => {
 		if (didLogRef.current === false) {
@@ -73,7 +76,6 @@ const PokerRoom = () => {
 				});
 
 				socket.on('response_add_user', (data) => {
-					console.log('user', data);
 					setNewMyRoomUser({
 						roomId: data.room_id,
 						id: data.id,
@@ -148,6 +150,11 @@ const PokerRoom = () => {
 			setIsAgendaTitleSubmitDisabled(true);
 			setIsSelectNumberCard(false);
 		} else {
+			const resetIsSelectedUsers = myRoomUsers.map((user) => ({
+				...user,
+				isSelected: false,
+			}));
+			setMyRoomUsers(resetIsSelectedUsers);
 			setAgendaTitle('');
 			setIsSelectNumberCard(true);
 		}
@@ -179,7 +186,6 @@ const PokerRoom = () => {
 	const getRoomDataToLocalStorage = () => {
 		const response = localStorage.getItem('ROOM_DATA');
 		if (typeof response == 'string') {
-			console.log('res', response);
 			setRoomDataToLocalStorage(JSON.parse(response));
 		}
 	};
