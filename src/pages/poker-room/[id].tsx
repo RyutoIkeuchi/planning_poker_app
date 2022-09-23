@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
 import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
+import { RoomHeader } from 'src/components/PokerRoom/RoomHeader';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -242,17 +243,10 @@ const PokerRoom = () => {
 
 	return (
 		<div className="relative">
-			<div className="my-6 flex justify-between items-center">
-				<h3 className="">
-					Room ID : <span className="font-bold text-xl">{router.query.id}</span>
-				</h3>
-				<button
-					onClick={handleLeaveTheRoom}
-					className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-				>
-					部屋を退出する
-				</button>
-			</div>
+			<RoomHeader
+				roomId={router.query.id as string}
+				handleLeaveTheRoom={handleLeaveTheRoom}
+			/>
 			{isConfirmModal && (
 				<ConfirmSelectNumberModal
 					selectCard={selectCard}
