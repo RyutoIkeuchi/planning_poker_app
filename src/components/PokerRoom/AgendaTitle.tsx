@@ -43,12 +43,13 @@ export const AgendaTitle = (props: Props) => {
 					value={agendaTitle}
 					className="border p-2 w-full rounded"
 					onChange={handleChangeAgendaTitle}
-					placeholder='議題を入力'
+					placeholder="議題を入力"
 				/>
 			</div>
 			<div className="mr-4">
 				<PrimaryButton
-					buttonColor="green"
+					buttonColor="bg-green-500"
+					hoverButtonColor="hover:bg-green-700"
 					handleClickMethod={handleSubmitAgendaTitle}
 					disabled={isAgendaTitleSubmitDisabled}
 				>
@@ -56,7 +57,8 @@ export const AgendaTitle = (props: Props) => {
 				</PrimaryButton>
 			</div>
 			<PrimaryButton
-				buttonColor="orange"
+				buttonColor="bg-orange-500"
+				hoverButtonColor="hover:bg-orange-700"
 				handleClickMethod={handleCancelAgendaTitle}
 				disabled={isCancelAgendaTitleDisabled}
 			>

@@ -13,13 +13,14 @@ export const ResultAndAgainButton = (props: Props) => {
 		isResultButtonDisabled,
 		handleResetSelectCard,
 		isAgainButtonDisabled,
-  } = props;
-  
+	} = props;
+
 	return (
 		<div className="flex justify-start">
 			<div className="mr-4">
 				<PrimaryButton
-					buttonColor="blue"
+					buttonColor="bg-blue-500"
+					hoverButtonColor="hover:bg-blue-700"
 					handleClickMethod={handleResultSelectNumber}
 					disabled={isResultButtonDisabled}
 				>
@@ -28,7 +29,8 @@ export const ResultAndAgainButton = (props: Props) => {
 			</div>
 			<div>
 				<PrimaryButton
-					buttonColor="gray"
+					buttonColor="bg-gray-500"
+					hoverButtonColor="hover:bg-gray-700"
 					handleClickMethod={handleResetSelectCard}
 					disabled={isAgainButtonDisabled}
 				>
