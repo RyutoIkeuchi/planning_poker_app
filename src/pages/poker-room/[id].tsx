@@ -39,6 +39,9 @@ const PokerRoom = () => {
 		useState<boolean>(false);
 
 	const [agendaTitle, setAgendaTitle] = useState('');
+	const [selectCardStatus, setSelectCardStatus] = useState<
+		'result' | 'reset' | 'default'
+	>('default');
 	const didLogRef = useRef(false);
 
 	const socket = io('http://localhost:4000');
@@ -64,8 +67,10 @@ const PokerRoom = () => {
 	};
 
 	const handleResultSelectNumber = () => {
-		calculateAverageOfSelectCard();
-		setIsSelectNumberResult(true);
+		socket.emit('send_select_card_state', {
+			status: 'result',
+			room_id: roomDataToLocalStorage?.roomId,
+		});
 	};
 
 	useEffect(() => {
@@ -104,6 +109,11 @@ const PokerRoom = () => {
 					console.log('議題タイトルを受信しました', data);
 					setNewAgendaTitle(data.agenda_title);
 				});
+
+				socket.on('response_select_card_state', (data) => {
+					console.log('カードの状態を受信しました', data);
+					setSelectCardStatus(data.status);
+				});
 			});
 		} else {
 			didLogRef.current = false;
@@ -124,6 +134,25 @@ const PokerRoom = () => {
 			setMyRoomUsers([...myRoomUsers, newMyRoomUser]);
 		}
 	}, [newMyRoomUser]);
+
+	useEffect(() => {
+		if (selectCardStatus === 'result') {
+			calculateAverageOfSelectCard();
+			setIsSelectNumberResult(true);
+		}
+
+		if (selectCardStatus === 'reset') {
+			setIsSelectNumberResult(false);
+			const resetIsSelectedUsers = myRoomUsers.map((user) => ({
+				...user,
+				selectCard: '',
+				isSelected: false,
+			}));
+			setMyRoomUsers(resetIsSelectedUsers);
+		}
+
+		setSelectCardStatus('default')
+	}, [selectCardStatus]);
 
 	useEffect(() => {
 		if (newSelectCard) {
@@ -221,12 +250,11 @@ const PokerRoom = () => {
 	};
 
 	const handleResetSelectCard = () => {
-		setIsSelectNumberResult(false);
-		const resetIsSelectedUsers = myRoomUsers.map((user) => ({
-			...user,
-			isSelected: false,
-		}));
-		setMyRoomUsers(resetIsSelectedUsers);
+		setIsResultButtonDisabled(true);
+		socket.emit('send_select_card_state', {
+			status: 'reset',
+			room_id: roomDataToLocalStorage?.roomId,
+		});
 	};
 
 	const calculateAverageOfSelectCard = useCallback(() => {
