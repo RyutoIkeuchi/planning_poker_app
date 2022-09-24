@@ -7,7 +7,7 @@ import { api } from 'src/service/api';
 import { ConfirmSelectNumberModal } from 'src/components/ConfirmSelectNumberModal';
 import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faUserTie, faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
 import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
 import { RoomHeader } from 'src/components/PokerRoom/RoomHeader';
@@ -151,7 +151,7 @@ const PokerRoom = () => {
 			setMyRoomUsers(resetIsSelectedUsers);
 		}
 
-		setSelectCardStatus('default')
+		setSelectCardStatus('default');
 	}, [selectCardStatus]);
 
 	useEffect(() => {
@@ -384,8 +384,13 @@ const PokerRoom = () => {
 				</ul>
 			</div>
 			<div className="fixed bottom-0">
-				<div className="mb-4">
-					<p className="text-xl">カードを選択</p>
+				<div className="mb-4 flex justify-start items-center">
+					<p className="text-xl mr-2">カードを選択</p>
+					{isSelectNumberCard ? (
+						<FontAwesomeIcon icon={faBan} className="text-red-600" />
+					) : (
+						<FontAwesomeIcon icon={faCheck} className="text-green-600" />
+					)}
 				</div>
 				<FibonacciNumbers
 					handleOpenConfirmModal={handleOpenConfirmModal}

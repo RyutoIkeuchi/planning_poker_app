@@ -26,13 +26,13 @@ export const FibonacciNumbers = ({
 						<button
 							className={`${
 								isSelectNumberCard
-									? 'cursor-not-allowed'
-									: 'hover:transform hover:duration-500 hover:-translate-y-5'
-							}`}
+									? 'cursor-not-allowed bg-gray-200 shadow-none'
+									: 'hover:transform hover:duration-500 hover:-translate-y-5 shadow-lg border border-gray-600'
+							} mb-4 mr-4`}
 							onClick={() => handleOpenConfirmModal(d)}
 							disabled={isSelectNumberCard}
 						>
-							<div className="w-20 h-28 border border-blue-600 shadow-lg flex justify-center items-center mb-4 mr-4">
+							<div className="w-20 h-28 flex justify-center items-center">
 								<p className="text-3xl">{d}</p>
 							</div>
 						</button>
