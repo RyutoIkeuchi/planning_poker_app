@@ -288,12 +288,12 @@ const PokerRoom = () => {
 					</div>
 				)}
 			</div>
-			<div className="mb-4">
-				<div className="text-center p-10">
-					<div className="mb-4">
+			<div className="mb-10 border-b border-gray-500">
+				<div className="text-center pt-10 pb-20">
+					<div className="mb-6">
 						<p className="text-xl">スプリントポイント</p>
 					</div>
-					<p className="text-6xl font-bold">
+					<p className="text-8xl font-bold">
 						{isSelectNumberResult ? '5.5' : '?'}
 					</p>
 				</div>
