@@ -1,4 +1,6 @@
 import { PrimaryButton } from 'src/components/Common/PrimaryButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
 	roomId: string;
@@ -19,7 +21,8 @@ export const RoomHeader = (props: Props) => {
 				handleClickMethod={handleLeaveTheRoom}
 				disabled={false}
 			>
-				部屋を退出する
+				<FontAwesomeIcon icon={faRightFromBracket} />
+				<span className='ml-2'>部屋を退出する</span>
 			</PrimaryButton>
 		</div>
 	);
