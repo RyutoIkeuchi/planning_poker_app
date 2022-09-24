@@ -34,6 +34,8 @@ const PokerRoom = () => {
 	const [isAgainButtonDisabled, setIsAgainButtonDisabled] =
 		useState<boolean>(true);
 	const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
+	const [canChangeAgendaTitle, setCanChangeAgendaTitle] =
+		useState<boolean>(false);
 
 	const [agendaTitle, setAgendaTitle] = useState('');
 	const didLogRef = useRef(false);
@@ -45,11 +47,13 @@ const PokerRoom = () => {
 			agenda_title: agendaTitle,
 			room_id: queryId,
 		});
+		setCanChangeAgendaTitle(true);
 		setIsCancelAgendaTitleDisabled(false);
 	};
 
 	const handleCancelAgendaTitle = () => {
 		setAgendaTitle('');
+		setCanChangeAgendaTitle(false);
 		setIsCancelAgendaTitleDisabled(true);
 		setIsSelectNumberResult(false);
 		socket.emit('send_agenda_title', {
@@ -262,6 +266,7 @@ const PokerRoom = () => {
 						<AgendaTitle
 							agendaTitle={agendaTitle}
 							setAgendaTitle={setAgendaTitle}
+							canChangeAgendaTitle={canChangeAgendaTitle}
 							handleSubmitAgendaTitle={handleSubmitAgendaTitle}
 							isAgendaTitleSubmitDisabled={isAgendaTitleSubmitDisabled}
 							setIsAgendaTitleSubmitDisabled={setIsAgendaTitleSubmitDisabled}

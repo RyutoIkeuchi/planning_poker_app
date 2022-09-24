@@ -4,6 +4,7 @@ import { PrimaryButton } from 'src/components/Common/PrimaryButton';
 type Props = {
 	agendaTitle: string;
 	setAgendaTitle: Dispatch<SetStateAction<string>>;
+	canChangeAgendaTitle: boolean;
 	handleSubmitAgendaTitle: () => void;
 	isAgendaTitleSubmitDisabled: boolean;
 	setIsAgendaTitleSubmitDisabled: Dispatch<SetStateAction<boolean>>;
@@ -15,6 +16,7 @@ export const AgendaTitle = (props: Props) => {
 	const {
 		agendaTitle,
 		setAgendaTitle,
+		canChangeAgendaTitle,
 		handleSubmitAgendaTitle,
 		isAgendaTitleSubmitDisabled,
 		setIsAgendaTitleSubmitDisabled,
@@ -43,6 +45,7 @@ export const AgendaTitle = (props: Props) => {
 					value={agendaTitle}
 					className="border p-2 w-full rounded"
 					onChange={handleChangeAgendaTitle}
+					disabled={canChangeAgendaTitle}
 					placeholder="議題を入力"
 				/>
 			</div>
