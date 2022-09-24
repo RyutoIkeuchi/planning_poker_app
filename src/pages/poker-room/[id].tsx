@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SelectCardUserType, UserType } from 'src/types/interface';
 import io from 'socket.io-client';
 import { api } from 'src/service/api';
@@ -23,6 +23,7 @@ const PokerRoom = () => {
 	const [newAgendaTitle, setNewAgendaTitle] = useState<string>('');
 	const [isConfirmModal, setIsConfirmModal] = useState(false);
 	const [selectCard, setSelectCard] = useState('');
+	const [selectCardAverage, setSelectCardAverage] = useState<number>(null);
 	const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] =
 		useState<boolean>(true);
 	const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] =
@@ -63,10 +64,9 @@ const PokerRoom = () => {
 	};
 
 	const handleResultSelectNumber = () => {
+		calculateAverageOfSelectCard();
 		setIsSelectNumberResult(true);
 	};
-
-	console.log(myRoomUsers);
 
 	useEffect(() => {
 		if (didLogRef.current === false) {
@@ -229,6 +229,20 @@ const PokerRoom = () => {
 		setMyRoomUsers(resetIsSelectedUsers);
 	};
 
+	const calculateAverageOfSelectCard = useCallback(() => {
+		const filterNotSelectUserList = myRoomUsers.filter((user) => {
+			if (user.selectCard !== '/') {
+				return user;
+			}
+		});
+		const total: number = filterNotSelectUserList.reduce(
+			(acc, cur: UserType) => acc + Number(cur.selectCard),
+			0
+		);
+		const average = total / filterNotSelectUserList.length;
+		setSelectCardAverage(average);
+	}, [myRoomUsers]);
+
 	useEffect(() => {
 		if (router.asPath !== router.route) {
 			if (router.query.id != undefined) {
@@ -294,7 +308,7 @@ const PokerRoom = () => {
 						<p className="text-xl">スプリントポイント</p>
 					</div>
 					<p className="text-8xl font-bold">
-						{isSelectNumberResult ? '5.5' : '?'}
+						{isSelectNumberResult ? selectCardAverage.toString() : '?'}
 					</p>
 				</div>
 			</div>
