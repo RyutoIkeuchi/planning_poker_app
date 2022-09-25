@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useCallback } from 'react';
 import { PrimaryButton } from 'src/components/Common/PrimaryButton';
 
-type Props = {
+export type InputAgendaTitleProps = {
 	agendaTitle: string;
 	setAgendaTitle: Dispatch<SetStateAction<string>>;
 	canChangeAgendaTitle: boolean;
@@ -12,7 +12,7 @@ type Props = {
 	isCancelAgendaTitleDisabled: boolean;
 };
 
-export const AgendaTitle = (props: Props) => {
+export const InputAgendaTitle = (props: InputAgendaTitleProps) => {
 	const {
 		agendaTitle,
 		setAgendaTitle,

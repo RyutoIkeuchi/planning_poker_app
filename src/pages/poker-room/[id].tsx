@@ -8,11 +8,10 @@ import { ConfirmSelectNumberModal } from 'src/components/ConfirmSelectNumberModa
 import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
-import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
 import { RoomHeader } from 'src/components/PokerRoom/RoomHeader';
 import { SprintPointArea } from 'src/components/PokerRoom/SprintPointArea';
 import { MyRoomUserCardList } from 'src/components/PokerRoom/MyRoomUserCardList';
+import { AgendaTitleArea } from 'src/components/PokerRoom/AgendaTitleArea';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -306,34 +305,21 @@ const PokerRoom = () => {
 					setIsSelectNumberCard={setIsSelectNumberCard}
 				/>
 			)}
-			<div className="py-4 mb-4">
-				{roomDataToLocalStorage?.hostUser ? (
-					<div className="flex justify-between items-center bg-gray-300 px-2 py-4">
-						<AgendaTitle
-							agendaTitle={agendaTitle}
-							setAgendaTitle={setAgendaTitle}
-							canChangeAgendaTitle={canChangeAgendaTitle}
-							handleSubmitAgendaTitle={handleSubmitAgendaTitle}
-							isAgendaTitleSubmitDisabled={isAgendaTitleSubmitDisabled}
-							setIsAgendaTitleSubmitDisabled={setIsAgendaTitleSubmitDisabled}
-							handleCancelAgendaTitle={handleCancelAgendaTitle}
-							isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
-						/>
-						<ResultAndAgainButton
-							handleResultSelectNumber={handleResultSelectNumber}
-							isResultButtonDisabled={isResultButtonDisabled}
-							handleResetSelectCard={handleResetSelectCard}
-							isAgainButtonDisabled={isAgainButtonDisabled}
-						/>
-					</div>
-				) : (
-					<div className="px-2 py-4 bg-gray-300">
-						<h3 className="text-2xl text-center">
-							議題：{agendaTitle !== '' ? agendaTitle : '未設定'}
-						</h3>
-					</div>
-				)}
-			</div>
+			<AgendaTitleArea
+				isHostUser={roomDataToLocalStorage?.hostUser}
+				agendaTitle={agendaTitle}
+				setAgendaTitle={setAgendaTitle}
+				canChangeAgendaTitle={canChangeAgendaTitle}
+				handleSubmitAgendaTitle={handleSubmitAgendaTitle}
+				isAgendaTitleSubmitDisabled={isAgendaTitleSubmitDisabled}
+				setIsAgendaTitleSubmitDisabled={setIsAgendaTitleSubmitDisabled}
+				handleCancelAgendaTitle={handleCancelAgendaTitle}
+				isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
+				handleResultSelectNumber={handleResultSelectNumber}
+				isResultButtonDisabled={isResultButtonDisabled}
+				handleResetSelectCard={handleResetSelectCard}
+				isAgainButtonDisabled={isAgainButtonDisabled}
+			/>
 			<SprintPointArea
 				isSelectNumberResult={isSelectNumberResult}
 				selectCardAverage={selectCardAverage}

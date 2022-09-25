@@ -1,13 +1,13 @@
 import { PrimaryButton } from 'src/components/Common/PrimaryButton';
 
-type Props = {
+export type ResultAndAgainButtonProps = {
 	handleResultSelectNumber: () => void;
 	isResultButtonDisabled: boolean;
 	handleResetSelectCard: () => void;
 	isAgainButtonDisabled: boolean;
 };
 
-export const ResultAndAgainButton = (props: Props) => {
+export const ResultAndAgainButton = (props: ResultAndAgainButtonProps) => {
 	const {
 		handleResultSelectNumber,
 		isResultButtonDisabled,
