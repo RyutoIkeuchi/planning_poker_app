@@ -11,6 +11,7 @@ import { faUserTie, faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
 import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
 import { RoomHeader } from 'src/components/PokerRoom/RoomHeader';
+import { SprintPointArea } from 'src/components/PokerRoom/SprintPointArea';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -332,16 +333,10 @@ const PokerRoom = () => {
 					</div>
 				)}
 			</div>
-			<div className="mb-10 border-b border-gray-500">
-				<div className="text-center pt-10 pb-20">
-					<div className="mb-6">
-						<p className="text-xl">スプリントポイント</p>
-					</div>
-					<p className="text-8xl font-bold">
-						{isSelectNumberResult ? selectCardAverage.toString() : '?'}
-					</p>
-				</div>
-			</div>
+			<SprintPointArea
+				isSelectNumberResult={isSelectNumberResult}
+				selectCardAverage={selectCardAverage}
+			/>
 			<div>
 				<ul className="flex justify-start">
 					{myRoomUsers.map((user, index) => {
