@@ -7,11 +7,12 @@ import { api } from 'src/service/api';
 import { ConfirmSelectNumberModal } from 'src/components/ConfirmSelectNumberModal';
 import { FibonacciNumbers } from 'src/components/FibonacciNumbers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserTie, faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { AgendaTitle } from 'src/components/PokerRoom/AgendaTitle';
 import { ResultAndAgainButton } from 'src/components/PokerRoom/ResultAndAgainButton';
 import { RoomHeader } from 'src/components/PokerRoom/RoomHeader';
 import { SprintPointArea } from 'src/components/PokerRoom/SprintPointArea';
+import { MyRoomUserCardList } from 'src/components/PokerRoom/MyRoomUserCardList';
 
 const PokerRoom = () => {
 	const router = useRouter();
@@ -337,35 +338,11 @@ const PokerRoom = () => {
 				isSelectNumberResult={isSelectNumberResult}
 				selectCardAverage={selectCardAverage}
 			/>
-			<div>
-				<ul className="flex justify-start">
-					{myRoomUsers.map((user, index) => {
-						return (
-							<li
-								key={index}
-								className={`w-28 h-40 mr-10 ${
-									user.userName === roomDataToLocalStorage?.userName &&
-									'text-red-600'
-								}`}
-							>
-								<div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
-									<p className="text-3xl">
-										{isSelectNumberResult
-											? user.selectCard
-											: user.isSelected
-											? '済'
-											: '未'}
-									</p>
-								</div>
-								<div className="flex justify-center items-center">
-									{user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-									<p className="text-center ml-1">{user.userName}</p>
-								</div>
-							</li>
-						);
-					})}
-				</ul>
-			</div>
+			<MyRoomUserCardList
+				myRoomUsers={myRoomUsers}
+				myUserName={roomDataToLocalStorage?.userName}
+				isSelectNumberResult={isSelectNumberResult}
+			/>
 			<div className="fixed bottom-0">
 				<div className="mb-4 flex justify-start items-center">
 					<p className="text-xl mr-2">カードを選択</p>
