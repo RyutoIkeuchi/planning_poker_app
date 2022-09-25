@@ -143,6 +143,7 @@ const PokerRoom = () => {
 
 		if (selectCardStatus === 'reset') {
 			setIsSelectNumberResult(false);
+			setIsSelectNumberCard(false);
 			const resetIsSelectedUsers = myRoomUsers.map((user) => ({
 				...user,
 				selectCard: '',
@@ -300,6 +301,7 @@ const PokerRoom = () => {
 					roomId={queryId}
 					userName={roomDataToLocalStorage?.userName || ''}
 					setIsConfirmModal={setIsConfirmModal}
+					setIsSelectNumberCard={setIsSelectNumberCard}
 				/>
 			)}
 			<div className="py-4 mb-4">

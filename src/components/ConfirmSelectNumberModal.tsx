@@ -10,6 +10,7 @@ type Props = {
 	roomId: string;
 	userName: string;
 	setIsConfirmModal: Dispatch<SetStateAction<boolean>>;
+	setIsSelectNumberCard: Dispatch<SetStateAction<boolean>>;
 };
 
 export const ConfirmSelectNumberModal = ({
@@ -18,6 +19,7 @@ export const ConfirmSelectNumberModal = ({
 	roomId,
 	userName,
 	setIsConfirmModal,
+	setIsSelectNumberCard,
 }: Props) => {
 	const handleSubmitSelectNumber = () => {
 		socket.emit('send_select_number', {
@@ -26,6 +28,7 @@ export const ConfirmSelectNumberModal = ({
 			select_card: selectCard,
 		});
 		setIsConfirmModal(false);
+		setIsSelectNumberCard(true);
 	};
 
 	return (
