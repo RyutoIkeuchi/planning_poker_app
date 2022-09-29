@@ -3,11 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from '@socket.io/component-emitter';
+import { api } from 'src/service/api';
 
 type Props = {
 	selectCard: string;
 	socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 	roomId: string;
+	userId: number;
 	userName: string;
 	setIsConfirmModal: Dispatch<SetStateAction<boolean>>;
 	setIsSelectNumberCard: Dispatch<SetStateAction<boolean>>;
@@ -17,16 +19,21 @@ export const ConfirmSelectNumberModal = ({
 	selectCard,
 	socket,
 	roomId,
+	userId,
 	userName,
 	setIsConfirmModal,
 	setIsSelectNumberCard,
 }: Props) => {
-	const handleSubmitSelectNumber = () => {
+	const handleSubmitSelectNumber = async () => {
 		socket.emit('send_select_number', {
 			room_id: roomId,
 			user_name: userName,
 			select_card: selectCard,
 		});
+		const data = {
+			select_number_card: selectCard,
+		};
+		await api.put(`/pokers/${roomId}/users/${userId}`, data);
 		setIsConfirmModal(false);
 		setIsSelectNumberCard(true);
 	};

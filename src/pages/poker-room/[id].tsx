@@ -215,10 +215,14 @@ const PokerRoom = () => {
 				userName: res.user_name,
 				hostUser: res.host_user,
 				roomId: res.owner_id,
-				isSelected: false,
+				isSelected: res.select_number_card !== '',
 				selectCard: res.select_number_card,
 			}));
 			setMyRoomUsers(convertToCamelCase);
+			const existsNotSelectedNumberCardUser = convertToCamelCase.some(
+				(user) => !user.isSelected
+			);
+			console.log(existsNotSelectedNumberCardUser);
 			const agendaTitle = response.data.agenda_title;
 			setAgendaTitle(agendaTitle);
 			if (agendaTitle !== '') {
@@ -226,6 +230,11 @@ const PokerRoom = () => {
 				setIsAgendaTitleSubmitDisabled(true);
 				setCanChangeAgendaTitle(true);
 				setIsSelectNumberCard(false);
+				if (!existsNotSelectedNumberCardUser) {
+					setIsSelectNumberCard(true);
+					setIsResultButtonDisabled(false);
+					setIsAgainButtonDisabled(false);
+				}
 			}
 		} catch (error) {
 			if ((error as AxiosError).response?.status == 404) {
@@ -267,12 +276,19 @@ const PokerRoom = () => {
 		setSelectCard(selectCard);
 	};
 
-	const handleResetSelectCard = () => {
+	const handleResetSelectCard = async () => {
 		setIsResultButtonDisabled(true);
 		socket.emit('send_select_card_state', {
 			status: 'reset',
 			room_id: roomDataToLocalStorage?.roomId,
 		});
+		const data = {
+			select_number_card: '',
+		};
+		await api.put(
+			`/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`,
+			data
+		);
 	};
 
 	const calculateAverageOfSelectCard = useCallback(() => {
@@ -316,6 +332,7 @@ const PokerRoom = () => {
 					selectCard={selectCard}
 					socket={socket}
 					roomId={queryId}
+					userId={roomDataToLocalStorage?.id}
 					userName={roomDataToLocalStorage?.userName || ''}
 					setIsConfirmModal={setIsConfirmModal}
 					setIsSelectNumberCard={setIsSelectNumberCard}
