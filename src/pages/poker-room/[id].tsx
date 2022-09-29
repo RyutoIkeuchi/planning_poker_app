@@ -47,16 +47,20 @@ const PokerRoom = () => {
 
 	const socket = io('http://localhost:4000');
 
-	const handleSubmitAgendaTitle = () => {
+	const handleSubmitAgendaTitle = async () => {
 		socket.emit('send_agenda_title', {
 			agenda_title: agendaTitle,
 			room_id: queryId,
 		});
+		const data = {
+			agenda_title: agendaTitle,
+		};
+		await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
 		setCanChangeAgendaTitle(true);
 		setIsCancelAgendaTitleDisabled(false);
 	};
 
-	const handleCancelAgendaTitle = () => {
+	const handleCancelAgendaTitle = async () => {
 		setAgendaTitle('');
 		setCanChangeAgendaTitle(false);
 		setIsCancelAgendaTitleDisabled(true);
@@ -65,6 +69,10 @@ const PokerRoom = () => {
 			agenda_title: '',
 			room_id: queryId,
 		});
+		const data = {
+			agenda_title: '',
+		};
+		await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
 	};
 
 	const handleResultSelectNumber = () => {
@@ -208,9 +216,17 @@ const PokerRoom = () => {
 				hostUser: res.host_user,
 				roomId: res.owner_id,
 				isSelected: false,
-				selectCard: '',
+				selectCard: res.select_number_card,
 			}));
 			setMyRoomUsers(convertToCamelCase);
+			const agendaTitle = response.data.agenda_title;
+			setAgendaTitle(agendaTitle);
+			if (agendaTitle !== '') {
+				setIsCancelAgendaTitleDisabled(false);
+				setIsAgendaTitleSubmitDisabled(true);
+				setCanChangeAgendaTitle(true);
+				setIsSelectNumberCard(false);
+			}
 		} catch (error) {
 			if ((error as AxiosError).response?.status == 404) {
 				console.log('部屋が見つかりません');
