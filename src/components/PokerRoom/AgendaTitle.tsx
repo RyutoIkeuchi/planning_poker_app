@@ -45,7 +45,7 @@ export const InputAgendaTitle = (props: InputAgendaTitleProps) => {
 					value={agendaTitle}
 					className="border p-2 w-full rounded"
 					onChange={handleChangeAgendaTitle}
-					disabled={canChangeAgendaTitle}
+					disabled={!canChangeAgendaTitle}
 					placeholder="議題を入力"
 				/>
 			</div>

@@ -37,7 +37,7 @@ const PokerRoom = () => {
 		useState<boolean>(true);
 	const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
 	const [canChangeAgendaTitle, setCanChangeAgendaTitle] =
-		useState<boolean>(false);
+		useState<boolean>(true);
 
 	const [agendaTitle, setAgendaTitle] = useState('');
 	const [selectCardStatus, setSelectCardStatus] = useState<
@@ -56,13 +56,13 @@ const PokerRoom = () => {
 			agenda_title: agendaTitle,
 		};
 		await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
-		setCanChangeAgendaTitle(true);
+		setCanChangeAgendaTitle(false);
 		setIsCancelAgendaTitleDisabled(false);
 	};
 
 	const handleCancelAgendaTitle = async () => {
 		setAgendaTitle('');
-		setCanChangeAgendaTitle(false);
+		setCanChangeAgendaTitle(true);
 		setIsCancelAgendaTitleDisabled(true);
 		setIsSelectNumberResult(false);
 		socket.emit('send_agenda_title', {
@@ -228,7 +228,7 @@ const PokerRoom = () => {
 			if (agendaTitle !== '') {
 				setIsCancelAgendaTitleDisabled(false);
 				setIsAgendaTitleSubmitDisabled(true);
-				setCanChangeAgendaTitle(true);
+				setCanChangeAgendaTitle(false);
 				setIsSelectNumberCard(false);
 				if (!existsNotSelectedNumberCardUser) {
 					setIsSelectNumberCard(true);
