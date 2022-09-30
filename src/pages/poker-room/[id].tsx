@@ -234,6 +234,7 @@ const PokerRoom = () => {
 					setIsSelectNumberCard(true);
 					setIsResultButtonDisabled(false);
 					setIsAgainButtonDisabled(false);
+					setSelectCardStatus('result');
 				}
 			}
 		} catch (error) {
