@@ -205,7 +205,7 @@ const PokerRoom = () => {
 	}, [newAgendaTitle]);
 
 	const checkRoomId = async (queryId: string) => {
-		if (roomDataToLocalStorage?.roomId != queryId) {
+		if (roomDataToLocalStorage?.roomId !== queryId) {
 			router.replace('/');
 		}
 		try {
@@ -258,7 +258,7 @@ const PokerRoom = () => {
 			`/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`
 		);
 		if (response.status == 204) {
-			if (myRoomUsers.length == 1) {
+			if (roomDataToLocalStorage?.hostUser) {
 				return await handleDeleteRoom();
 			}
 			router.push('/');
