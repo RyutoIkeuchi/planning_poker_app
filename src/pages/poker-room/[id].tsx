@@ -322,6 +322,17 @@ const PokerRoom = () => {
 		}
 	}, [queryId]);
 
+	const handleBeforeUnload = useCallback((event) => {
+		event.returnValue = 'ポーカールーム画面から離れます';
+	}, []);
+
+	useEffect(() => {
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
+
 	return (
 		<div className="relative">
 			<RoomHeader
