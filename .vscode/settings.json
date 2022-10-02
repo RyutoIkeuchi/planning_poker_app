@@ -22,7 +22,7 @@
     "source.addMissingImports": true,
     "source.fixAll.eslint": true
   },
-  "eslint.validate": ["javascript"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.alwaysShowStatus": true,
   "prettier.useTabs": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",

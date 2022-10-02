@@ -1,14 +1,14 @@
 export type UserType = {
-	id: number;
-	userName: string;
-	hostUser: boolean;
-	roomId: string;
-	isSelected: boolean;
-	selectCard: string;
+  id: number;
+  hostUser: boolean;
+  isSelected: boolean;
+  roomId: string;
+  selectCard: string;
+  userName: string;
 };
 
 export type SelectCardUserType = {
-	userName: string;
-	roomId: string;
-	selectCard: string;
+  roomId: string;
+  selectCard: string;
+  userName: string;
 };
