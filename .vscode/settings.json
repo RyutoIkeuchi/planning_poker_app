@@ -1,0 +1,37 @@
+{
+  "editor.tabSize": 2,
+  "editor.fontSize": 20,
+  "editor.wordWrap": "on",
+  "editor.fontFamily": "Ricty Diminished",
+  "explorer.confirmDelete": false,
+  "editor.formatOnType": true,
+  "git.confirmSync": false,
+  "terminal.integrated.fontSize": 16,
+  "prettier.semi": true,
+  "prettier.singleQuote": false,
+  "json.schemas": [],
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace"
+  },
+  "git.suggestSmartCommit": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": true,
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"],
+  "eslint.alwaysShowStatus": true,
+  "prettier.useTabs": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "explorer.confirmDragAndDrop": false,
+  "editor.renderWhitespace": "all",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "emmet.triggerExpansionOnTab": true,
+  "editor.accessibilitySupport": "on",
+  "css.validate": false
+}
