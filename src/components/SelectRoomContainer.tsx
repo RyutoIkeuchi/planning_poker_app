@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
-import CreateRoomIcon from "public/images/CreateRoom_Flatline.svg";
-import EnterRoomIcon from "public/images/EnterRoom_Flatline.svg";
 import { Footer } from "src/components/Footer";
+import { CreateRoomIcon } from "src/components/Icon/CreateRoomIcon";
+import { EnterRoomIcon } from "src/components/Icon/EnterRoomIcon";
 
 type RoomContentType = {
   href: string;

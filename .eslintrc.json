@@ -1,5 +1,6 @@
 {
-  "plugins": ["sort-keys-custom-order"],
+  "parserOptions": { "project": "./tsconfig.json" },
+  "plugins": ["sort-keys-custom-order", "simple-import-sort"],
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
@@ -23,6 +24,8 @@
     "sort-keys-custom-order/object-keys": ["error", { "orderedKeys": ["id", "name", "title"] }],
     "sort-keys-custom-order/type-keys": ["error", { "orderedKeys": ["id", "name", "title"] }],
     "no-unused-vars": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   }
 }

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
-import CreateRoomIcon from "public/images/CreateRoom_Flatline.svg";
+import { CreateRoomIcon } from "src/components/Icon/CreateRoomIcon";
 import { api } from "src/service/api";
 
 const CreateRoom = () => {

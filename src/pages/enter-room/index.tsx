@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
-import EnterRoomIcon from "public/images/EnterRoom_Flatline.svg";
+import { EnterRoomIcon } from "src/components/Icon/EnterRoomIcon";
 import { api } from "src/service/api";
 
 const EnterRoom = () => {
