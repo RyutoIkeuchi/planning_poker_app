@@ -5,16 +5,16 @@ import { UserType } from "src/types/interface";
 
 type Props = {
   isSelectNumberResult: boolean;
-  myRoomUsers: UserType[];
   myUserName: string;
+  roomUsers: UserType[];
 };
 
 export const RoomUserCardList = (props: Props) => {
-  const { isSelectNumberResult, myRoomUsers, myUserName } = props;
+  const { isSelectNumberResult, myUserName, roomUsers } = props;
 
   return (
     <ul className="flex justify-start">
-      {myRoomUsers.map((user, index) => {
+      {roomUsers.map((user, index) => {
         return (
           <li
             key={index}

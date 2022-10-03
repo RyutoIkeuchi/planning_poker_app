@@ -17,7 +17,7 @@ const PokerRoom = () => {
   const router = useRouter();
   const [queryId, setQueryId] = useState<string>("");
   const [roomDataToLocalStorage, setRoomDataToLocalStorage] = useState<UserType>();
-  const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
+  const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
   const [newSelectCard, setNewSelectCard] = useState<SelectCardUserType>();
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
