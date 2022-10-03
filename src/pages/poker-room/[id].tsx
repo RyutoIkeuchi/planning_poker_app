@@ -68,12 +68,12 @@ const PokerRoom = () => {
     await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
   }, [queryId, roomDataToLocalStorage, socket]);
 
-  const handleResultSelectNumberCard = () => {
+  const handleResultSelectNumberCard = useCallback(() => {
     socket.emit("send_select_card_state", {
       room_id: roomDataToLocalStorage?.roomId,
       status: "result",
     });
-  };
+  }, [roomDataToLocalStorage, socket]);
 
   useEffect(() => {
     if (didLogRef.current === false) {
@@ -231,39 +231,32 @@ const PokerRoom = () => {
     }
   };
 
-  const getRoomDataToLocalStorage = () => {
+  const getRoomDataToLocalStorage = useCallback(() => {
     const response = localStorage.getItem("ROOM_DATA");
     if (typeof response == "string") {
       setRoomDataToLocalStorage(JSON.parse(response));
     }
-  };
+  }, []);
 
-  const handleLeaveTheRoom = async () => {
+  const handleLeaveTheRoom = useCallback(async () => {
     localStorage.removeItem("ROOM_DATA");
     const response = await api.delete(
       `/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`,
     );
     if (response.status == 204) {
       if (roomDataToLocalStorage?.hostUser) {
-        return await handleDeleteRoom();
+        await api.delete(`/pokers/${queryId}`);
       }
       router.push("/");
     }
-  };
+  }, [roomDataToLocalStorage, queryId, router]);
 
-  const handleDeleteRoom = async () => {
-    const response = await api.delete(`/pokers/${queryId}`);
-    if (response.status == 204) {
-      router.push("/");
-    }
-  };
-
-  const handleOpenConfirmModal = (selectCard: string) => {
+  const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
     setIsConfirmModal(true);
-    setSelectNumberCard(selectCard);
-  };
+    setSelectNumberCard(useSelectNumberCard);
+  }, []);
 
-  const handleAgainSelectNumberCard = async () => {
+  const handleAgainSelectNumberCard = useCallback(async () => {
     setIsResultButtonDisabled(true);
     socket.emit("send_select_card_state", {
       room_id: roomDataToLocalStorage?.roomId,
@@ -276,7 +269,7 @@ const PokerRoom = () => {
       `/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`,
       data,
     );
-  };
+  }, [roomDataToLocalStorage, socket]);
 
   const calculateAverageOfSelectCard = useCallback(() => {
     const filterNotSelectUserList = roomUsers.filter((user) => {
