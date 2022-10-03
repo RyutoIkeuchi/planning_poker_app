@@ -38,7 +38,7 @@ const PokerRoom = () => {
   );
   const didLogRef = useRef(false);
 
-  const socket = io("http://localhost:4000");
+  const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
   const handleSubmitAgendaTitle = async () => {
     socket.emit("send_agenda_title", {
