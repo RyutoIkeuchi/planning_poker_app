@@ -33,14 +33,14 @@ const PokerRoom = () => {
   const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
 
   const [agendaTitle, setAgendaTitle] = useState("");
-  const [selectNumberCardStatus, setSelectNumberCardStatus] = useState<"result" | "reset" | "default">(
-    "default",
-  );
+  const [selectNumberCardStatus, setSelectNumberCardStatus] = useState<
+    "result" | "reset" | "default"
+  >("default");
   const didLogRef = useRef(false);
 
   const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
-  const handleSubmitAgendaTitle = async () => {
+  const handleSubmitAgendaTitle = useCallback(async () => {
     socket.emit("send_agenda_title", {
       agenda_title: agendaTitle,
       room_id: queryId,
@@ -51,9 +51,9 @@ const PokerRoom = () => {
     await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
     setCanChangeAgendaTitle(false);
     setIsCancelAgendaTitleDisabled(false);
-  };
+  }, [agendaTitle, queryId, roomDataToLocalStorage, socket]);
 
-  const handleCancelAgendaTitle = async () => {
+  const handleCancelAgendaTitle = useCallback(async () => {
     setAgendaTitle("");
     setCanChangeAgendaTitle(true);
     setIsCancelAgendaTitleDisabled(true);
@@ -66,9 +66,9 @@ const PokerRoom = () => {
       agenda_title: "",
     };
     await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
-  };
+  }, [queryId, roomDataToLocalStorage, socket]);
 
-  const handleResultSelectNumber = () => {
+  const handleResultSelectNumberCard = () => {
     socket.emit("send_select_card_state", {
       room_id: roomDataToLocalStorage?.roomId,
       status: "result",
@@ -351,7 +351,7 @@ const PokerRoom = () => {
         setIsSubmitAgendaTitleDisabled={setIsSubmitAgendaTitleDisabled}
         handleCancelAgendaTitle={handleCancelAgendaTitle}
         isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
-        handleResultSelectNumber={handleResultSelectNumber}
+        handleResultSelectNumberCard={handleResultSelectNumberCard}
         isResultButtonDisabled={isResultButtonDisabled}
         handleAgainSelectNumberCard={handleAgainSelectNumberCard}
         isAgainButtonDisabled={isAgainButtonDisabled}
