@@ -23,7 +23,7 @@ const PokerRoom = () => {
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectCard, setSelectCard] = useState<string>("");
-  const [selectCardAverage, setSelectCardAverage] = useState<number>(null);
+  const [selectNumberCardAverage, setSelectNumberCardAverage] = useState<number>(null);
   const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
   const [isSelectNumberResult, setIsSelectNumberResult] = useState<boolean>(false);
@@ -289,7 +289,7 @@ const PokerRoom = () => {
       0,
     );
     const average = total / filterNotSelectUserList.length;
-    setSelectCardAverage(average);
+    setSelectNumberCardAverage(average);
   }, [roomUsers]);
 
   useEffect(() => {
@@ -358,7 +358,7 @@ const PokerRoom = () => {
       />
       <SprintPointArea
         isSelectNumberResult={isSelectNumberResult}
-        selectCardAverage={selectCardAverage}
+        selectNumberCardAverage={selectNumberCardAverage}
       />
       <RoomUserCardList
         roomUsers={roomUsers}
