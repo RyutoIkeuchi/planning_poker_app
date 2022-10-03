@@ -15,14 +15,14 @@ import { SelectCardUserType, UserType } from "src/types/interface";
 
 const PokerRoom = () => {
   const router = useRouter();
-  const [queryId, setQueryId] = useState("");
+  const [queryId, setQueryId] = useState<string>("");
   const [roomDataToLocalStorage, setRoomDataToLocalStorage] = useState<UserType>();
   const [myRoomUsers, setMyRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
   const [newSelectCard, setNewSelectCard] = useState<SelectCardUserType>();
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
-  const [selectCard, setSelectCard] = useState("");
+  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
+  const [selectCard, setSelectCard] = useState<string>("");
   const [selectCardAverage, setSelectCardAverage] = useState<number>(null);
   const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
@@ -129,8 +129,8 @@ const PokerRoom = () => {
   }, [roomDataToLocalStorage]);
 
   useEffect(() => {
-    if (newMyRoomUser && !myRoomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
-      setMyRoomUsers([...myRoomUsers, newMyRoomUser]);
+    if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
+      setRoomUsers([...roomUsers, newMyRoomUser]);
     }
   }, [newMyRoomUser]);
 
@@ -143,12 +143,12 @@ const PokerRoom = () => {
     if (selectCardStatus === "reset") {
       setIsSelectNumberResult(false);
       setCanSelectNumberCard(true);
-      const resetIsSelectedUsers = myRoomUsers.map((user) => ({
+      const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
         isSelected: false,
         selectCard: "",
       }));
-      setMyRoomUsers(resetIsSelectedUsers);
+      setRoomUsers(resetIsSelectedUsers);
     }
 
     setSelectCardStatus("default");
@@ -157,7 +157,7 @@ const PokerRoom = () => {
   useEffect(() => {
     if (newSelectCard) {
       setIsAgainButtonDisabled(false);
-      const upDataMyRoomUserStatus = myRoomUsers.map((user) => {
+      const upDataroomUserStatus = roomUsers.map((user) => {
         if (user.userName === newSelectCard.userName) {
           return {
             ...user,
@@ -167,9 +167,9 @@ const PokerRoom = () => {
         }
         return user;
       });
-      setMyRoomUsers(upDataMyRoomUserStatus);
+      setRoomUsers(upDataroomUserStatus);
 
-      const checkNumberNotSelected = upDataMyRoomUserStatus.some((user) => !user.isSelected);
+      const checkNumberNotSelected = upDataroomUserStatus.some((user) => !user.isSelected);
       if (!checkNumberNotSelected) {
         setIsResultButtonDisabled(false);
       }
@@ -182,11 +182,11 @@ const PokerRoom = () => {
       setIsAgendaTitleSubmitDisabled(true);
       setCanSelectNumberCard(true);
     } else {
-      const resetIsSelectedUsers = myRoomUsers.map((user) => ({
+      const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
         isSelected: false,
       }));
-      setMyRoomUsers(resetIsSelectedUsers);
+      setRoomUsers(resetIsSelectedUsers);
       setAgendaTitle("");
       setCanSelectNumberCard(false);
     }
@@ -206,7 +206,7 @@ const PokerRoom = () => {
         selectCard: res.select_number_card,
         userName: res.user_name,
       }));
-      setMyRoomUsers(convertToCamelCase);
+      setRoomUsers(convertToCamelCase);
       const existsNotSelectedNumberCardUser = convertToCamelCase.some((user) => !user.isSelected);
       console.log(existsNotSelectedNumberCardUser);
       const agendaTitle = response.data.agenda_title;
@@ -279,7 +279,7 @@ const PokerRoom = () => {
   };
 
   const calculateAverageOfSelectCard = useCallback(() => {
-    const filterNotSelectUserList = myRoomUsers.filter((user) => {
+    const filterNotSelectUserList = roomUsers.filter((user) => {
       if (user.selectCard !== "/") {
         return user;
       }
@@ -290,7 +290,7 @@ const PokerRoom = () => {
     );
     const average = total / filterNotSelectUserList.length;
     setSelectCardAverage(average);
-  }, [myRoomUsers]);
+  }, [roomUsers]);
 
   useEffect(() => {
     if (router.asPath !== router.route) {
@@ -361,7 +361,7 @@ const PokerRoom = () => {
         selectCardAverage={selectCardAverage}
       />
       <RoomUserCardList
-        myRoomUsers={myRoomUsers}
+        roomUsers={roomUsers}
         myUserName={roomDataToLocalStorage?.userName}
         isSelectNumberResult={isSelectNumberResult}
       />
