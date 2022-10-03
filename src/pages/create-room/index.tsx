@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { CreateRoomIcon } from "src/components/Icon/CreateRoomIcon";
 import { api } from "src/service/api";
 
@@ -7,7 +7,7 @@ const CreateRoom = () => {
   const [userName, setUserName] = useState<string>("");
   const router = useRouter();
 
-  const handleCreateRoomId = async () => {
+  const handleCreateRoomId = useCallback(async () => {
     const data = {
       host_user: true,
       user_name: userName,
@@ -25,11 +25,11 @@ const CreateRoom = () => {
       localStorage.setItem("ROOM_DATA", JSON.stringify(convertToCamelCase));
       router.push(`/poker-room/${response.data.owner_id}`);
     }
-  };
+  }, [userName, router]);
 
-  const changeUserName = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
@@ -39,7 +39,7 @@ const CreateRoom = () => {
       <div className="w-full mb-10">
         <input
           type="text"
-          onChange={changeUserName}
+          onChange={handleChangeUserName}
           className="border w-full p-4"
           placeholder="ユーザー名"
         />
