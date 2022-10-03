@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
-import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { EnterRoomIcon } from "src/components/Icon/EnterRoomIcon";
 import { api } from "src/service/api";
 
@@ -9,7 +8,7 @@ const EnterRoom = () => {
   const [userName, setUserName] = useState<string>("");
   const router = useRouter();
 
-  const handleEnterTheRoom = async () => {
+  const handleEnterTheRoom = useCallback(async () => {
     const data = {
       host_user: false,
       user_name: userName,
@@ -29,15 +28,15 @@ const EnterRoom = () => {
       localStorage.setItem("ROOM_DATA", JSON.stringify(convertToCamelCase));
       router.push(`/poker-room/${roomId}`);
     }
-  };
+  }, [userName, router, roomId]);
 
-  const changeRoomId = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRoomId = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
-  };
+  }, []);
 
-  const changeUserName = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
@@ -47,7 +46,7 @@ const EnterRoom = () => {
       <div className="w-full mb-4">
         <input
           type="text"
-          onChange={changeUserName}
+          onChange={handleChangeUserName}
           className="border w-full p-4"
           placeholder="ユーザー名"
         />
@@ -55,7 +54,7 @@ const EnterRoom = () => {
       <div className="w-full mb-4">
         <input
           type="text"
-          onChange={changeRoomId}
+          onChange={handleChangeRoomId}
           className="border w-full p-4"
           placeholder="ルームID"
         />
