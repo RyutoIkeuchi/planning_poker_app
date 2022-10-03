@@ -33,7 +33,7 @@ const PokerRoom = () => {
   const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
 
   const [agendaTitle, setAgendaTitle] = useState("");
-  const [selectCardStatus, setSelectCardStatus] = useState<"result" | "reset" | "default">(
+  const [selectNumberCardStatus, setSelectNumberCardStatus] = useState<"result" | "reset" | "default">(
     "default",
   );
   const didLogRef = useRef(false);
@@ -114,7 +114,7 @@ const PokerRoom = () => {
 
         socket.on("response_select_card_state", (data) => {
           console.log("カードの状態を受信しました", data);
-          setSelectCardStatus(data.status);
+          setSelectNumberCardStatus(data.status);
         });
       });
     } else {
@@ -135,12 +135,12 @@ const PokerRoom = () => {
   }, [newMyRoomUser]);
 
   useEffect(() => {
-    if (selectCardStatus === "result") {
+    if (selectNumberCardStatus === "result") {
       calculateAverageOfSelectCard();
       setIsSelectNumberCardResult(true);
     }
 
-    if (selectCardStatus === "reset") {
+    if (selectNumberCardStatus === "reset") {
       setIsSelectNumberCardResult(false);
       setCanSelectNumberCard(true);
       const resetIsSelectedUsers = roomUsers.map((user) => ({
@@ -151,8 +151,8 @@ const PokerRoom = () => {
       setRoomUsers(resetIsSelectedUsers);
     }
 
-    setSelectCardStatus("default");
-  }, [selectCardStatus]);
+    setSelectNumberCardStatus("default");
+  }, [selectNumberCardStatus]);
 
   useEffect(() => {
     if (newSelectNumberCard) {
@@ -220,7 +220,7 @@ const PokerRoom = () => {
           setCanSelectNumberCard(false);
           setIsResultButtonDisabled(false);
           setIsAgainButtonDisabled(false);
-          setSelectCardStatus("result");
+          setSelectNumberCardStatus("result");
         }
       }
     } catch (error) {
