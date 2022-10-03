@@ -1,7 +1,7 @@
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
 
 export type ResultAndAgainButtonProps = {
-  handleResetSelectCard: () => void;
+  handleAgainSelectNumberCard: () => void;
   handleResultSelectNumber: () => void;
   isAgainButtonDisabled: boolean;
   isResultButtonDisabled: boolean;
@@ -9,7 +9,7 @@ export type ResultAndAgainButtonProps = {
 
 export const ResultAndAgainButton = (props: ResultAndAgainButtonProps) => {
   const {
-    handleResetSelectCard,
+    handleAgainSelectNumberCard,
     handleResultSelectNumber,
     isAgainButtonDisabled,
     isResultButtonDisabled,
@@ -31,7 +31,7 @@ export const ResultAndAgainButton = (props: ResultAndAgainButtonProps) => {
         <PrimaryButton
           buttonColor="bg-gray-500"
           hoverButtonColor="hover:bg-gray-700"
-          handleClickMethod={handleResetSelectCard}
+          handleClickMethod={handleAgainSelectNumberCard}
           disabled={isAgainButtonDisabled}
         >
           もう一度

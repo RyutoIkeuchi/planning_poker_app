@@ -263,7 +263,7 @@ const PokerRoom = () => {
     setSelectNumberCard(selectCard);
   };
 
-  const handleResetSelectCard = async () => {
+  const handleAgainSelectNumberCard = async () => {
     setIsResultButtonDisabled(true);
     socket.emit("send_select_card_state", {
       room_id: roomDataToLocalStorage?.roomId,
@@ -353,7 +353,7 @@ const PokerRoom = () => {
         isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
         handleResultSelectNumber={handleResultSelectNumber}
         isResultButtonDisabled={isResultButtonDisabled}
-        handleResetSelectCard={handleResetSelectCard}
+        handleAgainSelectNumberCard={handleAgainSelectNumberCard}
         isAgainButtonDisabled={isAgainButtonDisabled}
       />
       <SprintPointArea
