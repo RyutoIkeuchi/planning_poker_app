@@ -19,7 +19,7 @@ const PokerRoom = () => {
   const [roomDataToLocalStorage, setRoomDataToLocalStorage] = useState<UserType>();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
-  const [newSelectCard, setNewSelectCard] = useState<SelectCardUserType>();
+  const [newSelectNumberCard, setNewSelectNumberCard] = useState<SelectCardUserType>();
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectCard, setSelectCard] = useState<string>("");
@@ -100,7 +100,7 @@ const PokerRoom = () => {
 
         socket.on("response_select_number", (data) => {
           console.log("他のユーザーが選んだ番号を受信しました", data);
-          setNewSelectCard({
+          setNewSelectNumberCard({
             roomId: data.room_id,
             selectCard: data.select_card,
             userName: data.user_name,
@@ -155,14 +155,14 @@ const PokerRoom = () => {
   }, [selectCardStatus]);
 
   useEffect(() => {
-    if (newSelectCard) {
+    if (newSelectNumberCard) {
       setIsAgainButtonDisabled(false);
       const upDataroomUserStatus = roomUsers.map((user) => {
-        if (user.userName === newSelectCard.userName) {
+        if (user.userName === newSelectNumberCard.userName) {
           return {
             ...user,
             isSelected: true,
-            selectCard: newSelectCard.selectCard,
+            selectCard: newSelectNumberCard.selectCard,
           };
         }
         return user;
@@ -174,7 +174,7 @@ const PokerRoom = () => {
         setIsResultButtonDisabled(false);
       }
     }
-  }, [newSelectCard]);
+  }, [newSelectNumberCard]);
 
   useEffect(() => {
     if (newAgendaTitle !== "") {
