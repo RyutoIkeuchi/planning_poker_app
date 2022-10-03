@@ -1,7 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { Socket } from "socket.io-client";
 import { api } from "src/service/api";
 
@@ -15,27 +15,33 @@ type Props = {
   userName: string;
 };
 
-export const ConfirmSelectNumberCardModal = ({
-  roomId,
-  selectCard,
-  setCanSelectNumberCard,
-  setIsConfirmModal,
-  socket,
-  userId,
-  userName,
-}: Props) => {
-  const handleSubmitSelectNumber = async () => {
+export const ConfirmSelectNumberCardModal = (props: Props) => {
+  const {
+    roomId,
+    selectCard,
+    setCanSelectNumberCard,
+    setIsConfirmModal,
+    socket,
+    userId,
+    userName,
+  } = props;
+
+  const handleSubmitSelectNumber = useCallback(async () => {
     socket.emit("send_select_number", {
       room_id: roomId,
       select_card: selectCard,
       user_name: userName,
     });
+
     const data = {
       select_number_card: selectCard,
     };
+
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
     setIsConfirmModal(false);
     setCanSelectNumberCard(false);
+  }, [socket, roomId, selectCard, userName, userId, setIsConfirmModal, setCanSelectNumberCard]);
+
   const handleCloseConfirmModal = useCallback(() => {
     setIsConfirmModal(false);
   }, [setIsConfirmModal]);
