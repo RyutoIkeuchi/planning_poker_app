@@ -1,4 +1,4 @@
-import { InputAgendaTitle, InputAgendaTitleProps } from "src/components/PokerRoom/AgendaTitle";
+import { InputAgendaTitle, InputAgendaTitleProps } from "src/components/PokerRoom/InputAgendaTitle";
 import {
   ResultAndAgainButton,
   ResultAndAgainButtonProps,
