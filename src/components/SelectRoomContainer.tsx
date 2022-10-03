@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { Footer } from "src/components/Footer";
+import { Footer } from "src/components/Common/Footer";
 import { CreateRoomIcon } from "src/components/Icon/CreateRoomIcon";
 import { EnterRoomIcon } from "src/components/Icon/EnterRoomIcon";
 
