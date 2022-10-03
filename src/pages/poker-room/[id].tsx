@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import { ConfirmSelectNumberModal } from "src/components/ConfirmSelectNumberModal";
+import { ConfirmSelectNumberCardModal } from "src/components/ConfirmSelectNumberCardModal";
 import { FibonacciNumbers } from "src/components/FibonacciNumbers";
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
 import { MyRoomUserCardList } from "src/components/PokerRoom/MyRoomUserCardList";
@@ -331,7 +331,7 @@ const PokerRoom = () => {
     <div className="relative">
       <RoomHeader roomId={router.query.id as string} handleLeaveTheRoom={handleLeaveTheRoom} />
       {isConfirmModal && (
-        <ConfirmSelectNumberModal
+        <ConfirmSelectNumberCardModal
           selectCard={selectCard}
           socket={socket}
           roomId={queryId}

@@ -15,7 +15,7 @@ type Props = {
   userName: string;
 };
 
-export const ConfirmSelectNumberModal = ({
+export const ConfirmSelectNumberCardModal = ({
   roomId,
   selectCard,
   setCanSelectNumberCard,
