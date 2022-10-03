@@ -36,7 +36,9 @@ export const ConfirmSelectNumberCardModal = ({
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
     setIsConfirmModal(false);
     setCanSelectNumberCard(false);
-  };
+  const handleCloseConfirmModal = useCallback(() => {
+    setIsConfirmModal(false);
+  }, [setIsConfirmModal]);
 
   return (
     <>
@@ -44,7 +46,7 @@ export const ConfirmSelectNumberCardModal = ({
         <div className="relative w-auto my-6 max-w-3xl">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-64 bg-white outline-none focus:outline-none h-96">
             <div className="flex justify-between items-center py-1 px-2 border-b">
-              <button onClick={() => setIsConfirmModal(false)}>
+              <button onClick={handleCloseConfirmModal}>
                 <FontAwesomeIcon icon={faXmark} />
               </button>
               <button
