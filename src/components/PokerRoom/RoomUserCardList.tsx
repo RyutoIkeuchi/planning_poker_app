@@ -1,5 +1,6 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMemo } from "react";
 import { UserType } from "src/types/interface";
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
   myUserName: string;
 };
 
-export const MyRoomUserCardList = (props: Props) => {
+export const RoomUserCardList = (props: Props) => {
   const { isSelectNumberResult, myRoomUsers, myUserName } = props;
 
   return (

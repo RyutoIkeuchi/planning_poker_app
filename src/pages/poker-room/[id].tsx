@@ -7,8 +7,8 @@ import io from "socket.io-client";
 import { ConfirmSelectNumberCardModal } from "src/components/ConfirmSelectNumberCardModal";
 import { FibonacciNumbers } from "src/components/FibonacciNumbers";
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
-import { MyRoomUserCardList } from "src/components/PokerRoom/MyRoomUserCardList";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
+import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import { api } from "src/service/api";
 import { SelectCardUserType, UserType } from "src/types/interface";
@@ -360,7 +360,7 @@ const PokerRoom = () => {
         isSelectNumberResult={isSelectNumberResult}
         selectCardAverage={selectCardAverage}
       />
-      <MyRoomUserCardList
+      <RoomUserCardList
         myRoomUsers={myRoomUsers}
         myUserName={roomDataToLocalStorage?.userName}
         isSelectNumberResult={isSelectNumberResult}
