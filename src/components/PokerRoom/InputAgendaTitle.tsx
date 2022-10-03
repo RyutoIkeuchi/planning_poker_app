@@ -6,10 +6,10 @@ export type InputAgendaTitleProps = {
   canChangeAgendaTitle: boolean;
   handleCancelAgendaTitle: () => void;
   handleSubmitAgendaTitle: () => void;
-  isAgendaTitleSubmitDisabled: boolean;
   isCancelAgendaTitleDisabled: boolean;
+  isSubmitAgendaTitleDisabled: boolean;
   setAgendaTitle: Dispatch<SetStateAction<string>>;
-  setIsAgendaTitleSubmitDisabled: Dispatch<SetStateAction<boolean>>;
+  setIsSubmitAgendaTitleDisabled: Dispatch<SetStateAction<boolean>>;
 };
 
 export const InputAgendaTitle = (props: InputAgendaTitleProps) => {
@@ -18,19 +18,19 @@ export const InputAgendaTitle = (props: InputAgendaTitleProps) => {
     canChangeAgendaTitle,
     handleCancelAgendaTitle,
     handleSubmitAgendaTitle,
-    isAgendaTitleSubmitDisabled,
     isCancelAgendaTitleDisabled,
+    isSubmitAgendaTitleDisabled,
     setAgendaTitle,
-    setIsAgendaTitleSubmitDisabled,
+    setIsSubmitAgendaTitleDisabled,
   } = props;
 
   const handleChangeAgendaTitle = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const inputAgendaTitle = e.target.value;
     setAgendaTitle(inputAgendaTitle);
     if (inputAgendaTitle !== "") {
-      setIsAgendaTitleSubmitDisabled(false);
+      setIsSubmitAgendaTitleDisabled(false);
     } else {
-      setIsAgendaTitleSubmitDisabled(true);
+      setIsSubmitAgendaTitleDisabled(true);
     }
   }, []);
 
@@ -51,7 +51,7 @@ export const InputAgendaTitle = (props: InputAgendaTitleProps) => {
           buttonColor="bg-green-500"
           hoverButtonColor="hover:bg-green-700"
           handleClickMethod={handleSubmitAgendaTitle}
-          disabled={isAgendaTitleSubmitDisabled}
+          disabled={isSubmitAgendaTitleDisabled}
         >
           決定
         </PrimaryButton>

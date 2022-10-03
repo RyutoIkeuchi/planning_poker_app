@@ -24,7 +24,7 @@ const PokerRoom = () => {
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectCard, setSelectCard] = useState<string>("");
   const [selectNumberCardAverage, setSelectNumberCardAverage] = useState<number>(null);
-  const [isAgendaTitleSubmitDisabled, setIsAgendaTitleSubmitDisabled] = useState<boolean>(true);
+  const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
   const [isSelectNumberResult, setIsSelectNumberResult] = useState<boolean>(false);
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
@@ -179,7 +179,7 @@ const PokerRoom = () => {
   useEffect(() => {
     if (newAgendaTitle !== "") {
       setAgendaTitle(newAgendaTitle);
-      setIsAgendaTitleSubmitDisabled(true);
+      setIsSubmitAgendaTitleDisabled(true);
       setCanSelectNumberCard(true);
     } else {
       const resetIsSelectedUsers = roomUsers.map((user) => ({
@@ -213,7 +213,7 @@ const PokerRoom = () => {
       setAgendaTitle(agendaTitle);
       if (agendaTitle !== "") {
         setIsCancelAgendaTitleDisabled(false);
-        setIsAgendaTitleSubmitDisabled(true);
+        setIsSubmitAgendaTitleDisabled(true);
         setCanChangeAgendaTitle(false);
         setCanSelectNumberCard(true);
         if (!existsNotSelectedNumberCardUser) {
@@ -347,8 +347,8 @@ const PokerRoom = () => {
         setAgendaTitle={setAgendaTitle}
         canChangeAgendaTitle={canChangeAgendaTitle}
         handleSubmitAgendaTitle={handleSubmitAgendaTitle}
-        isAgendaTitleSubmitDisabled={isAgendaTitleSubmitDisabled}
-        setIsAgendaTitleSubmitDisabled={setIsAgendaTitleSubmitDisabled}
+        isSubmitAgendaTitleDisabled={isSubmitAgendaTitleDisabled}
+        setIsSubmitAgendaTitleDisabled={setIsSubmitAgendaTitleDisabled}
         handleCancelAgendaTitle={handleCancelAgendaTitle}
         isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
         handleResultSelectNumber={handleResultSelectNumber}
