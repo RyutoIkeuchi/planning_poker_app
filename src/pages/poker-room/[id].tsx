@@ -22,7 +22,7 @@ const PokerRoom = () => {
   const [newSelectNumberCard, setNewSelectNumberCard] = useState<SelectCardUserType>();
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
-  const [selectCard, setSelectCard] = useState<string>("");
+  const [selectNumberCard, setSelectNumberCard] = useState<string>("");
   const [selectNumberCardAverage, setSelectNumberCardAverage] = useState<number>(null);
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
@@ -260,7 +260,7 @@ const PokerRoom = () => {
 
   const handleOpenConfirmModal = (selectCard: string) => {
     setIsConfirmModal(true);
-    setSelectCard(selectCard);
+    setSelectNumberCard(selectCard);
   };
 
   const handleResetSelectCard = async () => {
@@ -332,7 +332,7 @@ const PokerRoom = () => {
       <RoomHeader roomId={router.query.id as string} handleLeaveTheRoom={handleLeaveTheRoom} />
       {isConfirmModal && (
         <ConfirmSelectNumberCardModal
-          selectCard={selectCard}
+          selectNumberCard={selectNumberCard}
           socket={socket}
           roomId={queryId}
           userId={roomDataToLocalStorage?.id}

@@ -7,7 +7,7 @@ import { api } from "src/service/api";
 
 type Props = {
   roomId: string;
-  selectCard: string;
+  selectNumberCard: string;
   setCanSelectNumberCard: Dispatch<SetStateAction<boolean>>;
   setIsConfirmModal: Dispatch<SetStateAction<boolean>>;
   socket: Socket<DefaultEventsMap, DefaultEventsMap>;
@@ -18,7 +18,7 @@ type Props = {
 export const ConfirmSelectNumberCardModal = (props: Props) => {
   const {
     roomId,
-    selectCard,
+    selectNumberCard,
     setCanSelectNumberCard,
     setIsConfirmModal,
     socket,
@@ -29,18 +29,18 @@ export const ConfirmSelectNumberCardModal = (props: Props) => {
   const handleSubmitSelectNumberCard = useCallback(async () => {
     socket.emit("send_select_number", {
       room_id: roomId,
-      select_card: selectCard,
+      select_card: selectNumberCard,
       user_name: userName,
     });
 
     const data = {
-      select_number_card: selectCard,
+      select_number_card: selectNumberCard,
     };
 
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
     setIsConfirmModal(false);
     setCanSelectNumberCard(false);
-  }, [socket, roomId, selectCard, userName, userId, setIsConfirmModal, setCanSelectNumberCard]);
+  }, [socket, roomId, selectNumberCard, userName, userId, setIsConfirmModal, setCanSelectNumberCard]);
 
   const handleCloseConfirmModal = useCallback(() => {
     setIsConfirmModal(false);
@@ -64,7 +64,7 @@ export const ConfirmSelectNumberCardModal = (props: Props) => {
               </button>
             </div>
             <div className="mx-auto h-full flex items-center">
-              <p className="text-6xl">{selectCard}</p>
+              <p className="text-6xl">{selectNumberCard}</p>
             </div>
           </div>
         </div>
