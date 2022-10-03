@@ -26,7 +26,7 @@ const PokerRoom = () => {
   const [selectNumberCardAverage, setSelectNumberCardAverage] = useState<number>(null);
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
-  const [isSelectNumberResult, setIsSelectNumberResult] = useState<boolean>(false);
+  const [isSelectNumberCardResult, setIsSelectNumberCardResult] = useState<boolean>(false);
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
   const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
@@ -57,7 +57,7 @@ const PokerRoom = () => {
     setAgendaTitle("");
     setCanChangeAgendaTitle(true);
     setIsCancelAgendaTitleDisabled(true);
-    setIsSelectNumberResult(false);
+    setIsSelectNumberCardResult(false);
     socket.emit("send_agenda_title", {
       agenda_title: "",
       room_id: queryId,
@@ -137,11 +137,11 @@ const PokerRoom = () => {
   useEffect(() => {
     if (selectCardStatus === "result") {
       calculateAverageOfSelectCard();
-      setIsSelectNumberResult(true);
+      setIsSelectNumberCardResult(true);
     }
 
     if (selectCardStatus === "reset") {
-      setIsSelectNumberResult(false);
+      setIsSelectNumberCardResult(false);
       setCanSelectNumberCard(true);
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
@@ -357,13 +357,13 @@ const PokerRoom = () => {
         isAgainButtonDisabled={isAgainButtonDisabled}
       />
       <SprintPointArea
-        isSelectNumberResult={isSelectNumberResult}
+        isSelectNumberCardResult={isSelectNumberCardResult}
         selectNumberCardAverage={selectNumberCardAverage}
       />
       <RoomUserCardList
         roomUsers={roomUsers}
         myUserName={roomDataToLocalStorage?.userName}
-        isSelectNumberResult={isSelectNumberResult}
+        isSelectNumberCardResult={isSelectNumberCardResult}
       />
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">
