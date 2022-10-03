@@ -29,7 +29,7 @@ const PokerRoom = () => {
   const [isSelectNumberResult, setIsSelectNumberResult] = useState<boolean>(false);
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
-  const [isSelectNumberCard, setIsSelectNumberCard] = useState<boolean>(true);
+  const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
   const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
 
   const [agendaTitle, setAgendaTitle] = useState("");
@@ -142,7 +142,7 @@ const PokerRoom = () => {
 
     if (selectCardStatus === "reset") {
       setIsSelectNumberResult(false);
-      setIsSelectNumberCard(false);
+      setCanSelectNumberCard(true);
       const resetIsSelectedUsers = myRoomUsers.map((user) => ({
         ...user,
         isSelected: false,
@@ -180,7 +180,7 @@ const PokerRoom = () => {
     if (newAgendaTitle !== "") {
       setAgendaTitle(newAgendaTitle);
       setIsAgendaTitleSubmitDisabled(true);
-      setIsSelectNumberCard(false);
+      setCanSelectNumberCard(true);
     } else {
       const resetIsSelectedUsers = myRoomUsers.map((user) => ({
         ...user,
@@ -188,7 +188,7 @@ const PokerRoom = () => {
       }));
       setMyRoomUsers(resetIsSelectedUsers);
       setAgendaTitle("");
-      setIsSelectNumberCard(true);
+      setCanSelectNumberCard(false);
     }
   }, [newAgendaTitle]);
 
@@ -215,9 +215,9 @@ const PokerRoom = () => {
         setIsCancelAgendaTitleDisabled(false);
         setIsAgendaTitleSubmitDisabled(true);
         setCanChangeAgendaTitle(false);
-        setIsSelectNumberCard(false);
+        setCanSelectNumberCard(true);
         if (!existsNotSelectedNumberCardUser) {
-          setIsSelectNumberCard(true);
+          setCanSelectNumberCard(false);
           setIsResultButtonDisabled(false);
           setIsAgainButtonDisabled(false);
           setSelectCardStatus("result");
@@ -338,7 +338,7 @@ const PokerRoom = () => {
           userId={roomDataToLocalStorage?.id}
           userName={roomDataToLocalStorage?.userName || ""}
           setIsConfirmModal={setIsConfirmModal}
-          setIsSelectNumberCard={setIsSelectNumberCard}
+          setCanSelectNumberCard={setCanSelectNumberCard}
         />
       )}
       <AgendaTitleArea
@@ -368,7 +368,7 @@ const PokerRoom = () => {
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">
           <p className="text-xl mr-2">カードを選択</p>
-          {isSelectNumberCard ? (
+          {canSelectNumberCard ? (
             <FontAwesomeIcon icon={faBan} className="text-red-600" />
           ) : (
             <FontAwesomeIcon icon={faCheck} className="text-green-600" />
@@ -376,7 +376,7 @@ const PokerRoom = () => {
         </div>
         <FibonacciNumbers
           handleOpenConfirmModal={handleOpenConfirmModal}
-          isSelectNumberCard={isSelectNumberCard}
+          canSelectNumberCard={canSelectNumberCard}
         />
         <hr />
       </div>

@@ -8,8 +8,8 @@ import { api } from "src/service/api";
 type Props = {
   roomId: string;
   selectCard: string;
+  setCanSelectNumberCard: Dispatch<SetStateAction<boolean>>;
   setIsConfirmModal: Dispatch<SetStateAction<boolean>>;
-  setIsSelectNumberCard: Dispatch<SetStateAction<boolean>>;
   socket: Socket<DefaultEventsMap, DefaultEventsMap>;
   userId: number;
   userName: string;
@@ -18,8 +18,8 @@ type Props = {
 export const ConfirmSelectNumberModal = ({
   roomId,
   selectCard,
+  setCanSelectNumberCard,
   setIsConfirmModal,
-  setIsSelectNumberCard,
   socket,
   userId,
   userName,
@@ -35,7 +35,7 @@ export const ConfirmSelectNumberModal = ({
     };
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
     setIsConfirmModal(false);
-    setIsSelectNumberCard(true);
+    setCanSelectNumberCard(false);
   };
 
   return (
