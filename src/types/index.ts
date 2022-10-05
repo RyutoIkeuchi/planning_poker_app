@@ -3,12 +3,12 @@ export type UserType = {
   hostUser: boolean;
   isSelected: boolean;
   roomId: string;
-  selectCard: string;
+  selectedNumberCard: string;
   userName: string;
 };
 
-export type SelectCardUserType = {
+export type ResSelectedNumberCardType = {
   roomId: string;
-  selectCard: string;
+  selectedNumberCard: string;
   userName: string;
 };

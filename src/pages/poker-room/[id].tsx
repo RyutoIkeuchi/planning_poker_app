@@ -11,7 +11,7 @@ import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import { api } from "src/service/api";
-import { SelectCardUserType, UserType } from "src/types/interface";
+import { ResSelectedNumberCardType, UserType } from "src/types";
 
 const PokerRoom = () => {
   const router = useRouter();
@@ -19,14 +19,14 @@ const PokerRoom = () => {
   const [myRoomDataToLocalStorage, setMyRoomDataToLocalStorage] = useState<UserType>();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
-  const [newSelectNumberCard, setNewSelectNumberCard] = useState<SelectCardUserType>();
+  const [newSelectedNumberCard, setNewSelectedNumberCard] = useState<ResSelectedNumberCardType>();
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectNumberCard, setSelectNumberCard] = useState<string>("");
-  const [selectNumberCardAverage, setSelectNumberCardAverage] = useState<number>(null);
+  const [selectedNumberCardAverage, setSelectedNumberCardAverage] = useState<number>(null);
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
-  const [isSelectNumberCardResult, setIsSelectNumberCardResult] = useState<boolean>(false);
+  const [isSelectedNumberCardResult, setIsSelectedNumberCardResult] = useState<boolean>(false);
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
   const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
@@ -57,7 +57,7 @@ const PokerRoom = () => {
     setAgendaTitle("");
     setCanChangeAgendaTitle(true);
     setIsCancelAgendaTitleDisabled(true);
-    setIsSelectNumberCardResult(false);
+    setIsSelectedNumberCardResult(false);
     socket.emit("send_agenda_title", {
       agenda_title: "",
       room_id: queryId,
@@ -93,16 +93,16 @@ const PokerRoom = () => {
             hostUser: data.host_user,
             isSelected: false,
             roomId: data.room_id,
-            selectCard: "",
+            selectedNumberCard: "",
             userName: data.user_name,
           });
         });
 
         socket.on("res_selected_number_card", (data) => {
           console.log("他のユーザーが選んだ番号を受信しました", data);
-          setNewSelectNumberCard({
+          setNewSelectedNumberCard({
             roomId: data.room_id,
-            selectCard: data.select_card,
+            selectedNumberCard: data.selected_number_card,
             userName: data.user_name,
           });
         });
@@ -137,16 +137,16 @@ const PokerRoom = () => {
   useEffect(() => {
     if (selectNumberCardStatus === "result") {
       calculateAverageOfSelectCard();
-      setIsSelectNumberCardResult(true);
+      setIsSelectedNumberCardResult(true);
     }
 
     if (selectNumberCardStatus === "reset") {
-      setIsSelectNumberCardResult(false);
+      setIsSelectedNumberCardResult(false);
       setCanSelectNumberCard(true);
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
         isSelected: false,
-        selectCard: "",
+        selectedNumberCard: "",
       }));
       setRoomUsers(resetIsSelectedUsers);
     }
@@ -155,26 +155,26 @@ const PokerRoom = () => {
   }, [selectNumberCardStatus]);
 
   useEffect(() => {
-    if (newSelectNumberCard) {
+    if (newSelectedNumberCard) {
       setIsAgainButtonDisabled(false);
-      const upDataroomUserStatus = roomUsers.map((user) => {
-        if (user.userName === newSelectNumberCard.userName) {
+      const updateRoomUserStatus = roomUsers.map((user) => {
+        if (user.userName === newSelectedNumberCard.userName) {
           return {
             ...user,
             isSelected: true,
-            selectCard: newSelectNumberCard.selectCard,
+            selectedNumberCard: newSelectedNumberCard.selectedNumberCard,
           };
         }
         return user;
       });
-      setRoomUsers(upDataroomUserStatus);
+      setRoomUsers(updateRoomUserStatus);
 
-      const checkNumberNotSelected = upDataroomUserStatus.some((user) => !user.isSelected);
-      if (!checkNumberNotSelected) {
+      const checkNumberNotSelected = updateRoomUserStatus.every((user) => user.isSelected);
+      if (checkNumberNotSelected) {
         setIsResultButtonDisabled(false);
       }
     }
-  }, [newSelectNumberCard]);
+  }, [newSelectedNumberCard]);
 
   useEffect(() => {
     if (newAgendaTitle !== "") {
@@ -201,9 +201,9 @@ const PokerRoom = () => {
       const convertToCamelCase = response.data.users.map((res: any) => ({
         id: res.id,
         hostUser: res.host_user,
-        isSelected: res.select_number_card !== "",
+        isSelected: res.selected_number_card !== "",
         roomId: res.owner_id,
-        selectCard: res.select_number_card,
+        selectedNumberCard: res.selected_number_card,
         userName: res.user_name,
       }));
       setRoomUsers(convertToCamelCase);
@@ -266,16 +266,16 @@ const PokerRoom = () => {
 
   const calculateAverageOfSelectCard = useCallback(() => {
     const filterNotSelectUserList = roomUsers.filter((user) => {
-      if (user.selectCard !== "/") {
+      if (user.selectedNumberCard !== "/") {
         return user;
       }
     });
     const total: number = filterNotSelectUserList.reduce(
-      (acc, cur: UserType) => acc + Number(cur.selectCard),
+      (acc, cur: UserType) => acc + Number(cur.selectedNumberCard),
       0,
     );
     const average = total / filterNotSelectUserList.length;
-    setSelectNumberCardAverage(average);
+    setSelectedNumberCardAverage(average);
   }, [roomUsers]);
 
   useEffect(() => {
@@ -343,13 +343,13 @@ const PokerRoom = () => {
         isAgainButtonDisabled={isAgainButtonDisabled}
       />
       <SprintPointArea
-        isSelectNumberCardResult={isSelectNumberCardResult}
-        selectNumberCardAverage={selectNumberCardAverage}
+        isSelectedNumberCardResult={isSelectedNumberCardResult}
+        selectedNumberCardAverage={selectedNumberCardAverage}
       />
       <RoomUserCardList
         roomUsers={roomUsers}
         myUserName={myRoomDataToLocalStorage?.userName}
-        isSelectNumberCardResult={isSelectNumberCardResult}
+        isSelectedNumberCardResult={isSelectedNumberCardResult}
       />
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">

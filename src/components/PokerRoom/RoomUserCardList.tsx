@@ -1,15 +1,15 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserType } from "src/types/interface";
+import { UserType } from "src/types";
 
 type Props = {
-  isSelectNumberCardResult: boolean;
+  isSelectedNumberCardResult: boolean;
   myUserName: string;
   roomUsers: UserType[];
 };
 
 export const RoomUserCardList = (props: Props) => {
-  const { isSelectNumberCardResult, myUserName, roomUsers } = props;
+  const { isSelectedNumberCardResult, myUserName, roomUsers } = props;
 
   return (
     <ul className="flex justify-start min-h-[500px]">
@@ -21,7 +21,7 @@ export const RoomUserCardList = (props: Props) => {
           >
             <div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
               <p className="text-3xl">
-                {isSelectNumberCardResult ? user.selectCard : user.isSelected ? "済" : "未"}
+                {isSelectedNumberCardResult ? user.selectedNumberCard : user.isSelected ? "済" : "未"}
               </p>
             </div>
             <div className="flex justify-center items-center">

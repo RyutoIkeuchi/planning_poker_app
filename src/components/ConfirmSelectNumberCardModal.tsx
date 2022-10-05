@@ -29,12 +29,12 @@ export const ConfirmSelectNumberCardModal = (props: Props) => {
   const handleSubmitSelectNumberCard = useCallback(async () => {
     socket.emit("send_selected_number_card", {
       room_id: roomId,
-      select_card: selectNumberCard,
+      selected_number_card: selectNumberCard,
       user_name: userName,
     });
 
     const data = {
-      select_number_card: selectNumberCard,
+      selected_number_card: selectNumberCard,
     };
 
     await api.put(`/pokers/${roomId}/users/${userId}`, data);

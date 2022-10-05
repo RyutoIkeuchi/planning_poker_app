@@ -1,10 +1,10 @@
 type Props = {
-  isSelectNumberCardResult: boolean;
-  selectNumberCardAverage: number;
+  isSelectedNumberCardResult: boolean;
+  selectedNumberCardAverage: number;
 };
 
 export const SprintPointArea = (props: Props) => {
-  const { isSelectNumberCardResult, selectNumberCardAverage } = props;
+  const { isSelectedNumberCardResult, selectedNumberCardAverage } = props;
 
   return (
     <div className="mb-10 border-b border-gray-500">
@@ -13,7 +13,7 @@ export const SprintPointArea = (props: Props) => {
           <p className="text-xl">スプリントポイント</p>
         </div>
         <p className="text-8xl font-bold">
-          {isSelectNumberCardResult ? selectNumberCardAverage.toString() : "?"}
+          {isSelectedNumberCardResult ? selectedNumberCardAverage.toString() : "?"}
         </p>
       </div>
     </div>
