@@ -16,7 +16,7 @@ import { SelectCardUserType, UserType } from "src/types/interface";
 const PokerRoom = () => {
   const router = useRouter();
   const [queryId, setQueryId] = useState<string>("");
-  const [roomDataToLocalStorage, setRoomDataToLocalStorage] = useState<UserType>();
+  const [myRoomDataToLocalStorage, setMyRoomDataToLocalStorage] = useState<UserType>();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
   const [newSelectNumberCard, setNewSelectNumberCard] = useState<SelectCardUserType>();
@@ -48,10 +48,10 @@ const PokerRoom = () => {
     const data = {
       agenda_title: agendaTitle,
     };
-    await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
+    await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}`, data);
     setCanChangeAgendaTitle(false);
     setIsCancelAgendaTitleDisabled(false);
-  }, [agendaTitle, queryId, roomDataToLocalStorage, socket]);
+  }, [agendaTitle, queryId, myRoomDataToLocalStorage, socket]);
 
   const handleCancelAgendaTitle = useCallback(async () => {
     setAgendaTitle("");
@@ -65,15 +65,15 @@ const PokerRoom = () => {
     const data = {
       agenda_title: "",
     };
-    await api.put(`/pokers/${roomDataToLocalStorage?.roomId}`, data);
-  }, [queryId, roomDataToLocalStorage, socket]);
+    await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}`, data);
+  }, [queryId, myRoomDataToLocalStorage, socket]);
 
   const handleResultSelectNumberCard = useCallback(() => {
     socket.emit("send_select_card_state", {
-      room_id: roomDataToLocalStorage?.roomId,
+      room_id: myRoomDataToLocalStorage?.roomId,
       status: "result",
     });
-  }, [roomDataToLocalStorage, socket]);
+  }, [myRoomDataToLocalStorage, socket]);
 
   useEffect(() => {
     if (didLogRef.current === false) {
@@ -81,10 +81,10 @@ const PokerRoom = () => {
       socket.on("connect", () => {
         console.log("接続したよ！");
         socket.emit("join", {
-          id: roomDataToLocalStorage?.id,
-          host_user: roomDataToLocalStorage?.hostUser,
-          room_id: roomDataToLocalStorage?.roomId,
-          user_name: roomDataToLocalStorage?.userName,
+          id: myRoomDataToLocalStorage?.id,
+          host_user: myRoomDataToLocalStorage?.hostUser,
+          room_id: myRoomDataToLocalStorage?.roomId,
+          user_name: myRoomDataToLocalStorage?.userName,
         });
 
         socket.on("response_add_user", (data) => {
@@ -126,7 +126,7 @@ const PokerRoom = () => {
         socket.disconnect();
       }
     };
-  }, [roomDataToLocalStorage]);
+  }, [myRoomDataToLocalStorage]);
 
   useEffect(() => {
     if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
@@ -193,7 +193,7 @@ const PokerRoom = () => {
   }, [newAgendaTitle]);
 
   const checkRoomId = async (queryId: string) => {
-    if (roomDataToLocalStorage?.roomId !== queryId) {
+    if (myRoomDataToLocalStorage?.roomId !== queryId) {
       router.replace("/");
     }
     try {
@@ -233,22 +233,22 @@ const PokerRoom = () => {
   const getRoomDataToLocalStorage = useCallback(() => {
     const response = localStorage.getItem("ROOM_DATA");
     if (typeof response == "string") {
-      setRoomDataToLocalStorage(JSON.parse(response));
+      setMyRoomDataToLocalStorage(JSON.parse(response));
     }
   }, []);
 
   const handleLeaveTheRoom = useCallback(async () => {
     localStorage.removeItem("ROOM_DATA");
     const response = await api.delete(
-      `/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`,
+      `/pokers/${myRoomDataToLocalStorage?.roomId}/users/${myRoomDataToLocalStorage?.id}`,
     );
     if (response.status == 204) {
-      if (roomDataToLocalStorage?.hostUser) {
+      if (myRoomDataToLocalStorage?.hostUser) {
         await api.delete(`/pokers/${queryId}`);
       }
       router.push("/");
     }
-  }, [roomDataToLocalStorage, queryId, router]);
+  }, [myRoomDataToLocalStorage, queryId, router]);
 
   const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
     setIsConfirmModal(true);
@@ -258,11 +258,11 @@ const PokerRoom = () => {
   const handleAgainSelectNumberCard = useCallback(async () => {
     setIsResultButtonDisabled(true);
     socket.emit("send_select_card_state", {
-      room_id: roomDataToLocalStorage?.roomId,
+      room_id: myRoomDataToLocalStorage?.roomId,
       status: "reset",
     });
-    await api.put(`/pokers/${roomDataToLocalStorage?.roomId}/users/`);
-  }, [roomDataToLocalStorage, socket]);
+    await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}/users/`);
+  }, [myRoomDataToLocalStorage, socket]);
 
   const calculateAverageOfSelectCard = useCallback(() => {
     const filterNotSelectUserList = roomUsers.filter((user) => {
@@ -321,14 +321,14 @@ const PokerRoom = () => {
           selectNumberCard={selectNumberCard}
           socket={socket}
           roomId={queryId}
-          userId={roomDataToLocalStorage?.id}
-          userName={roomDataToLocalStorage?.userName || ""}
+          userId={myRoomDataToLocalStorage?.id}
+          userName={myRoomDataToLocalStorage?.userName || ""}
           setIsConfirmModal={setIsConfirmModal}
           setCanSelectNumberCard={setCanSelectNumberCard}
         />
       )}
       <AgendaTitleArea
-        isHostUser={roomDataToLocalStorage?.hostUser}
+        isHostUser={myRoomDataToLocalStorage?.hostUser}
         agendaTitle={agendaTitle}
         setAgendaTitle={setAgendaTitle}
         canChangeAgendaTitle={canChangeAgendaTitle}
@@ -348,7 +348,7 @@ const PokerRoom = () => {
       />
       <RoomUserCardList
         roomUsers={roomUsers}
-        myUserName={roomDataToLocalStorage?.userName}
+        myUserName={myRoomDataToLocalStorage?.userName}
         isSelectNumberCardResult={isSelectNumberCardResult}
       />
       <div className="fixed bottom-0">
