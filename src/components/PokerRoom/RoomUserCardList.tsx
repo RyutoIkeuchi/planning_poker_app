@@ -12,7 +12,7 @@ export const RoomUserCardList = (props: Props) => {
   const { isSelectNumberCardResult, myUserName, roomUsers } = props;
 
   return (
-    <ul className="flex justify-start">
+    <ul className="flex justify-start min-h-[500px]">
       {roomUsers.map((user, index) => {
         return (
           <li
