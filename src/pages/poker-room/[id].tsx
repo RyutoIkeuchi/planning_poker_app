@@ -69,7 +69,7 @@ const PokerRoom = () => {
   }, [queryId, myRoomDataToLocalStorage, socket]);
 
   const handleResultSelectNumberCard = useCallback(() => {
-    socket.emit("send_select_card_state", {
+    socket.emit("send_poker_card_state", {
       room_id: myRoomDataToLocalStorage?.roomId,
       status: "result",
     });
@@ -87,7 +87,7 @@ const PokerRoom = () => {
           user_name: myRoomDataToLocalStorage?.userName,
         });
 
-        socket.on("response_add_user", (data) => {
+        socket.on("res_add_user", (data) => {
           setNewMyRoomUser({
             id: data.id,
             hostUser: data.host_user,
@@ -98,7 +98,7 @@ const PokerRoom = () => {
           });
         });
 
-        socket.on("response_select_number", (data) => {
+        socket.on("res_selected_number_card", (data) => {
           console.log("他のユーザーが選んだ番号を受信しました", data);
           setNewSelectNumberCard({
             roomId: data.room_id,
@@ -107,12 +107,12 @@ const PokerRoom = () => {
           });
         });
 
-        socket.on("response_agenda_title", (data) => {
+        socket.on("res_agenda_title", (data) => {
           console.log("議題タイトルを受信しました", data);
           setNewAgendaTitle(data.agenda_title);
         });
 
-        socket.on("response_select_card_state", (data) => {
+        socket.on("res_poker_card_state", (data) => {
           console.log("カードの状態を受信しました", data);
           setSelectNumberCardStatus(data.status);
         });
@@ -257,7 +257,7 @@ const PokerRoom = () => {
 
   const handleAgainSelectNumberCard = useCallback(async () => {
     setIsResultButtonDisabled(true);
-    socket.emit("send_select_card_state", {
+    socket.emit("send_poker_card_state", {
       room_id: myRoomDataToLocalStorage?.roomId,
       status: "reset",
     });

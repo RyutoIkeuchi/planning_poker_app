@@ -27,7 +27,7 @@ export const ConfirmSelectNumberCardModal = (props: Props) => {
   } = props;
 
   const handleSubmitSelectNumberCard = useCallback(async () => {
-    socket.emit("send_select_number", {
+    socket.emit("send_selected_number_card", {
       room_id: roomId,
       select_card: selectNumberCard,
       user_name: userName,
