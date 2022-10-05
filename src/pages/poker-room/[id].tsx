@@ -207,8 +207,7 @@ const PokerRoom = () => {
         userName: res.user_name,
       }));
       setRoomUsers(convertToCamelCase);
-      const existsNotSelectedNumberCardUser = convertToCamelCase.some((user) => !user.isSelected);
-      console.log(existsNotSelectedNumberCardUser);
+      const allRoomUserIsSelected = convertToCamelCase.every((user) => user.isSelected);
       const agendaTitle = response.data.agenda_title;
       setAgendaTitle(agendaTitle);
       if (agendaTitle !== "") {
@@ -216,7 +215,7 @@ const PokerRoom = () => {
         setIsSubmitAgendaTitleDisabled(true);
         setCanChangeAgendaTitle(false);
         setCanSelectNumberCard(true);
-        if (!existsNotSelectedNumberCardUser) {
+        if (allRoomUserIsSelected) {
           setCanSelectNumberCard(false);
           setIsResultButtonDisabled(false);
           setIsAgainButtonDisabled(false);
