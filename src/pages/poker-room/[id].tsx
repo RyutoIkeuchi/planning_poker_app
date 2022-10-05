@@ -262,13 +262,7 @@ const PokerRoom = () => {
       room_id: roomDataToLocalStorage?.roomId,
       status: "reset",
     });
-    const data = {
-      select_number_card: "",
-    };
-    await api.put(
-      `/pokers/${roomDataToLocalStorage?.roomId}/users/${roomDataToLocalStorage?.id}`,
-      data,
-    );
+    await api.put(`/pokers/${roomDataToLocalStorage?.roomId}/users/`);
   }, [roomDataToLocalStorage, socket]);
 
   const calculateAverageOfSelectCard = useCallback(() => {
