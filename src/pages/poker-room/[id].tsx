@@ -22,10 +22,8 @@ const PokerRoom = () => {
   const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectNumberCard, setSelectNumberCard] = useState<string>("");
-  const [selectedNumberCardAverage, setSelectedNumberCardAverage] = useState<number>(null);
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
-  const [isSelectedNumberCardResult, setIsSelectedNumberCardResult] = useState<boolean>(false);
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
   const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
@@ -63,7 +61,7 @@ const PokerRoom = () => {
     setAgendaTitle("");
     setCanChangeAgendaTitle(true);
     setIsCancelAgendaTitleDisabled(true);
-    setIsSelectedNumberCardResult(false);
+    // setIsSelectedNumberCardResult(false);
     socket.emit("send_agenda_title", {
       agenda_title: "",
       room_id: memoQueryId,
@@ -72,6 +70,7 @@ const PokerRoom = () => {
       agenda_title: "",
     };
     await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}`, data);
+    await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}/users`);
   }, [memoQueryId, myRoomDataToLocalStorage, socket]);
 
   const handleResultSelectNumberCard = useCallback(() => {
@@ -134,20 +133,32 @@ const PokerRoom = () => {
     };
   }, [myRoomDataToLocalStorage]);
 
+  const memoIsAllUserIsSelected = useMemo(() => {
+    return roomUsers.every((user) => user.isSelected);
+  }, [roomUsers]);
+
+  const memoSelectNumberCardStatus = useMemo(() => {
+    if (isResultButtonDisabled && memoIsAllUserIsSelected) {
+      return "result";
+    }
+    return selectNumberCardStatus;
+  }, [selectNumberCardStatus, memoIsAllUserIsSelected, isResultButtonDisabled]);
+
   useEffect(() => {
     if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
       setRoomUsers([...roomUsers, newMyRoomUser]);
     }
   }, [newMyRoomUser]);
 
-  useEffect(() => {
-    if (selectNumberCardStatus === "result") {
-      calculateAverageOfSelectCard();
-      setIsSelectedNumberCardResult(true);
+  const memoIsSelectedNumberCardResult = useMemo(() => {
+    if (canChangeAgendaTitle) {
+      return false;
     }
+    return memoSelectNumberCardStatus === "result";
+  }, [memoSelectNumberCardStatus, canChangeAgendaTitle]);
 
+  useEffect(() => {
     if (selectNumberCardStatus === "reset") {
-      setIsSelectedNumberCardResult(false);
       setCanSelectNumberCard(true);
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
@@ -156,8 +167,6 @@ const PokerRoom = () => {
       }));
       setRoomUsers(resetIsSelectedUsers);
     }
-
-    setSelectNumberCardStatus("default");
   }, [selectNumberCardStatus]);
 
   useEffect(() => {
@@ -223,9 +232,9 @@ const PokerRoom = () => {
         setCanSelectNumberCard(true);
         if (allRoomUserIsSelected) {
           setCanSelectNumberCard(false);
-          setIsResultButtonDisabled(false);
+          setIsResultButtonDisabled(true);
           setIsAgainButtonDisabled(false);
-          setSelectNumberCardStatus("result");
+          // setSelectNumberCardStatus("result");
         }
       }
     } catch (error) {
@@ -269,6 +278,12 @@ const PokerRoom = () => {
       room_id: myRoomDataToLocalStorage?.roomId,
       status: "reset",
     });
+    const resetIsSelectedUsers = roomUsers.map((user) => ({
+      ...user,
+      isSelected: false,
+      selectedNumberCard: "",
+    }));
+    setRoomUsers(resetIsSelectedUsers);
     await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}/users/`);
   }, [myRoomDataToLocalStorage, socket]);
 
@@ -283,17 +298,15 @@ const PokerRoom = () => {
       0,
     );
     const average = total / filterNotSelectUserList.length;
-    setSelectedNumberCardAverage(average);
+    return average;
   }, [roomUsers]);
 
-  useEffect(() => {
-    if (router.asPath !== router.route) {
-      if (router.query.id != undefined) {
-        const queryId = router.query.id as string;
-        setQueryId(queryId);
-      }
+  const memoSelectedNumberCardAverage = useMemo(() => {
+    if (memoSelectNumberCardStatus === "result") {
+      return calculateAverageOfSelectCard();
     }
-  }, [router]);
+    return 0;
+  }, [calculateAverageOfSelectCard, memoSelectNumberCardStatus]);
 
   useEffect(() => {
     const resQueryIdToLocalStorage = getRoomDataToLocalStorage();
@@ -351,13 +364,13 @@ const PokerRoom = () => {
         isAgainButtonDisabled={isAgainButtonDisabled}
       />
       <SprintPointArea
-        isSelectedNumberCardResult={isSelectedNumberCardResult}
-        selectedNumberCardAverage={selectedNumberCardAverage}
+        isSelectedNumberCardResult={memoIsSelectedNumberCardResult}
+        selectedNumberCardAverage={memoSelectedNumberCardAverage}
       />
       <RoomUserCardList
         roomUsers={roomUsers}
         myUserName={myRoomDataToLocalStorage?.userName}
-        isSelectedNumberCardResult={isSelectedNumberCardResult}
+        isSelectedNumberCardResult={memoIsSelectedNumberCardResult}
       />
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">
