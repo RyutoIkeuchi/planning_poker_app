@@ -2,7 +2,7 @@ import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import io from "socket.io-client";
 import { ConfirmSelectNumberCardModal } from "src/components/ConfirmSelectNumberCardModal";
 import { FibonacciNumbers } from "src/components/FibonacciNumbers";
@@ -15,7 +15,6 @@ import { ResSelectedNumberCardType, UserType } from "src/types";
 
 const PokerRoom = () => {
   const router = useRouter();
-  const [queryId, setQueryId] = useState<string>("");
   const [myRoomDataToLocalStorage, setMyRoomDataToLocalStorage] = useState<UserType>();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
@@ -40,10 +39,17 @@ const PokerRoom = () => {
 
   const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
+  const memoQueryId = useMemo(() => {
+    if (router.asPath !== router.route && router.query.id !== undefined) {
+      return router.query.id as string;
+    }
+    return "";
+  }, [router]);
+
   const handleSubmitAgendaTitle = useCallback(async () => {
     socket.emit("send_agenda_title", {
       agenda_title: agendaTitle,
-      room_id: queryId,
+      room_id: memoQueryId,
     });
     const data = {
       agenda_title: agendaTitle,
@@ -51,7 +57,7 @@ const PokerRoom = () => {
     await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}`, data);
     setCanChangeAgendaTitle(false);
     setIsCancelAgendaTitleDisabled(false);
-  }, [agendaTitle, queryId, myRoomDataToLocalStorage, socket]);
+  }, [agendaTitle, memoQueryId, myRoomDataToLocalStorage, socket]);
 
   const handleCancelAgendaTitle = useCallback(async () => {
     setAgendaTitle("");
@@ -60,13 +66,13 @@ const PokerRoom = () => {
     setIsSelectedNumberCardResult(false);
     socket.emit("send_agenda_title", {
       agenda_title: "",
-      room_id: queryId,
+      room_id: memoQueryId,
     });
     const data = {
       agenda_title: "",
     };
     await api.put(`/pokers/${myRoomDataToLocalStorage?.roomId}`, data);
-  }, [queryId, myRoomDataToLocalStorage, socket]);
+  }, [memoQueryId, myRoomDataToLocalStorage, socket]);
 
   const handleResultSelectNumberCard = useCallback(() => {
     socket.emit("send_poker_status", {
@@ -192,12 +198,12 @@ const PokerRoom = () => {
     }
   }, [newAgendaTitle]);
 
-  const checkRoomId = async (queryId: string) => {
-    if (myRoomDataToLocalStorage?.roomId !== queryId) {
+  const checkRoomId = async (localRoomId: string) => {
+    if (localRoomId !== memoQueryId) {
       router.replace("/");
     }
     try {
-      const response = await api.get(`/pokers/${queryId}`);
+      const response = await api.get(`/pokers/${memoQueryId}`);
       const convertToCamelCase = response.data.users.map((res: any) => ({
         id: res.id,
         hostUser: res.host_user,
@@ -232,8 +238,10 @@ const PokerRoom = () => {
 
   const getRoomDataToLocalStorage = useCallback(() => {
     const response = localStorage.getItem("ROOM_DATA");
-    if (typeof response == "string") {
-      setMyRoomDataToLocalStorage(JSON.parse(response));
+    if (typeof response === "string") {
+      const parsedResponseData = JSON.parse(response);
+      setMyRoomDataToLocalStorage(parsedResponseData);
+      return parsedResponseData.roomId;
     }
   }, []);
 
@@ -244,11 +252,11 @@ const PokerRoom = () => {
     );
     if (response.status == 204) {
       if (myRoomDataToLocalStorage?.hostUser) {
-        await api.delete(`/pokers/${queryId}`);
+        await api.delete(`/pokers/${memoQueryId}`);
       }
       router.push("/");
     }
-  }, [myRoomDataToLocalStorage, queryId, router]);
+  }, [myRoomDataToLocalStorage, memoQueryId, router]);
 
   const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
     setIsConfirmModal(true);
@@ -288,11 +296,11 @@ const PokerRoom = () => {
   }, [router]);
 
   useEffect(() => {
-    getRoomDataToLocalStorage();
-    if (queryId) {
-      checkRoomId(queryId);
+    const resQueryIdToLocalStorage = getRoomDataToLocalStorage();
+    if (memoQueryId) {
+      checkRoomId(resQueryIdToLocalStorage);
     }
-  }, [queryId]);
+  }, [memoQueryId]);
 
   const handleBeforeUnload = useCallback((event) => {
     event.returnValue = "ポーカールーム画面から離れます";
@@ -320,7 +328,7 @@ const PokerRoom = () => {
         <ConfirmSelectNumberCardModal
           selectNumberCard={selectNumberCard}
           socket={socket}
-          roomId={queryId}
+          roomId={memoQueryId}
           userId={myRoomDataToLocalStorage?.id}
           userName={myRoomDataToLocalStorage?.userName || ""}
           setIsConfirmModal={setIsConfirmModal}
