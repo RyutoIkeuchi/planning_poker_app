@@ -92,7 +92,6 @@ const PokerRoom = () => {
   // statusが'result'になったら平均値を取得
   const memoSelectedNumberCardAverage = useMemo(() => {
     if (memoPokerStatus === "result") {
-      console.log("こっち行った");
       return calculateAverageOfSelectCard();
     }
     return 0;
@@ -158,7 +157,7 @@ const PokerRoom = () => {
     await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}`, data);
     setCanChangeAgendaTitle(false);
     setIsCancelAgendaTitleDisabled(false);
-  }, [agendaTitle, memoQueryId, memoRoomDataToLocalStorage, socket]);
+  }, [agendaTitle, memoQueryId, memoRoomDataToLocalStorage]);
 
   // 議題を取り消す処理をAPIとsocketに行う
   const handleCancelAgendaTitle = useCallback(async () => {
@@ -175,7 +174,7 @@ const PokerRoom = () => {
     };
     await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}`, data);
     await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users`);
-  }, [memoQueryId, memoRoomDataToLocalStorage, socket]);
+  }, [memoQueryId, memoRoomDataToLocalStorage]);
 
   // 選択したカードの確認モーダルを出す
   const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
@@ -189,7 +188,7 @@ const PokerRoom = () => {
       room_id: memoRoomDataToLocalStorage?.roomId,
       status: "result",
     });
-  }, [memoRoomDataToLocalStorage, socket]);
+  }, [memoRoomDataToLocalStorage]);
 
   // もう一度カードを選択し直す処理をAPIとsocketに送信
   const handleAgainSelectNumberCard = useCallback(async () => {
@@ -205,7 +204,7 @@ const PokerRoom = () => {
     }));
     setRoomUsers(resetIsSelectedUsers);
     await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users/`);
-  }, [memoRoomDataToLocalStorage, socket]);
+  }, [memoRoomDataToLocalStorage, roomUsers]);
 
   // 部屋を離れて、APIのデータから自分のユーザー情報を削除
   const handleLeaveTheRoom = useCallback(async () => {
@@ -225,6 +224,7 @@ const PokerRoom = () => {
     if (memoQueryId) {
       checkRoomId();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memoQueryId]);
 
   useEffect(() => {
