@@ -48,12 +48,96 @@ const PokerRoom = () => {
     }
   }, []);
 
+  const memoIsAllUserIsSelected = useMemo(() => {
+    return roomUsers.every((user) => user.isSelected);
+  }, [roomUsers]);
+
+  const memoSelectNumberCardStatus = useMemo(() => {
+    if (isResultButtonDisabled && memoIsAllUserIsSelected) {
+      return "result";
+    }
+    return selectNumberCardStatus;
+  }, [selectNumberCardStatus, memoIsAllUserIsSelected, isResultButtonDisabled]);
+
+  const memoIsSelectedNumberCardResult = useMemo(() => {
+    if (canChangeAgendaTitle) {
+      return false;
+    }
+    return memoSelectNumberCardStatus === "result";
+  }, [memoSelectNumberCardStatus, canChangeAgendaTitle]);
+
+  useEffect(() => {
+    if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
+      setRoomUsers([...roomUsers, newMyRoomUser]);
+    }
+  }, [newMyRoomUser]);
+
+  const calculateAverageOfSelectCard = useCallback(() => {
+    const filterNotSelectUserList = roomUsers.filter((user) => {
+      if (user.selectedNumberCard !== "/") {
+        return user;
+      }
+    });
+    const total: number = filterNotSelectUserList.reduce(
+      (acc, cur: UserType) => acc + Number(cur.selectedNumberCard),
+      0,
+    );
+    const average = total / filterNotSelectUserList.length;
+    return average;
+  }, [roomUsers]);
+
+  const memoSelectedNumberCardAverage = useMemo(() => {
+    if (memoSelectNumberCardStatus === "result") {
+      return calculateAverageOfSelectCard();
+    }
+    return 0;
+  }, [calculateAverageOfSelectCard, memoSelectNumberCardStatus]);
+
   const memoQueryId = useMemo(() => {
     if (router.asPath !== router.route && router.query.id !== undefined) {
       return router.query.id as string;
     }
     return "";
   }, [router]);
+
+  const checkRoomId = async () => {
+    const roomIdToLocalStorage = memoRoomDataToLocalStorage.roomId;
+    if (roomIdToLocalStorage !== memoQueryId) {
+      router.replace("/");
+    }
+    try {
+      const response = await api.get(`/pokers/${memoQueryId}`);
+      const convertToCamelCase = response.data.users.map((res: any) => ({
+        id: res.id,
+        hostUser: res.host_user,
+        isSelected: res.selected_number_card !== "",
+        roomId: res.owner_id,
+        selectedNumberCard: res.selected_number_card,
+        userName: res.user_name,
+      }));
+      setRoomUsers(convertToCamelCase);
+      const allRoomUserIsSelected = convertToCamelCase.every((user) => user.isSelected);
+      const agendaTitle = response.data.agenda_title;
+      setAgendaTitle(agendaTitle);
+      if (agendaTitle !== "") {
+        setIsCancelAgendaTitleDisabled(false);
+        setIsSubmitAgendaTitleDisabled(true);
+        setCanChangeAgendaTitle(false);
+        setCanSelectNumberCard(true);
+        if (allRoomUserIsSelected) {
+          setCanSelectNumberCard(false);
+          setIsResultButtonDisabled(true);
+          setIsAgainButtonDisabled(false);
+          // setSelectNumberCardStatus("result");
+        }
+      }
+    } catch (error) {
+      if ((error as AxiosError).response?.status == 404) {
+        console.log("部屋が見つかりません");
+        router.push("/");
+      }
+    }
+  };
 
   const handleSubmitAgendaTitle = useCallback(async () => {
     socket.emit("send_agenda_title", {
@@ -84,12 +168,51 @@ const PokerRoom = () => {
     await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users`);
   }, [memoQueryId, memoRoomDataToLocalStorage, socket]);
 
+  const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
+    setIsConfirmModal(true);
+    setSelectNumberCard(useSelectNumberCard);
+  }, []);
+
   const handleResultSelectNumberCard = useCallback(() => {
     socket.emit("send_poker_status", {
       room_id: memoRoomDataToLocalStorage?.roomId,
       status: "result",
     });
   }, [memoRoomDataToLocalStorage, socket]);
+
+  const handleAgainSelectNumberCard = useCallback(async () => {
+    setIsResultButtonDisabled(true);
+    socket.emit("send_poker_status", {
+      room_id: memoRoomDataToLocalStorage?.roomId,
+      status: "reset",
+    });
+    const resetIsSelectedUsers = roomUsers.map((user) => ({
+      ...user,
+      isSelected: false,
+      selectedNumberCard: "",
+    }));
+    setRoomUsers(resetIsSelectedUsers);
+    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users/`);
+  }, [memoRoomDataToLocalStorage, socket]);
+
+  const handleLeaveTheRoom = useCallback(async () => {
+    localStorage.removeItem("ROOM_DATA");
+    const response = await api.delete(
+      `/pokers/${memoRoomDataToLocalStorage?.roomId}/users/${memoRoomDataToLocalStorage?.id}`,
+    );
+    if (response.status == 204) {
+      if (memoRoomDataToLocalStorage?.hostUser) {
+        await api.delete(`/pokers/${memoQueryId}`);
+      }
+      router.push("/");
+    }
+  }, [memoRoomDataToLocalStorage, memoQueryId, router]);
+
+  useEffect(() => {
+    if (memoQueryId) {
+      checkRoomId();
+    }
+  }, [memoQueryId]);
 
   useEffect(() => {
     if (didLogRef.current === false) {
@@ -144,41 +267,21 @@ const PokerRoom = () => {
     };
   }, [memoRoomDataToLocalStorage]);
 
-  const memoIsAllUserIsSelected = useMemo(() => {
-    return roomUsers.every((user) => user.isSelected);
-  }, [roomUsers]);
-
-  const memoSelectNumberCardStatus = useMemo(() => {
-    if (isResultButtonDisabled && memoIsAllUserIsSelected) {
-      return "result";
-    }
-    return selectNumberCardStatus;
-  }, [selectNumberCardStatus, memoIsAllUserIsSelected, isResultButtonDisabled]);
-
   useEffect(() => {
-    if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
-      setRoomUsers([...roomUsers, newMyRoomUser]);
-    }
-  }, [newMyRoomUser]);
-
-  const memoIsSelectedNumberCardResult = useMemo(() => {
-    if (canChangeAgendaTitle) {
-      return false;
-    }
-    return memoSelectNumberCardStatus === "result";
-  }, [memoSelectNumberCardStatus, canChangeAgendaTitle]);
-
-  useEffect(() => {
-    if (selectNumberCardStatus === "reset") {
+    if (newAgendaTitle !== "") {
+      setAgendaTitle(newAgendaTitle);
+      setIsSubmitAgendaTitleDisabled(true);
       setCanSelectNumberCard(true);
+    } else {
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
         isSelected: false,
-        selectedNumberCard: "",
       }));
       setRoomUsers(resetIsSelectedUsers);
+      setAgendaTitle("");
+      setCanSelectNumberCard(false);
     }
-  }, [selectNumberCardStatus]);
+  }, [newAgendaTitle]);
 
   useEffect(() => {
     if (newSelectedNumberCard) {
@@ -203,119 +306,16 @@ const PokerRoom = () => {
   }, [newSelectedNumberCard]);
 
   useEffect(() => {
-    if (newAgendaTitle !== "") {
-      setAgendaTitle(newAgendaTitle);
-      setIsSubmitAgendaTitleDisabled(true);
+    if (selectNumberCardStatus === "reset") {
       setCanSelectNumberCard(true);
-    } else {
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
         isSelected: false,
+        selectedNumberCard: "",
       }));
       setRoomUsers(resetIsSelectedUsers);
-      setAgendaTitle("");
-      setCanSelectNumberCard(false);
     }
-  }, [newAgendaTitle]);
-
-  const checkRoomId = async () => {
-    const roomIdToLocalStorage = memoRoomDataToLocalStorage.roomId;
-    if (roomIdToLocalStorage !== memoQueryId) {
-      router.replace("/");
-    }
-    try {
-      const response = await api.get(`/pokers/${memoQueryId}`);
-      const convertToCamelCase = response.data.users.map((res: any) => ({
-        id: res.id,
-        hostUser: res.host_user,
-        isSelected: res.selected_number_card !== "",
-        roomId: res.owner_id,
-        selectedNumberCard: res.selected_number_card,
-        userName: res.user_name,
-      }));
-      setRoomUsers(convertToCamelCase);
-      const allRoomUserIsSelected = convertToCamelCase.every((user) => user.isSelected);
-      const agendaTitle = response.data.agenda_title;
-      setAgendaTitle(agendaTitle);
-      if (agendaTitle !== "") {
-        setIsCancelAgendaTitleDisabled(false);
-        setIsSubmitAgendaTitleDisabled(true);
-        setCanChangeAgendaTitle(false);
-        setCanSelectNumberCard(true);
-        if (allRoomUserIsSelected) {
-          setCanSelectNumberCard(false);
-          setIsResultButtonDisabled(true);
-          setIsAgainButtonDisabled(false);
-          // setSelectNumberCardStatus("result");
-        }
-      }
-    } catch (error) {
-      if ((error as AxiosError).response?.status == 404) {
-        console.log("部屋が見つかりません");
-        router.push("/");
-      }
-    }
-  };
-
-  const handleLeaveTheRoom = useCallback(async () => {
-    localStorage.removeItem("ROOM_DATA");
-    const response = await api.delete(
-      `/pokers/${memoRoomDataToLocalStorage?.roomId}/users/${memoRoomDataToLocalStorage?.id}`,
-    );
-    if (response.status == 204) {
-      if (memoRoomDataToLocalStorage?.hostUser) {
-        await api.delete(`/pokers/${memoQueryId}`);
-      }
-      router.push("/");
-    }
-  }, [memoRoomDataToLocalStorage, memoQueryId, router]);
-
-  const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
-    setIsConfirmModal(true);
-    setSelectNumberCard(useSelectNumberCard);
-  }, []);
-
-  const handleAgainSelectNumberCard = useCallback(async () => {
-    setIsResultButtonDisabled(true);
-    socket.emit("send_poker_status", {
-      room_id: memoRoomDataToLocalStorage?.roomId,
-      status: "reset",
-    });
-    const resetIsSelectedUsers = roomUsers.map((user) => ({
-      ...user,
-      isSelected: false,
-      selectedNumberCard: "",
-    }));
-    setRoomUsers(resetIsSelectedUsers);
-    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users/`);
-  }, [memoRoomDataToLocalStorage, socket]);
-
-  const calculateAverageOfSelectCard = useCallback(() => {
-    const filterNotSelectUserList = roomUsers.filter((user) => {
-      if (user.selectedNumberCard !== "/") {
-        return user;
-      }
-    });
-    const total: number = filterNotSelectUserList.reduce(
-      (acc, cur: UserType) => acc + Number(cur.selectedNumberCard),
-      0,
-    );
-    const average = total / filterNotSelectUserList.length;
-    return average;
-  }, [roomUsers]);
-
-  const memoSelectedNumberCardAverage = useMemo(() => {
-    if (memoSelectNumberCardStatus === "result") {
-      return calculateAverageOfSelectCard();
-    }
-    return 0;
-  }, [calculateAverageOfSelectCard, memoSelectNumberCardStatus]);
-
-  useEffect(() => {
-    if (memoQueryId) {
-      checkRoomId();
-    }
-  }, [memoQueryId]);
+  }, [selectNumberCardStatus]);
 
   return (
     <div className="relative">
