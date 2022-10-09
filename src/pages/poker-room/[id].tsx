@@ -20,15 +20,19 @@ const PokerRoom = () => {
   usePopState();
   const router = useRouter();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
-  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
-  const [selectNumberCard, setSelectNumberCard] = useState<string>("");
+  // 議題の文字と入力できるかの真偽値
+  const [agendaTitle, setAgendaTitle] = useState("");
+  const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
+  // 議題の送信とキャンセルの真偽値
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
   const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
+  // 選択したカードと選択できる状態かとモーダルの真偽値
+  const [selectNumberCard, setSelectNumberCard] = useState<string>("");
+  const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
+  const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
+  // ポーカーの結果ともう一度ボタンの真偽値
   const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
-  const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
-  const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
-  const [agendaTitle, setAgendaTitle] = useState("");
 
   // socketで受け取った値をstate管理するもの
   const [resNewUserToSocket, setResNewUserToSocket] = useState<UserType>();
@@ -38,6 +42,7 @@ const PokerRoom = () => {
 
   const didLogRef = useRef(false);
 
+  // ローカルストレージに保存しているデータを取得
   const memoRoomDataToLocalStorage = useMemo(() => {
     if (typeof window !== "undefined") {
       const response = localStorage.getItem("ROOM_DATA");
@@ -48,10 +53,12 @@ const PokerRoom = () => {
     }
   }, []);
 
+  // 部屋にいる全てのユーザーがカードを選択済みかの確認
   const memoIsAllUserIsSelected = useMemo(() => {
     return roomUsers.every((user) => user.isSelected);
   }, [roomUsers]);
 
+  // 
   const memoSelectNumberCardStatus = useMemo(() => {
     if (isResultButtonDisabled && memoIsAllUserIsSelected) {
       return "result";
