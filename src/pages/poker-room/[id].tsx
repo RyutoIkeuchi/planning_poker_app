@@ -10,10 +10,12 @@ import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
+import { usePopState } from "src/hooks/usePopState";
 import { api } from "src/service/api";
 import { ResSelectedNumberCardType, UserType } from "src/types";
 
 const PokerRoom = () => {
+  usePopState();
   const router = useRouter();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
   const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
@@ -314,25 +316,6 @@ const PokerRoom = () => {
       checkRoomId();
     }
   }, [memoQueryId]);
-
-  const handleBeforeUnload = useCallback((event) => {
-    event.returnValue = "ポーカールーム画面から離れます";
-  }, []);
-
-  const handlePopState = useCallback(() => {
-    alert("ブラウザバックを使わないでください。");
-    history.go(1);
-  }, []);
-
-  useEffect(() => {
-    history.pushState(null, null, null);
-    window.addEventListener("popstate", handlePopState);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.addEventListener("popstate", handlePopState);
-    };
-  }, []);
 
   return (
     <div className="relative">
