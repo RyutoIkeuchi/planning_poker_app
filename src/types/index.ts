@@ -12,3 +12,5 @@ export type ResSelectedNumberCardType = {
   selectedNumberCard: string;
   userName: string;
 };
+
+export type PokerStatusType = "result" | "reset" | "default";

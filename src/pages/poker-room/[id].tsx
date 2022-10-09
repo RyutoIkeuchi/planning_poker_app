@@ -12,15 +12,14 @@ import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import { usePopState } from "src/hooks/usePopState";
 import { api } from "src/service/api";
-import { ResSelectedNumberCardType, UserType } from "src/types";
+import { PokerStatusType, ResSelectedNumberCardType, UserType } from "src/types";
+
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
 const PokerRoom = () => {
   usePopState();
   const router = useRouter();
   const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
-  const [newMyRoomUser, setNewMyRoomUser] = useState<UserType>();
-  const [newSelectedNumberCard, setNewSelectedNumberCard] = useState<ResSelectedNumberCardType>();
-  const [newAgendaTitle, setNewAgendaTitle] = useState<string>("");
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
   const [selectNumberCard, setSelectNumberCard] = useState<string>("");
   const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
@@ -29,14 +28,15 @@ const PokerRoom = () => {
   const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
   const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
   const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
-
   const [agendaTitle, setAgendaTitle] = useState("");
-  const [selectNumberCardStatus, setSelectNumberCardStatus] = useState<
-    "result" | "reset" | "default"
-  >("default");
-  const didLogRef = useRef(false);
 
-  const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
+  // socketで受け取った値をstate管理するもの
+  const [resNewUserToSocket, setResNewUserToSocket] = useState<UserType>();
+  const [resNewCardToSocket, setResNewCardToSocket] = useState<ResSelectedNumberCardType>();
+  const [resNewAgendaTitleToSocket, setResNewAgendaTitleToSocket] = useState<string>("");
+  const [resPokerStatusToSocket, setResPokerStatusToSocket] = useState<PokerStatusType>("default");
+
+  const didLogRef = useRef(false);
 
   const memoRoomDataToLocalStorage = useMemo(() => {
     if (typeof window !== "undefined") {
@@ -56,8 +56,8 @@ const PokerRoom = () => {
     if (isResultButtonDisabled && memoIsAllUserIsSelected) {
       return "result";
     }
-    return selectNumberCardStatus;
-  }, [selectNumberCardStatus, memoIsAllUserIsSelected, isResultButtonDisabled]);
+    return resPokerStatusToSocket;
+  }, [resPokerStatusToSocket, memoIsAllUserIsSelected, isResultButtonDisabled]);
 
   const memoIsSelectedNumberCardResult = useMemo(() => {
     if (canChangeAgendaTitle) {
@@ -65,12 +65,6 @@ const PokerRoom = () => {
     }
     return memoSelectNumberCardStatus === "result";
   }, [memoSelectNumberCardStatus, canChangeAgendaTitle]);
-
-  useEffect(() => {
-    if (newMyRoomUser && !roomUsers.some((user) => user.userName === newMyRoomUser.userName)) {
-      setRoomUsers([...roomUsers, newMyRoomUser]);
-    }
-  }, [newMyRoomUser]);
 
   const calculateAverageOfSelectCard = useCallback(() => {
     const filterNotSelectUserList = roomUsers.filter((user) => {
@@ -88,6 +82,7 @@ const PokerRoom = () => {
 
   const memoSelectedNumberCardAverage = useMemo(() => {
     if (memoSelectNumberCardStatus === "result") {
+      console.log("こっち行った");
       return calculateAverageOfSelectCard();
     }
     return 0;
@@ -128,7 +123,7 @@ const PokerRoom = () => {
           setCanSelectNumberCard(false);
           setIsResultButtonDisabled(true);
           setIsAgainButtonDisabled(false);
-          // setSelectNumberCardStatus("result");
+          // setResPokerStatusToSocket("result");
         }
       }
     } catch (error) {
@@ -227,7 +222,7 @@ const PokerRoom = () => {
         });
 
         socket.on("res_add_user", (data) => {
-          setNewMyRoomUser({
+          setResNewUserToSocket({
             id: data.id,
             hostUser: data.host_user,
             isSelected: false,
@@ -239,7 +234,7 @@ const PokerRoom = () => {
 
         socket.on("res_selected_number_card", (data) => {
           console.log("他のユーザーが選んだ番号を受信しました", data);
-          setNewSelectedNumberCard({
+          setResNewCardToSocket({
             roomId: data.room_id,
             selectedNumberCard: data.selected_number_card,
             userName: data.user_name,
@@ -248,12 +243,12 @@ const PokerRoom = () => {
 
         socket.on("res_agenda_title", (data) => {
           console.log("議題タイトルを受信しました", data);
-          setNewAgendaTitle(data.agenda_title);
+          setResNewAgendaTitleToSocket(data.agenda_title);
         });
 
         socket.on("res_poker_status", (data) => {
           console.log("カードの状態を受信しました", data);
-          setSelectNumberCardStatus(data.status);
+          setResPokerStatusToSocket(data.status);
         });
       });
     } else {
@@ -268,8 +263,17 @@ const PokerRoom = () => {
   }, [memoRoomDataToLocalStorage]);
 
   useEffect(() => {
-    if (newAgendaTitle !== "") {
-      setAgendaTitle(newAgendaTitle);
+    if (
+      resNewUserToSocket &&
+      !roomUsers.some((user) => user.userName === resNewUserToSocket.userName)
+    ) {
+      setRoomUsers([...roomUsers, resNewUserToSocket]);
+    }
+  }, [resNewUserToSocket]);
+
+  useEffect(() => {
+    if (resNewAgendaTitleToSocket !== "") {
+      setAgendaTitle(resNewAgendaTitleToSocket);
       setIsSubmitAgendaTitleDisabled(true);
       setCanSelectNumberCard(true);
     } else {
@@ -281,17 +285,17 @@ const PokerRoom = () => {
       setAgendaTitle("");
       setCanSelectNumberCard(false);
     }
-  }, [newAgendaTitle]);
+  }, [resNewAgendaTitleToSocket]);
 
   useEffect(() => {
-    if (newSelectedNumberCard) {
+    if (resNewCardToSocket) {
       setIsAgainButtonDisabled(false);
       const updateRoomUserStatus = roomUsers.map((user) => {
-        if (user.userName === newSelectedNumberCard.userName) {
+        if (user.userName === resNewCardToSocket.userName) {
           return {
             ...user,
             isSelected: true,
-            selectedNumberCard: newSelectedNumberCard.selectedNumberCard,
+            selectedNumberCard: resNewCardToSocket.selectedNumberCard,
           };
         }
         return user;
@@ -303,10 +307,10 @@ const PokerRoom = () => {
         setIsResultButtonDisabled(false);
       }
     }
-  }, [newSelectedNumberCard]);
+  }, [resNewCardToSocket]);
 
   useEffect(() => {
-    if (selectNumberCardStatus === "reset") {
+    if (resPokerStatusToSocket === "reset") {
       setCanSelectNumberCard(true);
       const resetIsSelectedUsers = roomUsers.map((user) => ({
         ...user,
@@ -315,7 +319,7 @@ const PokerRoom = () => {
       }));
       setRoomUsers(resetIsSelectedUsers);
     }
-  }, [selectNumberCardStatus]);
+  }, [resPokerStatusToSocket]);
 
   return (
     <div className="relative">
