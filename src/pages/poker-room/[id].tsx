@@ -37,10 +37,12 @@ const PokerRoom = () => {
   const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
   const memoRoomDataToLocalStorage = useMemo(() => {
-    const response = localStorage.getItem("ROOM_DATA");
-    if (typeof response === "string") {
-      const parsedResponseData = JSON.parse(response);
-      return parsedResponseData;
+    if (typeof window !== "undefined") {
+      const response = localStorage.getItem("ROOM_DATA");
+      if (typeof response === "string") {
+        const parsedResponseData = JSON.parse(response);
+        return parsedResponseData;
+      }
     }
   }, []);
 
@@ -346,21 +348,23 @@ const PokerRoom = () => {
           setCanSelectNumberCard={setCanSelectNumberCard}
         />
       )}
-      <AgendaTitleArea
-        isHostUser={memoRoomDataToLocalStorage?.hostUser}
-        agendaTitle={agendaTitle}
-        setAgendaTitle={setAgendaTitle}
-        canChangeAgendaTitle={canChangeAgendaTitle}
-        handleSubmitAgendaTitle={handleSubmitAgendaTitle}
-        isSubmitAgendaTitleDisabled={isSubmitAgendaTitleDisabled}
-        setIsSubmitAgendaTitleDisabled={setIsSubmitAgendaTitleDisabled}
-        handleCancelAgendaTitle={handleCancelAgendaTitle}
-        isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
-        handleResultSelectNumberCard={handleResultSelectNumberCard}
-        isResultButtonDisabled={isResultButtonDisabled}
-        handleAgainSelectNumberCard={handleAgainSelectNumberCard}
-        isAgainButtonDisabled={isAgainButtonDisabled}
-      />
+      {memoQueryId && (
+        <AgendaTitleArea
+          isHostUser={memoRoomDataToLocalStorage?.hostUser}
+          agendaTitle={agendaTitle}
+          setAgendaTitle={setAgendaTitle}
+          canChangeAgendaTitle={canChangeAgendaTitle}
+          handleSubmitAgendaTitle={handleSubmitAgendaTitle}
+          isSubmitAgendaTitleDisabled={isSubmitAgendaTitleDisabled}
+          setIsSubmitAgendaTitleDisabled={setIsSubmitAgendaTitleDisabled}
+          handleCancelAgendaTitle={handleCancelAgendaTitle}
+          isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
+          handleResultSelectNumberCard={handleResultSelectNumberCard}
+          isResultButtonDisabled={isResultButtonDisabled}
+          handleAgainSelectNumberCard={handleAgainSelectNumberCard}
+          isAgainButtonDisabled={isAgainButtonDisabled}
+        />
+      )}
       <SprintPointArea
         isSelectedNumberCardResult={memoIsSelectedNumberCardResult}
         selectedNumberCardAverage={memoSelectedNumberCardAverage}
