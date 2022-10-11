@@ -1,10 +1,13 @@
-export type UserType = {
+export type ToLocalStorageUserType = {
   id: number;
   hostUser: boolean;
-  isSelected: boolean;
   roomId: string;
-  selectedNumberCard: string;
+  selectedNumberCard?: string;
   userName: string;
+};
+
+export type UserType = ToLocalStorageUserType & {
+  isSelected: boolean;
 };
 
 export type ResSelectedNumberCardType = {
