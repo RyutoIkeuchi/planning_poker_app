@@ -11,8 +11,14 @@ import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import { usePopState } from "src/hooks/usePopState";
+import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
-import { PokerStatusType, ResSelectedNumberCardType, UserType } from "src/types";
+import {
+  PokerStatusType,
+  ResSelectedNumberCardType,
+  ToLocalStorageUserType,
+  UserType,
+} from "src/types";
 
 const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
 
@@ -43,7 +49,7 @@ const PokerRoom = () => {
   const didLogRef = useRef(false);
 
   // ローカルストレージに保存しているデータを取得
-  const memoRoomDataToLocalStorage = useMemo(() => {
+  const memoRoomDataToLocalStorage: Required<ToLocalStorageUserType> = useMemo(() => {
     if (typeof window !== "undefined") {
       const response = localStorage.getItem("ROOM_DATA");
       if (typeof response === "string") {
@@ -113,14 +119,13 @@ const PokerRoom = () => {
     }
     try {
       const response = await api.get(`/pokers/${memoQueryId}`);
-      const convertToCamelCase = response.data.users.map((res: any) => ({
-        id: res.id,
-        hostUser: res.host_user,
-        isSelected: res.selected_number_card !== "",
-        roomId: res.owner_id,
-        selectedNumberCard: res.selected_number_card,
-        userName: res.user_name,
-      }));
+      const convertToCamelCase: UserType[] = response.data.users.map((res: any) => {
+        const convertObj = toLowerCamelCaseObj(res);
+        return {
+          ...convertObj,
+          isSelected: res.selected_number_card !== "",
+        };
+      });
       setRoomUsers(convertToCamelCase);
       const allRoomUserIsSelected = convertToCamelCase.every((user) => user.isSelected);
       const agendaTitle = response.data.agenda_title;
@@ -224,7 +229,7 @@ const PokerRoom = () => {
     if (memoQueryId) {
       checkRoomId();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memoQueryId]);
 
   useEffect(() => {
@@ -240,14 +245,8 @@ const PokerRoom = () => {
         });
 
         socket.on("res_add_user", (data) => {
-          setResNewUserToSocket({
-            id: data.id,
-            hostUser: data.host_user,
-            isSelected: false,
-            roomId: data.room_id,
-            selectedNumberCard: "",
-            userName: data.user_name,
-          });
+          const convertObj = toLowerCamelCaseObj(data);
+          setResNewUserToSocket({ ...convertObj, isSelected: false });
         });
 
         socket.on("res_selected_number_card", (data) => {

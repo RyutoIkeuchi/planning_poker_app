@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import { ChangeEvent, useCallback, useState } from "react";
 import { EnterRoomIcon } from "src/components/Icon/EnterRoomIcon";
+import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
+import { ToLocalStorageUserType } from "src/types";
 
 const EnterRoom = () => {
   const [roomId, setRoomId] = useState<string>("");
@@ -17,15 +19,12 @@ const EnterRoom = () => {
       headers: { "content-type": "application/json" },
     });
     if (response.status == 200) {
-      const convertToCamelCase = {
-        id: response.data.id,
-        hostUser: response.data.host_user,
-        roomId: response.data.owner_id,
-        selectCard: "",
-        userName: response.data.user_name,
+      const convertObj = toLowerCamelCaseObj(response.data);
+      const addColumnToConvertObj: Required<ToLocalStorageUserType> = {
+        ...convertObj,
+        selectedNumberCard: "",
       };
-
-      localStorage.setItem("ROOM_DATA", JSON.stringify(convertToCamelCase));
+      localStorage.setItem("ROOM_DATA", JSON.stringify(addColumnToConvertObj));
       router.push(`/poker-room/${roomId}`);
     }
   }, [userName, router, roomId]);
