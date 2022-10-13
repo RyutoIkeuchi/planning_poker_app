@@ -1,20 +1,21 @@
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, useCallback, useState } from "react";
-import { CreateRoomIcon } from "src/components/Icon/CreateRoomIcon";
+import { useCallback, useEffect, useState } from "react";
+import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
 import { ToLocalStorageUserType } from "src/types";
 
 const CreateRoom = () => {
-  const [userName, setUserName] = useState<string>("");
   const router = useRouter();
+  const [percentage, setPercentage] = useState(0);
+  const [is100Percent, setIs100Percent] = useState(false);
+  const [roomId, setRoomId] = useState("");
 
   const handleCreateRoomId = useCallback(async () => {
-    const data = {
-      host_user: true,
-      user_name: userName,
-    };
-    const response = await api.post("/pokers", data);
+    const response = await api.post("/pokers");
     if (response.status == 200) {
       const convertObj = toLowerCamelCaseObj(response.data);
       const addColumnToConvertObj: Required<ToLocalStorageUserType> = {
@@ -22,34 +23,55 @@ const CreateRoom = () => {
         selectedNumberCard: "",
       };
       localStorage.setItem("ROOM_DATA", JSON.stringify(addColumnToConvertObj));
-      router.push(`/poker-room/${response.data.room_id}`);
+      setRoomId(response.data.room_id);
     }
-  }, [userName, router]);
+  }, [router]);
 
-  const handleChangeUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setUserName(e.target.value);
-  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPercentage((prev) => prev + 10);
+
+      if (percentage > 80) {
+        handleCreateRoomId();
+      }
+
+      if (percentage >= 100) {
+        clearInterval(interval);
+        setIs100Percent(true);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [percentage]);
 
   return (
     <div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
       <div className="mb-10">
-        <CreateRoomIcon />
-      </div>
-      <div className="w-full mb-10">
-        <input
-          type="text"
-          onChange={handleChangeUserName}
-          className="border w-full p-4"
-          placeholder="ユーザー名"
-        />
-      </div>
-      <div className="w-full">
-        <button
-          onClick={handleCreateRoomId}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-4"
-        >
-          部屋を作る
-        </button>
+        <div style={{ height: 400, width: 400 }}>
+          <CircularProgressbarWithChildren
+            value={percentage}
+            styles={buildStyles({
+              backgroundColor: "rgb(59 130 246)",
+              pathColor: "rgb(59 130 246)",
+              pathTransition: "stroke-dashoffset 0.5s ease 0s",
+              strokeLinecap: "round",
+              trailColor: "#d6d6d6",
+            })}
+          >
+            {is100Percent && roomId !== "" ? (
+              <Link href={`/poker-room/${roomId}`}>
+                <a className="text-2xl font-bold text-center underline flex items-center justify-center">
+                  <p className="mr-2">遷移する</p>
+                  <FontAwesomeIcon icon={faArrowRightToBracket} />
+                </a>
+              </Link>
+            ) : (
+              <p className="text-2xl font-bold text-center">作成中...</p>
+            )}
+          </CircularProgressbarWithChildren>
+        </div>
       </div>
     </div>
   );
