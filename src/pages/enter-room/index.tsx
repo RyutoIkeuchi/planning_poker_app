@@ -11,11 +11,7 @@ const EnterRoom = () => {
   const router = useRouter();
 
   const handleEnterTheRoom = useCallback(async () => {
-    const data = {
-      host_user: false,
-      user_name: userName,
-    };
-    const response = await api.post(`/pokers/${roomId}/users`, data, {
+    const response = await api.post(`/pokers/${roomId}/users`, {
       headers: { "content-type": "application/json" },
     });
     if (response.status == 200) {
@@ -41,14 +37,6 @@ const EnterRoom = () => {
     <div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
       <div className="mb-10">
         <EnterRoomIcon />
-      </div>
-      <div className="w-full mb-4">
-        <input
-          type="text"
-          onChange={handleChangeUserName}
-          className="border w-full p-4"
-          placeholder="ユーザー名"
-        />
       </div>
       <div className="w-full mb-4">
         <input
