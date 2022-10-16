@@ -13,10 +13,9 @@ const EnterRoom = () => {
     const existsRoomDataToLocalStorage = [...Array(localStorage.length)].some(
       (d, i) => localStorage.key(i) === "ROOM_DATA",
     );
-    console.log(existsRoomDataToLocalStorage);
     if (existsRoomDataToLocalStorage) {
       const roomData = localStorage.getItem("ROOM_DATA");
-      const parsedRoomData = JSON.parse(roomData);
+      const parsedRoomData: ToLocalStorageUserType = JSON.parse(roomData);
       if (parsedRoomData.hostUser) {
         await api.delete(`/pokers/${parsedRoomData.roomId}`);
       } else {
