@@ -30,16 +30,13 @@ const CreateRoom = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPercentage((prev) => prev + 10);
-
-      if (percentage > 80) {
-        handleCreateRoomId();
-      }
-
-      if (percentage >= 100) {
-        clearInterval(interval);
-        setIs100Percent(true);
-      }
     }, 500);
+
+    if (percentage >= 100) {
+      setIs100Percent(true);
+      handleCreateRoomId();
+      clearInterval(interval);
+    }
 
     return () => {
       clearInterval(interval);
