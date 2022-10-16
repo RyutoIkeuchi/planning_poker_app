@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useCallback } from "react";
 
 type RoomContentType = {
   href: string;
@@ -11,13 +11,18 @@ type RoomContentType = {
 export const RoomContent = (props: RoomContentType) => {
   const { href, icon, linkLabel } = props;
   const router = useRouter();
-  const confirmNavigationToCreateRoom = (href: string) => {
-    const isConfirmed = confirm("部屋を作成します。よろしいですか？");
-    if (!isConfirmed) {
-      return;
-    }
-    router.push(href);
-  };
+
+  const confirmNavigationToCreateRoom = useCallback(
+    (href: string) => {
+      const isConfirmed = confirm("部屋を作成します。よろしいですか？");
+      if (!isConfirmed) {
+        return;
+      }
+      router.push(href);
+    },
+    [router],
+  );
+
   return (
     <div>
       <div className="mb-4">{icon}</div>
