@@ -27,7 +27,28 @@ const CreateRoom = () => {
     }
   }, [router]);
 
+  const checkAndDeletePreviousData = useCallback(async () => {
+    const existsRoomDataToLocalStorage = [...Array(localStorage.length)].some(
+      (d, i) => localStorage.key(i) === "ROOM_DATA",
+    );
+    console.log(existsRoomDataToLocalStorage);
+    if (existsRoomDataToLocalStorage) {
+      const roomData = localStorage.getItem("ROOM_DATA");
+      const parsedRoomData = JSON.parse(roomData);
+      if (parsedRoomData.hostUser) {
+        await api.delete(`/pokers/${parsedRoomData.roomId}`);
+      } else {
+        await api.delete(`/pokers/${parsedRoomData.roomId}/users/${parsedRoomData.id}`);
+      }
+      localStorage.removeItem("ROOM_DATA");
+    }
+  }, []);
+
   useEffect(() => {
+    if (percentage === 0) {
+      checkAndDeletePreviousData();
+    }
+
     const interval = setInterval(() => {
       setPercentage((prev) => prev + 10);
     }, 500);
