@@ -13,6 +13,8 @@ const toLowerCamelCase = (str: string) => {
   return lowerCamelString;
 };
 
+// Todo:anyを変えたい
+// Todo:違う方法でobjectを生成させたい
 export const toLowerCamelCaseObj = (obj: any) => {
   const convertObj = {};
   Object.keys(obj).forEach((el) => {
