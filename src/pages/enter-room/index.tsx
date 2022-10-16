@@ -7,10 +7,27 @@ import { ToLocalStorageUserType } from "src/types";
 
 const EnterRoom = () => {
   const [roomId, setRoomId] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
   const router = useRouter();
 
+  const checkAndDeletePreviousData = useCallback(async () => {
+    const existsRoomDataToLocalStorage = [...Array(localStorage.length)].some(
+      (d, i) => localStorage.key(i) === "ROOM_DATA",
+    );
+    console.log(existsRoomDataToLocalStorage);
+    if (existsRoomDataToLocalStorage) {
+      const roomData = localStorage.getItem("ROOM_DATA");
+      const parsedRoomData = JSON.parse(roomData);
+      if (parsedRoomData.hostUser) {
+        await api.delete(`/pokers/${parsedRoomData.roomId}`);
+      } else {
+        await api.delete(`/pokers/${parsedRoomData.roomId}/users/${parsedRoomData.id}`);
+      }
+      localStorage.removeItem("ROOM_DATA");
+    }
+  }, []);
+
   const handleEnterTheRoom = useCallback(async () => {
+    await checkAndDeletePreviousData();
     const response = await api.post(`/pokers/${roomId}/users`, {
       headers: { "content-type": "application/json" },
     });
@@ -23,14 +40,10 @@ const EnterRoom = () => {
       localStorage.setItem("ROOM_DATA", JSON.stringify(addColumnToConvertObj));
       router.push(`/poker-room/${roomId}`);
     }
-  }, [userName, router, roomId]);
+  }, [router, roomId]);
 
   const handleChangeRoomId = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
-  }, []);
-
-  const handleChangeUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setUserName(e.target.value);
   }, []);
 
   return (
