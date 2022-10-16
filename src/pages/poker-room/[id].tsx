@@ -214,15 +214,14 @@ const PokerRoom = () => {
   // 部屋を離れて、APIのデータから自分のユーザー情報を削除
   const handleLeaveTheRoom = useCallback(async () => {
     localStorage.removeItem("ROOM_DATA");
-    const response = await api.delete(
-      `/pokers/${memoRoomDataToLocalStorage?.roomId}/users/${memoRoomDataToLocalStorage?.id}`,
-    );
-    if (response.status == 204) {
-      if (memoRoomDataToLocalStorage?.hostUser) {
-        await api.delete(`/pokers/${memoQueryId}`);
-      }
-      router.push("/");
+    if (memoRoomDataToLocalStorage?.hostUser) {
+      await api.delete(`/pokers/${memoQueryId}`);
+    } else {
+      await api.delete(
+        `/pokers/${memoRoomDataToLocalStorage?.roomId}/users/${memoRoomDataToLocalStorage?.id}`,
+      );
     }
+    router.push("/");
   }, [memoRoomDataToLocalStorage, memoQueryId, router]);
 
   useEffect(() => {
