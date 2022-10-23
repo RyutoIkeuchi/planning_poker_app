@@ -19,10 +19,26 @@ export const RoomUserCardList = (props: Props) => {
             key={index}
             className={`w-28 h-40 mr-10 ${user.userName === myUserName && "text-red-600"}`}
           >
-            <div className="w-full h-full border border-blue-600 shadow-lg flex justify-center items-center mb-4">
-              <p className="text-3xl">
-                {isSelectedNumberCardResult ? user.selectedNumberCard : user.isSelected ? "済" : "未"}
-              </p>
+            <div className="w-full h-full border border-blue-600 shadow-lg">
+              <div className="h-1/2 flex items-center justify-center">
+                <p className="text-3xl">
+                  {isSelectedNumberCardResult
+                    ? user.selectedNumberCard
+                    : user.isSelected
+                    ? "済"
+                    : "未"}
+                </p>
+              </div>
+              <hr />
+              <div className="h-1/2 flex items-center">
+                <img
+                  src={`https://joeschmoe.io/api/v1/${user.userName}`}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className='mx-auto'
+                />
+              </div>
             </div>
             <div className="flex justify-center items-center">
               {user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
