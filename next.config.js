@@ -1,5 +1,7 @@
-/** @type {import('next').NextConfig} */
 module.exports = {
+  images: {
+    domains: ["joeschmoe.io"],
+  },
   reactStrictMode: true,
   webpack(config) {
     config.module.rules.push({

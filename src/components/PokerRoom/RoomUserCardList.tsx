@@ -1,5 +1,6 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { UserType } from "src/types";
 
 type Props = {
@@ -30,14 +31,15 @@ export const RoomUserCardList = (props: Props) => {
                 </p>
               </div>
               <hr />
-              <div className="h-1/2 flex items-center">
-                <img
-                  src={`https://joeschmoe.io/api/v1/${user.userName}`}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className='mx-auto'
-                />
+              <div className="h-1/2 flex items-center justify-center">
+                <div className="w-[40px] h-[40px] relative">
+                  <Image
+                    src={`https://joeschmoe.io/api/v1/${user.userName}`}
+                    layout="fill"
+                    objectFit="contain"
+                    alt=""
+                  />
+                </div>
               </div>
             </div>
             <div className="flex justify-center items-center">
