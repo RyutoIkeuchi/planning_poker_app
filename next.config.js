@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ["joeschmoe.io"],
+    domains: ["joeschmoe.io", "www.joeschmoe.io"],
   },
   reactStrictMode: true,
   webpack(config) {
