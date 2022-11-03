@@ -1,52 +1,34 @@
 import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import io from "socket.io-client";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ConfirmSelectNumberCardModal } from "src/components/ConfirmSelectNumberCardModal";
 import { FibonacciNumbers } from "src/components/FibonacciNumbers";
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
+import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { usePopState } from "src/hooks/usePopState";
-import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
-import {
-  PokerStatusType,
-  ResSelectedNumberCardType,
-  ToLocalStorageUserType,
-  UserType,
-} from "src/types";
-
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_IO_URL);
+import { ToLocalStorageUserType } from "src/types";
 
 const PokerRoom = () => {
   usePopState();
   const router = useRouter();
-  const [roomUsers, setRoomUsers] = useState<Array<UserType>>([]);
-  // 議題の文字と入力できるかの真偽値
-  const [agendaTitle, setAgendaTitle] = useState("");
-  const [canChangeAgendaTitle, setCanChangeAgendaTitle] = useState<boolean>(true);
-  // 議題の送信とキャンセルの真偽値
-  const [isSubmitAgendaTitleDisabled, setIsSubmitAgendaTitleDisabled] = useState<boolean>(true);
-  const [isCancelAgendaTitleDisabled, setIsCancelAgendaTitleDisabled] = useState<boolean>(true);
   // 選択したカードと選択できる状態かとモーダルの真偽値
   const [selectNumberCard, setSelectNumberCard] = useState<string>("");
-  const [canSelectNumberCard, setCanSelectNumberCard] = useState<boolean>(false);
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
-  // ポーカーの結果ともう一度ボタンの真偽値
-  const [isResultButtonDisabled, setIsResultButtonDisabled] = useState<boolean>(true);
-  const [isAgainButtonDisabled, setIsAgainButtonDisabled] = useState<boolean>(true);
 
-  // socketで受け取った値をstate管理するもの
-  const [resNewUserToSocket, setResNewUserToSocket] = useState<UserType>();
-  const [resNewCardToSocket, setResNewCardToSocket] = useState<ResSelectedNumberCardType>();
-  const [resNewAgendaTitleToSocket, setResNewAgendaTitleToSocket] = useState<string>("");
-  const [resPokerStatusToSocket, setResPokerStatusToSocket] = useState<PokerStatusType>("default");
+  // routeからroomIdを取得
+  const memoQueryId = useMemo(() => {
+    if (router.asPath !== router.route && router.query.id !== undefined) {
+      return router.query.id as string;
+    }
+    return "";
+  }, [router]);
 
-  const didLogRef = useRef(false);
+  const { isError, isLoading, roomData } = usePokerRoom(memoQueryId);
 
   // ローカルストレージに保存しているデータを取得
   const memoRoomDataToLocalStorage: Required<ToLocalStorageUserType> = useMemo(() => {
@@ -59,157 +41,39 @@ const PokerRoom = () => {
     }
   }, []);
 
-  // 部屋にいる全てのユーザーがカードを選択済みかの確認
-  const memoIsAllUserIsSelected = useMemo(() => {
-    return roomUsers.every((user) => user.isSelected);
-  }, [roomUsers]);
-
-  // result(結果を出す)、reset(再度カード選択)、defaultの3パターン
-  const memoPokerStatus = useMemo(() => {
-    if (isResultButtonDisabled && memoIsAllUserIsSelected) {
-      return "result";
+  const isSelectedNumberCard = useMemo(() => {
+    if (roomData && roomData.pokerStatus === "result") {
+      return true;
     }
-    return resPokerStatusToSocket;
-  }, [resPokerStatusToSocket, memoIsAllUserIsSelected, isResultButtonDisabled]);
+    return false;
+  }, [roomData]);
 
-  // ポーカーの結果を出しても大丈夫かの確認
-  const memoIsSelectedNumberCardResult = useMemo(() => {
-    if (canChangeAgendaTitle) {
-      return false;
-    }
-    return memoPokerStatus === "result";
-  }, [memoPokerStatus, canChangeAgendaTitle]);
-
-  // 部屋に入るユーザーの選択したカードの平均値を割り出す
-  const calculateAverageOfSelectCard = useCallback(() => {
-    const filterNotSelectUserList = roomUsers.filter((user) => {
-      if (user.selectedNumberCard !== "/") {
-        return user;
+  const canSelectNumberCard = useMemo(() => {
+    if (roomData && roomData.pokerStatus === "reset" && roomData.agendaTitle !== "") {
+      const fendedMyUserData = roomData.users.find(
+        (user) => user.id === memoRoomDataToLocalStorage.id,
+      );
+      if (fendedMyUserData.isSelected) {
+        return false;
       }
-    });
-    const total: number = filterNotSelectUserList.reduce(
-      (acc, cur: UserType) => acc + Number(cur.selectedNumberCard),
-      0,
-    );
-    const average = total / filterNotSelectUserList.length;
-    return average;
-  }, [roomUsers]);
-
-  // statusが'result'になったら平均値を取得
-  const memoSelectedNumberCardAverage = useMemo(() => {
-    if (memoPokerStatus === "result") {
-      return calculateAverageOfSelectCard();
+      return true;
     }
-    return 0;
-  }, [calculateAverageOfSelectCard, memoPokerStatus]);
-
-  // routeからroomIdを取得
-  const memoQueryId = useMemo(() => {
-    if (router.asPath !== router.route && router.query.id !== undefined) {
-      return router.query.id as string;
-    }
-    return "";
-  }, [router]);
+    return false;
+  }, [roomData]);
 
   // 入れるroomIdと実際にアクセスしているroomIdが一致しているかの確認
-  const checkRoomId = async () => {
+  const checkRoomId = () => {
     const roomIdToLocalStorage = memoRoomDataToLocalStorage.roomId;
     if (roomIdToLocalStorage !== memoQueryId) {
       router.replace("/");
     }
-    try {
-      const response = await api.get(`/pokers/${memoQueryId}`);
-      const convertToCamelCase: UserType[] = response.data.users.map((res: any) => {
-        const convertObj = toLowerCamelCaseObj(res);
-        return {
-          ...convertObj,
-          isSelected: res.selected_number_card !== "",
-        };
-      });
-      setRoomUsers(convertToCamelCase);
-      const allRoomUserIsSelected = convertToCamelCase.every((user) => user.isSelected);
-      const agendaTitle = response.data.agenda_title;
-      setAgendaTitle(agendaTitle);
-      if (agendaTitle !== "") {
-        setIsCancelAgendaTitleDisabled(false);
-        setIsSubmitAgendaTitleDisabled(true);
-        setCanChangeAgendaTitle(false);
-        setCanSelectNumberCard(true);
-        if (allRoomUserIsSelected) {
-          setCanSelectNumberCard(false);
-          setIsResultButtonDisabled(true);
-          setIsAgainButtonDisabled(false);
-          // setResPokerStatusToSocket("result");
-        }
-      }
-    } catch (error) {
-      if ((error as AxiosError).response?.status == 404) {
-        console.log("部屋が見つかりません");
-        router.push("/");
-      }
-    }
   };
 
-  // 議題をAPIとsocketに送信
-  const handleSubmitAgendaTitle = useCallback(async () => {
-    socket.emit("send_agenda_title", {
-      agenda_title: agendaTitle,
-      room_id: memoQueryId,
-    });
-    const data = {
-      agenda_title: agendaTitle,
-    };
-    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}`, data);
-    setCanChangeAgendaTitle(false);
-    setIsCancelAgendaTitleDisabled(false);
-  }, [agendaTitle, memoQueryId, memoRoomDataToLocalStorage]);
-
-  // 議題を取り消す処理をAPIとsocketに行う
-  const handleCancelAgendaTitle = useCallback(async () => {
-    setAgendaTitle("");
-    setCanChangeAgendaTitle(true);
-    setIsCancelAgendaTitleDisabled(true);
-    // setIsSelectedNumberCardResult(false);
-    socket.emit("send_agenda_title", {
-      agenda_title: "",
-      room_id: memoQueryId,
-    });
-    const data = {
-      agenda_title: "",
-    };
-    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}`, data);
-    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users`);
-  }, [memoQueryId, memoRoomDataToLocalStorage]);
-
   // 選択したカードの確認モーダルを出す
-  const handleOpenConfirmModal = useCallback((useSelectNumberCard: string) => {
+  const handleOpenConfirmModal = useCallback((card: string) => {
     setIsConfirmModal(true);
-    setSelectNumberCard(useSelectNumberCard);
+    setSelectNumberCard(card);
   }, []);
-
-  // 結果を出せることをsocketでroomユーザー全員に送信
-  const handleResultSelectNumberCard = useCallback(() => {
-    socket.emit("send_poker_status", {
-      room_id: memoRoomDataToLocalStorage?.roomId,
-      status: "result",
-    });
-  }, [memoRoomDataToLocalStorage]);
-
-  // もう一度カードを選択し直す処理をAPIとsocketに送信
-  const handleAgainSelectNumberCard = useCallback(async () => {
-    setIsResultButtonDisabled(true);
-    socket.emit("send_poker_status", {
-      room_id: memoRoomDataToLocalStorage?.roomId,
-      status: "reset",
-    });
-    const resetIsSelectedUsers = roomUsers.map((user) => ({
-      ...user,
-      isSelected: false,
-      selectedNumberCard: "",
-    }));
-    setRoomUsers(resetIsSelectedUsers);
-    await api.put(`/pokers/${memoRoomDataToLocalStorage?.roomId}/users/`);
-  }, [memoRoomDataToLocalStorage, roomUsers]);
 
   // 部屋を離れて、APIのデータから自分のユーザー情報を削除
   const handleLeaveTheRoom = useCallback(async () => {
@@ -231,111 +95,8 @@ const PokerRoom = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memoQueryId]);
 
-  useEffect(() => {
-    if (didLogRef.current === false) {
-      didLogRef.current = true;
-      socket.on("connect", () => {
-        console.log("接続したよ！");
-        socket.emit("join", {
-          id: memoRoomDataToLocalStorage?.id,
-          host_user: memoRoomDataToLocalStorage?.hostUser,
-          room_id: memoRoomDataToLocalStorage?.roomId,
-          user_name: memoRoomDataToLocalStorage?.userName,
-        });
-
-        socket.on("res_add_user", (data) => {
-          const convertObj = toLowerCamelCaseObj(data);
-          setResNewUserToSocket({ ...convertObj, isSelected: false });
-        });
-
-        socket.on("res_selected_number_card", (data) => {
-          console.log("他のユーザーが選んだ番号を受信しました", data);
-          setResNewCardToSocket({
-            roomId: data.room_id,
-            selectedNumberCard: data.selected_number_card,
-            userName: data.user_name,
-          });
-        });
-
-        socket.on("res_agenda_title", (data) => {
-          console.log("議題タイトルを受信しました", data);
-          setResNewAgendaTitleToSocket(data.agenda_title);
-        });
-
-        socket.on("res_poker_status", (data) => {
-          console.log("カードの状態を受信しました", data);
-          setResPokerStatusToSocket(data.status);
-        });
-      });
-    } else {
-      didLogRef.current = false;
-    }
-
-    return () => {
-      if (didLogRef.current === false) {
-        socket.disconnect();
-      }
-    };
-  }, [memoRoomDataToLocalStorage]);
-
-  useEffect(() => {
-    if (
-      resNewUserToSocket &&
-      !roomUsers.some((user) => user.userName === resNewUserToSocket.userName)
-    ) {
-      setRoomUsers([...roomUsers, resNewUserToSocket]);
-    }
-  }, [resNewUserToSocket]);
-
-  useEffect(() => {
-    if (resNewAgendaTitleToSocket !== "") {
-      setAgendaTitle(resNewAgendaTitleToSocket);
-      setIsSubmitAgendaTitleDisabled(true);
-      setCanSelectNumberCard(true);
-    } else {
-      const resetIsSelectedUsers = roomUsers.map((user) => ({
-        ...user,
-        isSelected: false,
-      }));
-      setRoomUsers(resetIsSelectedUsers);
-      setAgendaTitle("");
-      setCanSelectNumberCard(false);
-    }
-  }, [resNewAgendaTitleToSocket]);
-
-  useEffect(() => {
-    if (resNewCardToSocket) {
-      setIsAgainButtonDisabled(false);
-      const updateRoomUserStatus = roomUsers.map((user) => {
-        if (user.userName === resNewCardToSocket.userName) {
-          return {
-            ...user,
-            isSelected: true,
-            selectedNumberCard: resNewCardToSocket.selectedNumberCard,
-          };
-        }
-        return user;
-      });
-      setRoomUsers(updateRoomUserStatus);
-
-      const checkNumberNotSelected = updateRoomUserStatus.every((user) => user.isSelected);
-      if (checkNumberNotSelected) {
-        setIsResultButtonDisabled(false);
-      }
-    }
-  }, [resNewCardToSocket]);
-
-  useEffect(() => {
-    if (resPokerStatusToSocket === "reset") {
-      setCanSelectNumberCard(true);
-      const resetIsSelectedUsers = roomUsers.map((user) => ({
-        ...user,
-        isSelected: false,
-        selectedNumberCard: "",
-      }));
-      setRoomUsers(resetIsSelectedUsers);
-    }
-  }, [resPokerStatusToSocket]);
+  if (isLoading) return <div>待機中...</div>;
+  if (isError) return <div>エラーになりました...</div>;
 
   return (
     <div className="relative">
@@ -343,39 +104,20 @@ const PokerRoom = () => {
       {isConfirmModal && (
         <ConfirmSelectNumberCardModal
           selectNumberCard={selectNumberCard}
-          socket={socket}
           roomId={memoQueryId}
           userId={memoRoomDataToLocalStorage?.id}
           userName={memoRoomDataToLocalStorage?.userName || ""}
           setIsConfirmModal={setIsConfirmModal}
-          setCanSelectNumberCard={setCanSelectNumberCard}
         />
       )}
       {memoQueryId && (
-        <AgendaTitleArea
-          isHostUser={memoRoomDataToLocalStorage?.hostUser}
-          agendaTitle={agendaTitle}
-          setAgendaTitle={setAgendaTitle}
-          canChangeAgendaTitle={canChangeAgendaTitle}
-          handleSubmitAgendaTitle={handleSubmitAgendaTitle}
-          isSubmitAgendaTitleDisabled={isSubmitAgendaTitleDisabled}
-          setIsSubmitAgendaTitleDisabled={setIsSubmitAgendaTitleDisabled}
-          handleCancelAgendaTitle={handleCancelAgendaTitle}
-          isCancelAgendaTitleDisabled={isCancelAgendaTitleDisabled}
-          handleResultSelectNumberCard={handleResultSelectNumberCard}
-          isResultButtonDisabled={isResultButtonDisabled}
-          handleAgainSelectNumberCard={handleAgainSelectNumberCard}
-          isAgainButtonDisabled={isAgainButtonDisabled}
-        />
+        <AgendaTitleArea roomId={memoQueryId} isHostUser={memoRoomDataToLocalStorage?.hostUser} />
       )}
-      <SprintPointArea
-        isSelectedNumberCardResult={memoIsSelectedNumberCardResult}
-        selectedNumberCardAverage={memoSelectedNumberCardAverage}
-      />
+      <SprintPointArea roomId={memoQueryId} isSelectedNumberCardResult={isSelectedNumberCard} />
       <RoomUserCardList
-        roomUsers={roomUsers}
+        roomId={memoQueryId}
         myUserName={memoRoomDataToLocalStorage?.userName}
-        isSelectedNumberCardResult={memoIsSelectedNumberCardResult}
+        isSelectedNumberCardResult={isSelectedNumberCard}
       />
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">

@@ -9,24 +9,7 @@ const EnterRoom = () => {
   const [roomId, setRoomId] = useState<string>("");
   const router = useRouter();
 
-  const checkAndDeletePreviousData = useCallback(async () => {
-    const existsRoomDataToLocalStorage = [...Array(localStorage.length)].some(
-      (d, i) => localStorage.key(i) === "ROOM_DATA",
-    );
-    if (existsRoomDataToLocalStorage) {
-      const roomData = localStorage.getItem("ROOM_DATA");
-      const parsedRoomData: ToLocalStorageUserType = JSON.parse(roomData);
-      if (parsedRoomData.hostUser) {
-        await api.delete(`/pokers/${parsedRoomData.roomId}`);
-      } else {
-        await api.delete(`/pokers/${parsedRoomData.roomId}/users/${parsedRoomData.id}`);
-      }
-      localStorage.removeItem("ROOM_DATA");
-    }
-  }, []);
-
   const handleEnterTheRoom = useCallback(async () => {
-    await checkAndDeletePreviousData();
     const response = await api.post(`/pokers/${roomId}/users`, {
       headers: { "content-type": "application/json" },
     });

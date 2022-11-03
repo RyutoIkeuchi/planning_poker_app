@@ -1,19 +1,53 @@
+import { useCallback, useMemo } from "react";
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
+import { usePokerRoom } from "src/hooks/usePokerRoom";
+import { api } from "src/service/api";
 
-export type ResultAndAgainButtonProps = {
-  handleAgainSelectNumberCard: () => void;
-  handleResultSelectNumberCard: () => void;
-  isAgainButtonDisabled: boolean;
-  isResultButtonDisabled: boolean;
+type Props = {
+  roomId: string;
 };
 
-export const ResultAndAgainButton = (props: ResultAndAgainButtonProps) => {
-  const {
-    handleAgainSelectNumberCard,
-    handleResultSelectNumberCard,
-    isAgainButtonDisabled,
-    isResultButtonDisabled,
-  } = props;
+export const ResultAndAgainButton = (props: Props) => {
+  const { roomId } = props;
+  const { mutate, roomData } = usePokerRoom(roomId);
+
+  const isResultButtonDisabled = useMemo(() => {
+    const allRoomUserIsSelected = roomData.users.every((user) => user.isSelected);
+    console.log("allRoomUserIsSelected", allRoomUserIsSelected);
+    if (allRoomUserIsSelected) {
+      return false;
+    }
+    return true;
+  }, [roomData]);
+
+  const isAgainButtonDisabled = useMemo(() => {
+    const allRoomUserIsSelected = roomData.users.every((user) => user.isSelected);
+    if (allRoomUserIsSelected) {
+      return false;
+    }
+    return true;
+  }, [roomData]);
+
+  const handleAgainSelectNumberCard = useCallback(async () => {
+    const data = {
+      poker_status: "reset",
+    };
+    await api.put(`/pokers/${roomId}`, data);
+    await api.put(`/pokers/${roomId}/users/`);
+  }, [roomId]);
+
+  const handleResultSelectNumberCard = useCallback(async () => {
+    const data = {
+      poker_status: "result",
+    };
+    await api.put(`/pokers/${roomId}`, data);
+    await mutate((data) => {
+      return {
+        ...data,
+        pokerStatus: "result",
+      };
+    });
+  }, [roomId]);
 
   return (
     <div className="flex justify-start">

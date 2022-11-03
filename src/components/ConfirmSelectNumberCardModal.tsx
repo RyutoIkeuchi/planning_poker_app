@@ -1,46 +1,27 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { Dispatch, SetStateAction, useCallback } from "react";
-import { Socket } from "socket.io-client";
 import { api } from "src/service/api";
 
 type Props = {
   roomId: string;
   selectNumberCard: string;
-  setCanSelectNumberCard: Dispatch<SetStateAction<boolean>>;
   setIsConfirmModal: Dispatch<SetStateAction<boolean>>;
-  socket: Socket<DefaultEventsMap, DefaultEventsMap>;
   userId: number;
   userName: string;
 };
 
 export const ConfirmSelectNumberCardModal = (props: Props) => {
-  const {
-    roomId,
-    selectNumberCard,
-    setCanSelectNumberCard,
-    setIsConfirmModal,
-    socket,
-    userId,
-    userName,
-  } = props;
+  const { roomId, selectNumberCard, setIsConfirmModal, userId } = props;
 
   const handleSubmitSelectNumberCard = useCallback(async () => {
-    socket.emit("send_selected_number_card", {
-      room_id: roomId,
-      selected_number_card: selectNumberCard,
-      user_name: userName,
-    });
-
     const data = {
       selected_number_card: selectNumberCard,
     };
 
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
     setIsConfirmModal(false);
-    setCanSelectNumberCard(false);
-  }, [socket, roomId, selectNumberCard, userName, userId, setIsConfirmModal, setCanSelectNumberCard]);
+  }, [roomId, selectNumberCard, userId, setIsConfirmModal]);
 
   const handleCloseConfirmModal = useCallback(() => {
     setIsConfirmModal(false);

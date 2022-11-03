@@ -1,20 +1,23 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { Key } from "react";
+import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
 
 type Props = {
   isSelectedNumberCardResult: boolean;
   myUserName: string;
-  roomUsers: UserType[];
+  roomId: string;
 };
 
 export const RoomUserCardList = (props: Props) => {
-  const { isSelectedNumberCardResult, myUserName, roomUsers } = props;
+  const { isSelectedNumberCardResult, myUserName, roomId } = props;
+  const { roomData } = usePokerRoom(roomId);
 
   return (
     <ul className="flex justify-start min-h-[500px]">
-      {roomUsers.map((user, index) => {
+      {roomData.users.map((user: UserType, index: Key) => {
         return (
           <li
             key={index}
