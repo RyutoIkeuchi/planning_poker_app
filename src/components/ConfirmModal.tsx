@@ -11,7 +11,7 @@ type Props = {
   userName: string;
 };
 
-export const ConfirmSelectNumberCardModal = (props: Props) => {
+export const ConfirmModal = (props: Props) => {
   const { roomId, selectNumberCard, setIsConfirmModal, userId } = props;
 
   const handleSubmitSelectNumberCard = useCallback(async () => {

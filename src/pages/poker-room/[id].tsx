@@ -2,7 +2,7 @@ import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ConfirmSelectNumberCardModal } from "src/components/ConfirmSelectNumberCardModal";
+import { ConfirmModal } from "src/components/ConfirmModal";
 import { FibonacciNumbers } from "src/components/FibonacciNumbers";
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
@@ -102,7 +102,7 @@ const PokerRoom = () => {
     <div className="relative">
       <RoomHeader roomId={router.query.id as string} handleLeaveTheRoom={handleLeaveTheRoom} />
       {isConfirmModal && (
-        <ConfirmSelectNumberCardModal
+        <ConfirmModal
           selectNumberCard={selectNumberCard}
           roomId={memoQueryId}
           userId={memoRoomDataToLocalStorage?.id}
