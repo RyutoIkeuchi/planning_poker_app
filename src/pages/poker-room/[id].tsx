@@ -2,15 +2,14 @@ import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ConfirmModal } from "src/components/ConfirmModal";
-import { FibonacciNumbers } from "src/components/FibonacciNumbers";
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
+import { ConfirmModal } from "src/components/PokerRoom/ConfirmModal";
+import { FibonacciNumbers } from "src/components/PokerRoom/FibonacciNumbers";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import { RoomUserCardList } from "src/components/PokerRoom/RoomUserCardList";
 import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { usePopState } from "src/hooks/usePopState";
-import { api } from "src/service/api";
 import { ToLocalStorageUserType } from "src/types";
 
 const PokerRoom = () => {
@@ -21,17 +20,17 @@ const PokerRoom = () => {
   const [isConfirmModal, setIsConfirmModal] = useState<boolean>(false);
 
   // routeからroomIdを取得
-  const memoQueryId = useMemo(() => {
+  const queryId = useMemo(() => {
     if (router.asPath !== router.route && router.query.id !== undefined) {
       return router.query.id as string;
     }
     return "";
   }, [router]);
 
-  const { isError, isLoading, roomData } = usePokerRoom(memoQueryId);
+  const { isError, isLoading, roomData } = usePokerRoom(queryId);
 
   // ローカルストレージに保存しているデータを取得
-  const memoRoomDataToLocalStorage: Required<ToLocalStorageUserType> = useMemo(() => {
+  const roomDataToLocalStorage: Required<ToLocalStorageUserType> = useMemo(() => {
     if (typeof window !== "undefined") {
       const response = localStorage.getItem("ROOM_DATA");
       if (typeof response === "string") {
@@ -41,19 +40,10 @@ const PokerRoom = () => {
     }
   }, []);
 
-  const isSelectedNumberCard = useMemo(() => {
-    if (roomData && roomData.pokerStatus === "result") {
-      return true;
-    }
-    return false;
-  }, [roomData]);
-
   const canSelectNumberCard = useMemo(() => {
     if (roomData && roomData.pokerStatus === "reset" && roomData.agendaTitle !== "") {
-      const fendedMyUserData = roomData.users.find(
-        (user) => user.id === memoRoomDataToLocalStorage.id,
-      );
-      if (fendedMyUserData.isSelected) {
+      const findMyUserData = roomData.users.find((user) => user.id === roomDataToLocalStorage.id);
+      if (findMyUserData.isSelected) {
         return false;
       }
       return true;
@@ -63,8 +53,8 @@ const PokerRoom = () => {
 
   // 入れるroomIdと実際にアクセスしているroomIdが一致しているかの確認
   const checkRoomId = () => {
-    const roomIdToLocalStorage = memoRoomDataToLocalStorage.roomId;
-    if (roomIdToLocalStorage !== memoQueryId) {
+    const roomIdToLocalStorage = roomDataToLocalStorage.roomId;
+    if (roomIdToLocalStorage !== queryId) {
       router.replace("/");
     }
   };
@@ -76,11 +66,11 @@ const PokerRoom = () => {
   }, []);
 
   useEffect(() => {
-    if (memoQueryId) {
+    if (queryId) {
       checkRoomId();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [memoQueryId]);
+  }, [queryId]);
 
   if (isLoading) return <div>待機中...</div>;
   if (isError) return <div>エラーになりました...</div>;
@@ -88,28 +78,24 @@ const PokerRoom = () => {
   return (
     <div className="relative">
       <RoomHeader
-        roomId={memoQueryId}
-        isHostUser={memoRoomDataToLocalStorage?.hostUser}
-        userId={memoRoomDataToLocalStorage?.id}
+        roomId={queryId}
+        isHostUser={roomDataToLocalStorage?.hostUser}
+        userId={roomDataToLocalStorage?.id}
       />
       {isConfirmModal && (
         <ConfirmModal
           selectNumberCard={selectNumberCard}
-          roomId={memoQueryId}
-          userId={memoRoomDataToLocalStorage?.id}
-          userName={memoRoomDataToLocalStorage?.userName || ""}
+          roomId={queryId}
+          userId={roomDataToLocalStorage?.id}
+          userName={roomDataToLocalStorage?.userName || ""}
           setIsConfirmModal={setIsConfirmModal}
         />
       )}
-      {memoQueryId && (
-        <AgendaTitleArea roomId={memoQueryId} isHostUser={memoRoomDataToLocalStorage?.hostUser} />
+      {queryId && (
+        <AgendaTitleArea roomId={queryId} isHostUser={roomDataToLocalStorage?.hostUser} />
       )}
-      <SprintPointArea roomId={memoQueryId} />
-      <RoomUserCardList
-        roomId={memoQueryId}
-        myUserName={memoRoomDataToLocalStorage?.userName}
-        isSelectedNumberCardResult={isSelectedNumberCard}
-      />
+      <SprintPointArea roomId={queryId} />
+      <RoomUserCardList roomId={queryId} myUserName={roomDataToLocalStorage?.userName} />
       <div className="fixed bottom-0">
         <div className="mb-4 flex justify-start items-center">
           <p className="text-xl mr-2">カードを選択</p>
