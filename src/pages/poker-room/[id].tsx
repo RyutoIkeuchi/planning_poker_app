@@ -104,7 +104,7 @@ const PokerRoom = () => {
       {memoQueryId && (
         <AgendaTitleArea roomId={memoQueryId} isHostUser={memoRoomDataToLocalStorage?.hostUser} />
       )}
-      <SprintPointArea roomId={memoQueryId} isSelectedNumberCardResult={isSelectedNumberCard} />
+      <SprintPointArea roomId={memoQueryId} />
       <RoomUserCardList
         roomId={memoQueryId}
         myUserName={memoRoomDataToLocalStorage?.userName}
