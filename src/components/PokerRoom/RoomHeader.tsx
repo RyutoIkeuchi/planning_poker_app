@@ -45,10 +45,8 @@ export const RoomHeader = (props: Props) => {
           <FontAwesomeIcon icon={faPaperclip} />
         </button>
         <div
-          css={[
-            tw`bg-white border p-2 rounded shadow-md ml-4 flex items-center justify-center`,
-            isCopiedText ? tw`block` : tw`hidden`,
-          ]}
+          tw="bg-white border p-2 rounded shadow-md ml-4"
+          className={`${isCopiedText ? "block" : "hidden"} flex items-center justify-center`}
         >
           <FontAwesomeIcon icon={faThumbsUp} tw="text-yellow-500 mr-2" />
           <p tw="text-sm">copied!</p>
