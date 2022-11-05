@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Key, useCallback } from "react";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
+import tw from "twin.macro";
 
 type Props = {
   myUserName: string;
@@ -22,24 +23,25 @@ export const RoomUserCardList = (props: Props) => {
   }, []);
 
   return (
-    <ul className="flex justify-start min-h-[500px]">
+    <ul tw="flex justify-start min-h-[500px]">
       {roomData.users.map((user: UserType, index: Key) => {
         return (
           <li
             key={index}
-            className={`w-28 h-40 mr-10 ${user.userName === myUserName && "text-red-600"}`}
+            css={user.userName === myUserName && tw`text-red-600`}
+            tw="w-28 h-40 mr-10"
           >
-            <div className="w-full h-full border border-blue-600 shadow-lg">
-              <div className="h-1/2 flex items-center justify-center">
-                <p className="text-3xl">
+            <div tw="w-full h-full border border-blue-600 shadow-lg">
+              <div tw="h-1/2 flex items-center justify-center">
+                <p tw="text-3xl">
                   {roomData.pokerStatus === "result"
                     ? user.selectedNumberCard
                     : selectedStatus(user.isSelected)}
                 </p>
               </div>
               <hr />
-              <div className="h-1/2 flex items-center justify-center">
-                <div className="w-[40px] h-[40px] relative">
+              <div tw="h-1/2 flex items-center justify-center">
+                <div tw="w-[40px] h-[40px] relative">
                   <Image
                     src={`https://joeschmoe.io/api/v1/${user.userName}`}
                     width={40}
@@ -49,9 +51,9 @@ export const RoomUserCardList = (props: Props) => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-center items-center">
+            <div tw="flex justify-center items-center">
               {user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
-              <p className="text-center ml-1">{user.userName}</p>
+              <p tw="text-center ml-1">{user.userName}</p>
             </div>
           </li>
         );

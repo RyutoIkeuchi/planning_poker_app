@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import tw from "twin.macro";
 
 type Props = {
   buttonColor: string;
@@ -13,9 +14,8 @@ export const PrimaryButton = (props: Props) => {
 
   return (
     <button
-      className={`text-white font-bold py-2 px-4 rounded ${buttonColor} ${
-        disabled ? "cursor-not-allowed" : `pointer ${hoverButtonColor}`
-      }`}
+      className={`${buttonColor} ${disabled ? "cursor-not-allowed" : hoverButtonColor}`}
+      tw="text-white font-bold py-2 px-4 rounded"
       onClick={handleClickMethod}
       disabled={disabled}
     >

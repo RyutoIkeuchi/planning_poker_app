@@ -1,3 +1,5 @@
+import "twin.macro";
+
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -64,8 +66,8 @@ const CreateRoom = () => {
   }, [percentage]);
 
   return (
-    <div className="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
-      <div className="mb-10">
+    <div tw="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
+      <div tw="mb-10">
         <div style={{ height: 400, width: 400 }}>
           <CircularProgressbarWithChildren
             value={percentage}
@@ -78,15 +80,14 @@ const CreateRoom = () => {
             })}
           >
             {is100Percent && roomId !== "" ? (
-              <Link
-                href={`/poker-room/${roomId}`}
-                className="text-2xl font-bold text-center underline flex items-center justify-center"
-              >
-                <p className="mr-2">遷移する</p>
-                <FontAwesomeIcon icon={faArrowRightToBracket} />
+              <Link href={`/poker-room/${roomId}`}>
+                <button tw="text-2xl font-bold text-center underline flex items-center justify-center">
+                  <p tw="mr-2">遷移する</p>
+                  <FontAwesomeIcon icon={faArrowRightToBracket} />
+                </button>
               </Link>
             ) : (
-              <p className="text-2xl font-bold text-center">作成中...</p>
+              <p tw="text-2xl font-bold text-center">作成中...</p>
             )}
           </CircularProgressbarWithChildren>
         </div>

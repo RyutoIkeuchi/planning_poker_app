@@ -1,3 +1,5 @@
+import "twin.macro";
+
 import { useCallback } from "react";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
@@ -26,12 +28,12 @@ export const SprintPointArea = (props: Props) => {
   }, [roomData]);
 
   return (
-    <div className="mb-10 border-b border-gray-500">
-      <div className="text-center pt-10 pb-20">
-        <div className="mb-6">
-          <p className="text-xl">スプリントポイント</p>
+    <div tw="mb-10 border-b border-gray-500">
+      <div tw="text-center pt-10 pb-20">
+        <div tw="mb-6">
+          <p tw="text-xl">スプリントポイント</p>
         </div>
-        <p className="text-8xl font-bold">
+        <p tw="text-8xl font-bold">
           {roomData.pokerStatus === "result" ? calculateAverage() : "?"}
         </p>
       </div>

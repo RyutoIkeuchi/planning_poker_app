@@ -1,3 +1,5 @@
+import "twin.macro";
+
 import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -78,7 +80,7 @@ const PokerRoom = () => {
   if (isError) return <div>エラーになりました...</div>;
 
   return (
-    <div className="relative">
+    <div tw="relative">
       <RoomHeader
         roomId={queryId}
         isHostUser={roomDataToLocalStorage?.hostUser}
@@ -98,13 +100,13 @@ const PokerRoom = () => {
       )}
       <SprintPointArea roomId={queryId} />
       <RoomUserCardList roomId={queryId} myUserName={roomDataToLocalStorage?.userName} />
-      <div className="fixed bottom-0">
-        <div className="mb-4 flex justify-start items-center">
-          <p className="text-xl mr-2">カードを選択</p>
+      <div tw="fixed bottom-0">
+        <div tw="mb-4 flex justify-start items-center">
+          <p tw="text-xl mr-2">カードを選択</p>
           {canSelectNumberCard ? (
-            <FontAwesomeIcon icon={faBan} className="text-red-600" />
+            <FontAwesomeIcon icon={faBan} tw="text-red-600" />
           ) : (
-            <FontAwesomeIcon icon={faCheck} className="text-green-600" />
+            <FontAwesomeIcon icon={faCheck} tw="text-green-600" />
           )}
         </div>
         <FibonacciNumbers

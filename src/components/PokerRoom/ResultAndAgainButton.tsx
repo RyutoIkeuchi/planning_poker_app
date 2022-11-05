@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { api } from "src/service/api";
+import tw from "twin.macro";
 
 type Props = {
   roomId: string;
@@ -53,8 +54,8 @@ export const ResultAndAgainButton = (props: Props) => {
   }, [roomId, mutate]);
 
   return (
-    <div className="flex justify-start">
-      <div className="mr-4">
+    <div tw="flex justify-start">
+      <div tw="mr-4">
         <PrimaryButton
           buttonColor="bg-blue-500"
           hoverButtonColor="hover:bg-blue-700"

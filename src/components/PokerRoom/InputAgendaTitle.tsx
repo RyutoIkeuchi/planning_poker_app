@@ -1,3 +1,5 @@
+import "twin.macro";
+
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
@@ -67,18 +69,18 @@ export const InputAgendaTitle = (props: Props) => {
   }, [roomId, mutate]);
 
   return (
-    <div className="flex justify-start items-center w-2/3">
-      <div className="mr-4 w-1/2">
+    <div tw="flex justify-start items-center w-2/3">
+      <div tw="mr-4 w-1/2">
         <input
           type="text"
           value={inputAgendaTitle}
-          className="border p-2 w-full rounded"
+          tw="border p-2 w-full rounded"
           onChange={handleChangeAgendaTitle}
           disabled={!canChangeInputAgendaTitle}
           placeholder="議題を入力"
         />
       </div>
-      <div className="mr-4">
+      <div tw="mr-4">
         <PrimaryButton
           buttonColor="bg-green-500"
           hoverButtonColor="hover:bg-green-700"
