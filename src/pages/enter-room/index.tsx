@@ -10,9 +10,7 @@ const EnterRoom = () => {
   const router = useRouter();
 
   const handleEnterTheRoom = useCallback(async () => {
-    const response = await api.post(`/pokers/${roomId}/users`, {
-      headers: { "content-type": "application/json" },
-    });
+    const response = await api.post(`/pokers/${roomId}/users`);
     if (response.status == 200) {
       const convertObj = toLowerCamelCaseObj(response.data);
       const addColumnToConvertObj: Required<ToLocalStorageUserType> = {
