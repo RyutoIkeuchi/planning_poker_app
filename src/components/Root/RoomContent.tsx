@@ -34,10 +34,11 @@ export const RoomContent = (props: RoomContentType) => {
           {linkLabel}
         </button>
       ) : (
-        <Link href={href}>
-          <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-4 text-center block">
-            {linkLabel}
-          </a>
+        <Link
+          href={href}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-4 text-center block"
+        >
+          {linkLabel}
         </Link>
       )}
     </div>
