@@ -6,13 +6,12 @@ import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
 
 type Props = {
-  isSelectedNumberCardResult: boolean;
   myUserName: string;
   roomId: string;
 };
 
 export const RoomUserCardList = (props: Props) => {
-  const { isSelectedNumberCardResult, myUserName, roomId } = props;
+  const { myUserName, roomId } = props;
   const { roomData } = usePokerRoom(roomId);
 
   const selectedStatus = useCallback((isSelected: boolean) => {
@@ -33,7 +32,7 @@ export const RoomUserCardList = (props: Props) => {
             <div className="w-full h-full border border-blue-600 shadow-lg">
               <div className="h-1/2 flex items-center justify-center">
                 <p className="text-3xl">
-                  {isSelectedNumberCardResult
+                  {roomData.pokerStatus === "result"
                     ? user.selectedNumberCard
                     : selectedStatus(user.isSelected)}
                 </p>
