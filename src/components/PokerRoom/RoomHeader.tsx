@@ -1,16 +1,20 @@
 import { faPaperclip, faRightFromBracket, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
+import { api } from "src/service/api";
 
 type Props = {
-  handleLeaveTheRoom: () => Promise<void>;
+  isHostUser: boolean;
   roomId: string;
+  userId: number;
 };
 
 export const RoomHeader = (props: Props) => {
-  const { handleLeaveTheRoom, roomId } = props;
+  const { isHostUser, roomId, userId } = props;
   const [isCopiedText, setIsCopiedText] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleCopyRoomId = useCallback(() => {
     navigator.clipboard.writeText(roomId);
@@ -19,6 +23,16 @@ export const RoomHeader = (props: Props) => {
       setIsCopiedText(false);
     }, 2000);
   }, [roomId]);
+
+  const handleLeaveTheRoom = useCallback(async () => {
+    localStorage.removeItem("ROOM_DATA");
+    if (isHostUser) {
+      await api.delete(`/pokers/${roomId}`);
+    } else {
+      await api.delete(`/pokers/${roomId}/users/${userId}`);
+    }
+    router.push("/");
+  }, []);
 
   return (
     <div className="my-6 flex justify-between items-center">

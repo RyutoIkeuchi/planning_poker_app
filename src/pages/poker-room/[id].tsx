@@ -75,19 +75,6 @@ const PokerRoom = () => {
     setSelectNumberCard(card);
   }, []);
 
-  // 部屋を離れて、APIのデータから自分のユーザー情報を削除
-  const handleLeaveTheRoom = useCallback(async () => {
-    localStorage.removeItem("ROOM_DATA");
-    if (memoRoomDataToLocalStorage?.hostUser) {
-      await api.delete(`/pokers/${memoQueryId}`);
-    } else {
-      await api.delete(
-        `/pokers/${memoRoomDataToLocalStorage?.roomId}/users/${memoRoomDataToLocalStorage?.id}`,
-      );
-    }
-    router.push("/");
-  }, [memoRoomDataToLocalStorage, memoQueryId, router]);
-
   useEffect(() => {
     if (memoQueryId) {
       checkRoomId();
@@ -100,7 +87,11 @@ const PokerRoom = () => {
 
   return (
     <div className="relative">
-      <RoomHeader roomId={router.query.id as string} handleLeaveTheRoom={handleLeaveTheRoom} />
+      <RoomHeader
+        roomId={memoQueryId}
+        isHostUser={memoRoomDataToLocalStorage?.hostUser}
+        userId={memoRoomDataToLocalStorage?.id}
+      />
       {isConfirmModal && (
         <ConfirmModal
           selectNumberCard={selectNumberCard}
