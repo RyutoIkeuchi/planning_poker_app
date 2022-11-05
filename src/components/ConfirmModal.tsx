@@ -1,6 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction, useCallback } from "react";
+import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { api } from "src/service/api";
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 
 export const ConfirmModal = (props: Props) => {
   const { roomId, selectNumberCard, setIsConfirmModal, userId } = props;
+  const { mutate } = usePokerRoom(roomId);
 
   const handleSubmitSelectNumberCard = useCallback(async () => {
     const data = {
@@ -20,8 +22,23 @@ export const ConfirmModal = (props: Props) => {
     };
 
     await api.put(`/pokers/${roomId}/users/${userId}`, data);
+    await mutate((prevRoomData) => {
+      const updateUsers = prevRoomData.users.map((user) => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            selectedNumberCard: selectNumberCard,
+          };
+        }
+        return user;
+      });
+      return {
+        ...prevRoomData,
+        users: updateUsers,
+      };
+    });
     setIsConfirmModal(false);
-  }, [roomId, selectNumberCard, userId, setIsConfirmModal]);
+  }, [roomId, selectNumberCard, userId, setIsConfirmModal, mutate]);
 
   const handleCloseConfirmModal = useCallback(() => {
     setIsConfirmModal(false);
