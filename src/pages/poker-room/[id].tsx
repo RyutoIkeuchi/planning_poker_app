@@ -72,7 +72,13 @@ const PokerRoom = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryId]);
 
-  if (isLoading) return <div>待機中...</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center mt-10">
+        <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+      </div>
+    );
+
   if (isError) return <div>エラーになりました...</div>;
 
   return (
