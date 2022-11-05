@@ -11,16 +11,7 @@ export const ResultAndAgainButton = (props: Props) => {
   const { roomId } = props;
   const { mutate, roomData } = usePokerRoom(roomId);
 
-  const isResultButtonDisabled = useMemo(() => {
-    const allRoomUserIsSelected = roomData.users.every((user) => user.isSelected);
-    console.log("allRoomUserIsSelected", allRoomUserIsSelected);
-    if (allRoomUserIsSelected) {
-      return false;
-    }
-    return true;
-  }, [roomData]);
-
-  const isAgainButtonDisabled = useMemo(() => {
+  const isResultAndAgainButtonDisabled = useMemo(() => {
     const allRoomUserIsSelected = roomData.users.every((user) => user.isSelected);
     if (allRoomUserIsSelected) {
       return false;
@@ -28,7 +19,7 @@ export const ResultAndAgainButton = (props: Props) => {
     return true;
   }, [roomData]);
 
-  const handleAgainSelectNumberCard = useCallback(async () => {
+  const handleAgainSelectedNumberCard = useCallback(async () => {
     const data = {
       poker_status: "reset",
     };
@@ -48,7 +39,7 @@ export const ResultAndAgainButton = (props: Props) => {
     });
   }, [roomId, mutate]);
 
-  const handleResultSelectNumberCard = useCallback(async () => {
+  const handleResultSelectedNumberCard = useCallback(async () => {
     const data = {
       poker_status: "result",
     };
@@ -59,7 +50,7 @@ export const ResultAndAgainButton = (props: Props) => {
         pokerStatus: "result",
       };
     });
-  }, [roomId]);
+  }, [roomId, mutate]);
 
   return (
     <div className="flex justify-start">
@@ -67,8 +58,8 @@ export const ResultAndAgainButton = (props: Props) => {
         <PrimaryButton
           buttonColor="bg-blue-500"
           hoverButtonColor="hover:bg-blue-700"
-          handleClickMethod={handleResultSelectNumberCard}
-          disabled={isResultButtonDisabled}
+          handleClickMethod={handleResultSelectedNumberCard}
+          disabled={isResultAndAgainButtonDisabled}
         >
           結果を見る
         </PrimaryButton>
@@ -77,8 +68,8 @@ export const ResultAndAgainButton = (props: Props) => {
         <PrimaryButton
           buttonColor="bg-gray-500"
           hoverButtonColor="hover:bg-gray-700"
-          handleClickMethod={handleAgainSelectNumberCard}
-          disabled={isAgainButtonDisabled}
+          handleClickMethod={handleAgainSelectedNumberCard}
+          disabled={isResultAndAgainButtonDisabled}
         >
           もう一度
         </PrimaryButton>
