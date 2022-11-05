@@ -1,5 +1,6 @@
 module.exports = {
   images: {
+    dangerouslyAllowSVG: true,
     domains: ["joeschmoe.io", "www.joeschmoe.io"],
   },
   reactStrictMode: true,
