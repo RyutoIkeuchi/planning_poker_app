@@ -78,11 +78,12 @@ const CreateRoom = () => {
             })}
           >
             {is100Percent && roomId !== "" ? (
-              <Link href={`/poker-room/${roomId}`}>
-                <a className="text-2xl font-bold text-center underline flex items-center justify-center">
-                  <p className="mr-2">遷移する</p>
-                  <FontAwesomeIcon icon={faArrowRightToBracket} />
-                </a>
+              <Link
+                href={`/poker-room/${roomId}`}
+                className="text-2xl font-bold text-center underline flex items-center justify-center"
+              >
+                <p className="mr-2">遷移する</p>
+                <FontAwesomeIcon icon={faArrowRightToBracket} />
               </Link>
             ) : (
               <p className="text-2xl font-bold text-center">作成中...</p>
