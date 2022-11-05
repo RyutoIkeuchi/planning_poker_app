@@ -1,7 +1,7 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Key } from "react";
+import { Key, useCallback } from "react";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
 
@@ -14,6 +14,13 @@ type Props = {
 export const RoomUserCardList = (props: Props) => {
   const { isSelectedNumberCardResult, myUserName, roomId } = props;
   const { roomData } = usePokerRoom(roomId);
+
+  const selectedStatus = useCallback((isSelected: boolean) => {
+    if (isSelected) {
+      return "済";
+    }
+    return "未";
+  }, []);
 
   return (
     <ul className="flex justify-start min-h-[500px]">
@@ -28,9 +35,7 @@ export const RoomUserCardList = (props: Props) => {
                 <p className="text-3xl">
                   {isSelectedNumberCardResult
                     ? user.selectedNumberCard
-                    : user.isSelected
-                    ? "済"
-                    : "未"}
+                    : selectedStatus(user.isSelected)}
                 </p>
               </div>
               <hr />
@@ -38,8 +43,8 @@ export const RoomUserCardList = (props: Props) => {
                 <div className="w-[40px] h-[40px] relative">
                   <Image
                     src={`https://joeschmoe.io/api/v1/${user.userName}`}
-                    layout="fill"
-                    objectFit="contain"
+                    width={40}
+                    height={40}
                     alt=""
                   />
                 </div>
