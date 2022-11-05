@@ -34,7 +34,19 @@ export const ResultAndAgainButton = (props: Props) => {
     };
     await api.put(`/pokers/${roomId}`, data);
     await api.put(`/pokers/${roomId}/users/`);
-  }, [roomId]);
+    await mutate((prevRoomData) => {
+      const updateUsers = prevRoomData.users.map((user) => {
+        return {
+          ...user,
+          selectedNumberCard: "",
+        };
+      });
+      return {
+        ...prevRoomData,
+        users: updateUsers,
+      };
+    });
+  }, [roomId, mutate]);
 
   const handleResultSelectNumberCard = useCallback(async () => {
     const data = {
