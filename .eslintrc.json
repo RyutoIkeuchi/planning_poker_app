@@ -1,6 +1,6 @@
 {
   "parserOptions": { "project": "./tsconfig.json" },
-  "plugins": ["sort-keys-custom-order", "simple-import-sort"],
+  "plugins": ["sort-keys-custom-order", "simple-import-sort","jest"],
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
