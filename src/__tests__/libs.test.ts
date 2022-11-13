@@ -1,4 +1,4 @@
-import { toLowerCamelCase, toLowerCamelCaseObj } from "../src/libs/index";
+import { toLowerCamelCase, toLowerCamelCaseObj } from "../libs/index";
 
 test("Convert Snake case to Lower CamelCase", () => {
   expect(toLowerCamelCase("nextjs_test_library")).toBe("nextjsTestLibrary");
