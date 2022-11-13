@@ -1,6 +1,6 @@
 import { ToLocalStorageUserType } from "src/types";
 
-const toLowerCamelCase = (str: string) => {
+export const toLowerCamelCase = (str: string) => {
   const mappedToString = str.split("_");
   let lowerCamelString = "";
   mappedToString.forEach((el, index) => {
@@ -20,5 +20,5 @@ export const toLowerCamelCaseObj = (obj: any) => {
   Object.keys(obj).forEach((el) => {
     convertObj[toLowerCamelCase(el)] = obj[el];
   });
-  return convertObj as ToLocalStorageUserType;
+  return convertObj;
 };
