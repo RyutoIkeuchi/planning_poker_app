@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
+    "test": "jest --verbose",
     "lint": "next lint",
     "lint:fix": "yarn lint --fix",
     "prettier": "prettier --check .",
