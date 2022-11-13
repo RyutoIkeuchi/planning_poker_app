@@ -15,7 +15,7 @@ export const toLowerCamelCase = (str: string) => {
 
 // Todo:anyを変えたい
 // Todo:違う方法でobjectを生成させたい
-export const toLowerCamelCaseObj = (obj: any) => {
+export const toLowerCamelCaseObj = (obj: any):any => {
   const convertObj = {};
   Object.keys(obj).forEach((el) => {
     convertObj[toLowerCamelCase(el)] = obj[el];
