@@ -39,6 +39,8 @@ const EnterRoom = () => {
           onChange={handleChangeRoomId}
           tw="border w-full p-4"
           placeholder="ルームID"
+          data-testid="input-roomid"
+          value={roomId}
         />
       </div>
       <div tw="w-full">
