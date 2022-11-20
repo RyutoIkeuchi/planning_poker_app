@@ -4,19 +4,19 @@ import { SelectRoomContainer } from "src/components/Root/SelectRoomContainer";
 import userEvent from "@testing-library/user-event";
 
 describe("Test SelectRoomContainer Component", () => {
-  test("Navigator form with 2 button", async () => {
+  test("画面内にボタンが二つあること", async () => {
     render(<SelectRoomContainer />);
     const buttonList = await screen.findAllByRole("button");
     expect(buttonList).toHaveLength(2);
   });
 
-  test("Navigator 2 button label", () => {
+  test("2つのボタンのラベルが「部屋を作る」と「部屋に入る」であること", () => {
     render(<SelectRoomContainer />);
     expect(screen.getByText("部屋を作る")).toBeInTheDocument();
     expect(screen.getByText("部屋に入る")).toBeInTheDocument();
   });
 
-  it("Should call create-room button", async () => {
+  test("「部屋を作る」ボタンをクリックすると、confirmモーダルが出てくること", async () => {
     render(<SelectRoomContainer />);
     const spyWindowConfirm = jest.spyOn(window, "confirm");
     spyWindowConfirm.mockImplementation(jest.fn());
