@@ -51,7 +51,7 @@ export const RoomUserCardList = (props: Props) => {
                 </div>
               </div>
             </div>
-            <div tw="flex justify-center items-center">
+            <div tw="flex justify-center items-center mt-2">
               {user.hostUser && <FontAwesomeIcon icon={faUserTie} />}
               <p tw="text-center ml-1">{user.userName}</p>
             </div>
