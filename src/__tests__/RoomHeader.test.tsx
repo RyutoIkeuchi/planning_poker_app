@@ -1,7 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { RoomHeader } from "src/components/PokerRoom/RoomHeader";
 import userEvent from "@testing-library/user-event";
+
+const timerGame = (callback) => {
+  setTimeout(() => {
+    callback();
+  }, 2000);
+};
 
 describe("Test RoomHeader Component", () => {
   test("画面内にボタンが二つあること", async () => {
@@ -25,12 +31,33 @@ describe("Test RoomHeader Component", () => {
     render(<RoomHeader roomId="1234567" isHostUser={true} userId={1} />);
     const user = userEvent.setup();
     const copyButton = screen.getByTestId("copy-room-id");
-    const copiedLabel = screen.queryByTestId("copied-label");
-    expect(copiedLabel).toHaveClass("hidden");
 
     await user.click(copyButton);
     const clickBoardText = await navigator.clipboard.readText();
     expect(clickBoardText).toBe("1234567");
-    expect(copiedLabel).toHaveClass("block");
+  });
+
+  test("クリップボタンを押した2秒後に画面上から「copied!」が消えること", async () => {
+    jest.useFakeTimers();
+    render(<RoomHeader roomId="1234567" isHostUser={true} userId={1} />);
+    const user = userEvent.setup();
+    const copyButton = screen.getByTestId("copy-room-id");
+    const copiedLabel = screen.queryByTestId("copied-label");
+    expect(copiedLabel).toHaveClass("hidden");
+
+    user.click(copyButton);
+    await waitFor(() => {
+      expect(copiedLabel).toHaveClass("block");
+    });
+
+    const callback = jest.fn();
+    timerGame(callback);
+    expect(callback).not.toBeCalled();
+    jest.advanceTimersByTime(2000);
+
+    expect(callback).toBeCalled();
+    await waitFor(() => {
+      expect(copiedLabel).toHaveClass("hidden");
+    });
   });
 });
