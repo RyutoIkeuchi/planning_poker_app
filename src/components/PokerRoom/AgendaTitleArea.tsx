@@ -19,7 +19,7 @@ export const AgendaTitleArea = (props: Props) => {
             <ResultAndAgainButton roomId={roomId} />
           </div>
         ) : (
-          <h3 tw="text-2xl text-center">
+          <h3 tw="text-2xl text-center" data-testid="test-agenda-title">
             議題：{roomData.agendaTitle !== "" ? roomData.agendaTitle : "未設定"}
           </h3>
         )}
