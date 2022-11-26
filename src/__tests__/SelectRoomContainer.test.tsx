@@ -1,9 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { SelectRoomContainer } from "src/components/Root/SelectRoomContainer";
 import userEvent from "@testing-library/user-event";
+import singletonRouter from "next/router";
+import mockRouter from "next-router-mock";
+
+jest.mock("next/router", () => require("next-router-mock"));
+jest.mock("next/dist/client/router", () => require("next-router-mock"));
 
 describe("Test SelectRoomContainer Component", () => {
+  beforeEach(() => {
+    mockRouter.setCurrentUrl("/");
+  });
+
   test("画面内にボタンが二つあること", async () => {
     render(<SelectRoomContainer />);
     const buttonList = await screen.findAllByRole("button");
@@ -22,5 +31,15 @@ describe("Test SelectRoomContainer Component", () => {
     spyWindowConfirm.mockImplementation(jest.fn());
     await userEvent.click(screen.getByText("部屋を作る"));
     expect(spyWindowConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  test("「部屋に入る」ボタンをクリックすると、部屋に入るためのRoom ID入力画面に遷移する", async () => {
+    render(<SelectRoomContainer />);
+    const user = userEvent.setup();
+    const enterTheRoomButton = screen.getByText("部屋に入る");
+    await user.click(enterTheRoomButton);
+    expect(singletonRouter).toMatchObject({
+      pathname: "/enter-room",
+    });
   });
 });
