@@ -1,6 +1,6 @@
 import { faPaperclip, faRightFromBracket, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { PrimaryButton } from "src/components/Common/PrimaryButton";
 import { api } from "src/service/api";
