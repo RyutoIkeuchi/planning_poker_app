@@ -33,7 +33,7 @@ export const SprintPointArea = (props: Props) => {
         <div tw="mb-6">
           <p tw="text-xl">スプリントポイント</p>
         </div>
-        <p tw="text-8xl font-bold">
+        <p tw="text-8xl font-bold" data-testid="sprint-point-result">
           {roomData.pokerStatus === "result" ? calculateAverage() : "?"}
         </p>
       </div>
