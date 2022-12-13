@@ -1,33 +1,12 @@
 import { AgendaTitleArea } from "src/components/PokerRoom/AgendaTitleArea";
 import { render, screen } from "@testing-library/react";
-import { Middleware, SWRConfig, SWRResponse } from "swr";
-
-export const testMiddleware: Middleware = () => {
-  return (): SWRResponse<any, any> => {
-    const roomData: any = {
-      agendaTitle: "テスト中...",
-      users: [
-        { id: 2, roomId: "3620971", userName: "jean", hostUser: true, selectedNumberCard: "/" },
-        { id: 3, roomId: "3620971", userName: "jordan", hostUser: false, selectedNumberCard: "1" },
-        { id: 4, roomId: "3620971", userName: "jeans", hostUser: false, selectedNumberCard: "3" },
-        { id: 5, roomId: "3620971", userName: "java", hostUser: false, selectedNumberCard: "8" },
-        { id: 6, roomId: "3620971", userName: "jabra", hostUser: false, selectedNumberCard: "5" },
-      ],
-      pokerStatus: "result",
-    };
-    return {
-      data: roomData,
-      error: undefined,
-      mutate: (_) => Promise.resolve(),
-      isValidating: false,
-    };
-  };
-};
+import { SWRConfig } from "swr";
+import { testMiddleware } from "src/__mocks__/useSwr";
 
 describe("Test AgendaTitleArea Component", () => {
   test("ホストユーザーではない時の議題表示エリアのUI", () => {
     render(
-      <SWRConfig value={{ use: [testMiddleware] }}>
+      <SWRConfig value={{ fallback: { case: 2 }, use: [testMiddleware] }}>
         <AgendaTitleArea roomId="1234567" isHostUser={false} />
       </SWRConfig>,
     );
@@ -42,7 +21,7 @@ describe("Test AgendaTitleArea Component", () => {
 
   test("ホストユーザー時の議題表示エリアのUI", () => {
     render(
-      <SWRConfig value={{ use: [testMiddleware] }}>
+      <SWRConfig value={{ fallback: { case: 2 }, use: [testMiddleware] }}>
         <AgendaTitleArea roomId="1234567" isHostUser={true} />
       </SWRConfig>,
     );
