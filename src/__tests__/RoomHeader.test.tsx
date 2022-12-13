@@ -14,7 +14,7 @@ const timerGame = (callback) => {
 jest.mock("next/router", () => require("next-router-mock"));
 jest.mock("next/dist/client/router", () => require("next-router-mock"));
 
-describe("Test RoomHeader Component", () => {
+describe("<RoomHeader />", () => {
   beforeEach(() => {
     mockRouter.setCurrentUrl("/");
   });

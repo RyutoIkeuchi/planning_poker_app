@@ -5,7 +5,7 @@ const interval = () => {
   }, 500);
 };
 
-describe("Test CreateRoom Component", () => {
+describe("<CreateRoom />", () => {
   test("percentが期待通りのスピードで上昇してくれること", async () => {
     jest.useFakeTimers();
     interval();

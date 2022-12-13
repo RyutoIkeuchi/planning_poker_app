@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { SWRConfig } from "swr";
 import { testMiddleware } from "src/__mocks__/useSwr";
 
-describe("Test AgendaTitleArea Component", () => {
+describe("<AgendaTitleArea />", () => {
   test("ホストユーザーではない時の議題表示エリアのUI", () => {
     render(
       <SWRConfig value={{ fallback: { case: 2 }, use: [testMiddleware] }}>

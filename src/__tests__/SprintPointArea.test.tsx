@@ -4,7 +4,7 @@ import { SprintPointArea } from "src/components/PokerRoom/SprintPointArea";
 import "@testing-library/jest-dom";
 import { testMiddleware} from "src/__mocks__/useSwr";
 
-describe("Test SprintPointArea Component", () => {
+describe("<SprintPointArea />", () => {
   test("Result時、/を除いた値の平均値を計算してくれること", () => {
     render(
       <SWRConfig value={{ fallback: { case: 2 }, use: [testMiddleware] }}>

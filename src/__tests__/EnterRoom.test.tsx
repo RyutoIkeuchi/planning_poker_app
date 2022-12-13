@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 import EnterRoom from "src/pages/enter-room";
 import userEvent from "@testing-library/user-event";
 
-describe("Test EnterRoom Component", () => {
+describe("<EnterRoom />", () => {
   test("画面内にボタンが一つあること", async () => {
     render(<EnterRoom />);
     const buttonList = await screen.findAllByRole("button");

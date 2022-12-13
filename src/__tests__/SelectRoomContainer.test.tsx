@@ -8,7 +8,7 @@ import mockRouter from "next-router-mock";
 jest.mock("next/router", () => require("next-router-mock"));
 jest.mock("next/dist/client/router", () => require("next-router-mock"));
 
-describe("Test SelectRoomContainer Component", () => {
+describe("<SelectRoomContainer />", () => {
   beforeEach(() => {
     mockRouter.setCurrentUrl("/");
   });
