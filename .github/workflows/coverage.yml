@@ -17,6 +17,6 @@ jobs:
       - name: Run the tests
         run: yarn test --coverage
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
