@@ -6,21 +6,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-      uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: yarn
-
-      - name: Install dependencies
+      - name: Yarn install
         run: yarn install
-
       - name: Run the tests
         run: yarn test --coverage
-
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
