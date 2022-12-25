@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import EnterRoom from "src/pages/enter-room";
 import userEvent from "@testing-library/user-event";
@@ -37,7 +37,9 @@ describe("<EnterRoom />", () => {
     const enterRoomButton = screen.getByText("部屋に入る");
     const inputRoomId: HTMLInputElement = await screen.findByTestId("input-roomid");
     await userEvent.type(inputRoomId, "1234567");
-    singletonRouter.push("/poker-room/1234567");
+    await act(async () => {
+      await singletonRouter.push("/poker-room/1234567");
+    });
     expect(singletonRouter).toMatchObject({
       pathname: "/poker-room/1234567",
     });
