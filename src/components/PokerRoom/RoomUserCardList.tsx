@@ -41,11 +41,11 @@ export const RoomUserCardList = (props: Props) => {
               </div>
               <hr />
               <div tw="h-1/2 flex items-center justify-center">
-                <div tw="w-[40px] h-[40px] relative">
+                <div tw="w-[60px] h-[60px] relative">
                   <Image
-                    src={`https://joeschmoe.io/api/v1/${user.userName}`}
-                    width={40}
-                    height={40}
+                    src={`https://api.dicebear.com/5.x/adventurer/svg?seed=${user.userName}&scale=100`}
+                    width={60}
+                    height={60}
                     alt=""
                   />
                 </div>

@@ -1,7 +1,7 @@
 module.exports = {
   images: {
     dangerouslyAllowSVG: true,
-    domains: ["joeschmoe.io", "www.joeschmoe.io"],
+    domains: ["api.dicebear.com", "www.dicebear.com"],
   },
   reactStrictMode: true,
   webpack(config) {
