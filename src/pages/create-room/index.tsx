@@ -1,4 +1,5 @@
 import "twin.macro";
+import "rsuite/dist/rsuite.min.css";
 
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
