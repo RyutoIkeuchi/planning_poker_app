@@ -17,3 +17,8 @@ export type PokerType = {
   roomId: string;
   users: UserType[];
 };
+
+export type StepperStatesPros<T> = {
+  title: string
+  status:T
+}

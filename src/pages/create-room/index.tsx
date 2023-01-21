@@ -1,20 +1,36 @@
 import "twin.macro";
 
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
 import { ToLocalStorageUserType } from "src/types";
+import { Steps } from "rsuite";
+import { setTimeout } from "timers";
+import { STEPPER_STATES_LIST } from "src/utils/constants";
+import { CreateRoomStatus } from "src/components/CreateRoom/createRoomStatus";
 
 const CreateRoom = () => {
   const router = useRouter();
-  const [percentage, setPercentage] = useState(0);
-  const [is100Percent, setIs100Percent] = useState(false);
   const [roomId, setRoomId] = useState("");
+  const [step, setStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const stepperState = useMemo(() => {
+    const titleAndStatus = [
+      ...STEPPER_STATES_LIST.FINISH.slice(0, step),
+      ...STEPPER_STATES_LIST.IN_PROGRESS.slice(step, step + 1),
+      ...STEPPER_STATES_LIST.WAITING.slice(step + 1, step + 3),
+    ];
+    return {
+      current: step,
+      titleAndStatus,
+    };
+  }, [step]);
+
+  const canNavigate = useMemo(() => {
+    return step === 3;
+  }, [step]);
 
   const handleCreateRoomId = useCallback(async () => {
     const response = await api.post("/pokers");
@@ -46,52 +62,40 @@ const CreateRoom = () => {
   }, []);
 
   useEffect(() => {
-    if (percentage === 0) {
+    if (step === 0) {
       checkAndDeletePreviousData();
     }
 
     const interval = setInterval(() => {
-      setPercentage((prev) => prev + 10);
-    }, 500);
+      setStep((prev) => prev + 1);
+    }, 2000);
 
-    if (percentage >= 100) {
-      setIs100Percent(true);
+    if (step === 2) {
       handleCreateRoomId();
+    }
+
+    if (step === 3) {
       clearInterval(interval);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [percentage]);
+  }, [step]);
 
   return (
-    <div tw="flex items-center justify-center flex-col max-w-xl mx-auto min-h-screen">
-      <div tw="mb-10">
-        <div style={{ height: 400, width: 400 }}>
-          <CircularProgressbarWithChildren
-            value={percentage}
-            styles={buildStyles({
-              backgroundColor: "rgb(59 130 246)",
-              pathColor: "rgb(59 130 246)",
-              pathTransition: "stroke-dashoffset 0.5s ease 0s",
-              strokeLinecap: "round",
-              trailColor: "#d6d6d6",
-            })}
-          >
-            {is100Percent && roomId !== "" ? (
-              <Link href={`/poker-room/${roomId}`}>
-                <button tw="text-2xl font-bold text-center underline flex items-center justify-center">
-                  <p tw="mr-2">遷移する</p>
-                  <FontAwesomeIcon icon={faArrowRightToBracket} />
-                </button>
-              </Link>
-            ) : (
-              <p tw="text-2xl font-bold text-center">作成中...</p>
-            )}
-          </CircularProgressbarWithChildren>
-        </div>
+    <div tw="mt-20 w-2/3 mx-auto">
+      <div tw="mb-20">
+        <Steps current={stepperState.current}>
+          {stepperState.titleAndStatus.map((item, index) => {
+            return <Steps.Item key={index} title={item.title} status={item.status} />;
+          })}
+        </Steps>
       </div>
+      <CreateRoomStatus canNavigate={canNavigate} isLoading={isLoading} roomId={roomId} />
     </div>
   );
 };
