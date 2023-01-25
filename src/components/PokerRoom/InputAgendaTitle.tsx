@@ -97,7 +97,7 @@ export const InputAgendaTitle = (props: Props) => {
         handleClickMethod={handleCancelAgendaTitle}
         disabled={isCancelButtonDisabled}
       >
-        取り消し
+        リセット
       </PrimaryButton>
     </div>
   );
