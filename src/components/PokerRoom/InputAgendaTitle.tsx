@@ -57,6 +57,7 @@ export const InputAgendaTitle = (props: Props) => {
     setInputAgendaTitle("");
     const data = {
       agenda_title: "",
+      poker_status: "reset",
     };
     await api.put(`/pokers/${roomId}`, data);
     await api.put(`/pokers/${roomId}/users`);
