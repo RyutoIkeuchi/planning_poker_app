@@ -104,9 +104,9 @@ const PokerRoom = () => {
         <div tw="mb-4 flex justify-start items-center">
           <p tw="text-xl mr-2">カードを選択</p>
           {canSelectNumberCard ? (
-            <FontAwesomeIcon icon={faBan} tw="text-red-600" />
-          ) : (
             <FontAwesomeIcon icon={faCheck} tw="text-green-600" />
+          ) : (
+            <FontAwesomeIcon icon={faBan} tw="text-red-600" />
           )}
         </div>
         <FibonacciNumbers

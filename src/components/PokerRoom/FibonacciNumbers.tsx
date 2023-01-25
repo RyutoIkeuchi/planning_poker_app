@@ -17,10 +17,10 @@ export const FibonacciNumbers = (props: Props) => {
             <button
               className={`${
                 canSelectNumberCard
-                  ? "hover:transform hover:duration-500 hover:-translate-y-5 shadow-lg border-gray-600"
-                  : "cursor-not-allowed bg-gray-200 shadow-none border-gray-200"
+                  ? "hover:transform hover:duration-500 hover:-translate-y-5 shadow-lg"
+                  : "cursor-not-allowed bg-gray-400 shadow-none border-gray-400"
               }`}
-              tw="border mb-4 mr-4"
+              tw="border mb-4 mr-4 bg-white"
               onClick={() => handleOpenConfirmModal(d)}
               disabled={!canSelectNumberCard}
             >

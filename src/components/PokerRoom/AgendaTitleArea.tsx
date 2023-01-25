@@ -12,7 +12,7 @@ export const AgendaTitleArea = (props: Props) => {
 
   return (
     <div tw="py-4 mb-4">
-      <div tw="bg-gray-300 px-2 py-4">
+      <div tw="bg-blue-200 px-2 py-4">
         {isHostUser ? (
           <div tw="flex justify-between items-center">
             <InputAgendaTitle roomId={roomId} />

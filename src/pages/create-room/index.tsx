@@ -88,7 +88,7 @@ const CreateRoom = () => {
   }, [step]);
 
   return (
-    <div tw="mt-20 w-2/3 mx-auto">
+    <div tw="pt-20 w-2/3 mx-auto">
       <div tw="mb-20">
         <Steps current={stepperState.current}>
           {stepperState.titleAndStatus.map((item, index) => {

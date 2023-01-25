@@ -29,9 +29,9 @@ export const RoomUserCardList = (props: Props) => {
           <li
             key={index}
             css={user.userName === myUserName && tw`text-red-600`}
-            tw="w-28 h-40 mr-10"
+            tw="w-28 h-40 mr-10 bg-white"
           >
-            <div tw="w-full h-full border border-blue-600 shadow-lg">
+            <div tw="w-full h-full border border-blue-600 shadow-xl">
               <div tw="h-1/2 flex items-center justify-center">
                 <p tw="text-3xl">
                   {roomData.pokerStatus === "result"

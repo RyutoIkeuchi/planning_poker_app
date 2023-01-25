@@ -36,7 +36,7 @@ export const RoomHeader = (props: Props) => {
   }, []);
 
   return (
-    <div tw="my-6 flex justify-between items-center">
+    <div tw="py-6 flex justify-between items-center">
       <div tw="flex items-center justify-start">
         <h2 tw="mr-2 text-xl">
           Room ID :{" "}
