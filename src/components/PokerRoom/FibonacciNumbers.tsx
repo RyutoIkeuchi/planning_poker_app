@@ -11,9 +11,9 @@ export const FibonacciNumbers = (props: Props) => {
 
   return (
     <ul tw="flex justify-start mb-4">
-      {FIBONACCI_NUMBERS.map((d, i) => {
+      {FIBONACCI_NUMBERS.map((d) => {
         return (
-          <li key={i}>
+          <li key={d}>
             <button
               className={`${
                 canSelectNumberCard

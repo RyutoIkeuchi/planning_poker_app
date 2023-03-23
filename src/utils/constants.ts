@@ -13,29 +13,32 @@ export const FIBONACCI_NUMBERS = [...Array(11)].map((d, i) => {
 
 export const FINISH: Array<StepperStatesPros<"finish">> = [
   {
+    id: "finish_1",
     title: "完了!",
     status: "finish",
   },
   {
+    id: "finish_2",
     title: "完了!",
     status: "finish",
   },
   {
+    id: "finish_3",
     title: "完了!",
     status: "finish",
   },
 ];
 
 export const IN_PROGRESS: Array<StepperStatesPros<"process">> = [
-  { title: "キャッシュを削除中...", status: "process" },
-  { title: "ユーザーを作成中...", status: "process" },
-  { title: "部屋を作成中...", status: "process" },
+  { id: "process_1", title: "キャッシュを削除中...", status: "process" },
+  { id: "process_2", title: "ユーザーを作成中...", status: "process" },
+  { id: "process_3", title: "部屋を作成中...", status: "process" },
 ];
 
 export const WAITING: Array<StepperStatesPros<"wait">> = [
-  { title: "待機中", status: "wait" },
-  { title: "待機中", status: "wait" },
-  { title: "待機中", status: "wait" },
+  { id: "wait_1", title: "待機中", status: "wait" },
+  { id: "wait_2", title: "待機中", status: "wait" },
+  { id: "wait_3", title: "待機中", status: "wait" },
 ];
 
 export const STEPPER_STATES_LIST = {

@@ -1,7 +1,7 @@
 import { faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Key, useCallback } from "react";
+import { useCallback } from "react";
 import { usePokerRoom } from "src/hooks/usePokerRoom";
 import { UserType } from "src/types";
 import tw from "twin.macro";
@@ -24,10 +24,10 @@ export const RoomUserCardList = (props: Props) => {
 
   return (
     <ul tw="flex justify-start min-h-[500px]">
-      {roomData.users.map((user: UserType, index: Key) => {
+      {roomData.users.map((user: UserType) => {
         return (
           <li
-            key={index}
+            key={user.id}
             css={user.userName === myUserName && tw`text-red-600`}
             tw="w-28 h-40 mr-10 bg-white"
           >

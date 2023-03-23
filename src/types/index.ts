@@ -19,6 +19,7 @@ export type PokerType = {
 };
 
 export type StepperStatesPros<T> = {
-  title: string
-  status:T
-}
+  id: string;
+  title: string;
+  status: T;
+};
