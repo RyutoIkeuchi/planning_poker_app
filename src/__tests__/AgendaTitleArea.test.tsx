@@ -13,7 +13,7 @@ describe("<AgendaTitleArea />", () => {
     const agendaTitle = screen.getByTestId("test-agenda-title");
     expect(agendaTitle.innerHTML).toBe("議題：テスト中...");
     expect(screen.queryByRole("button", { name: "決定" })).toBeNull();
-    expect(screen.queryByRole("button", { name: "取り消し" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "リセット" })).toBeNull();
     expect(screen.queryByRole("button", { name: "結果を見る" })).toBeNull();
     expect(screen.queryByRole("button", { name: "もう一度" })).toBeNull();
     expect(screen.queryByPlaceholderText("議題を入力")).toBeNull();
@@ -29,7 +29,7 @@ describe("<AgendaTitleArea />", () => {
     const agendaTitle = screen.queryByTestId("test-agenda-title");
     expect(agendaTitle).toBeNull();
     expect(screen.queryByRole("button", { name: "決定" })).not.toBeNull();
-    expect(screen.queryByRole("button", { name: "取り消し" })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "リセット" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "結果を見る" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "もう一度" })).not.toBeNull();
     expect(screen.queryByPlaceholderText("議題を入力")).not.toBeNull();
