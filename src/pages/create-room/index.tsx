@@ -35,7 +35,7 @@ const CreateRoom = () => {
 
   const handleCreateRoomId = useCallback(async () => {
     const response = await api.post("/pokers");
-    if (response.status == 200) {
+    if (response.status === 200) {
       const convertObj = toLowerCamelCaseObj(response.data);
       const addColumnToConvertObj: Required<ToLocalStorageUserType> = {
         ...convertObj,
