@@ -1,6 +1,6 @@
 {
   "editor.tabSize": 2,
-  "editor.fontSize": 20,
+  "editor.fontSize": 12,
   "editor.wordWrap": "on",
   "editor.fontFamily": "Ricty Diminished",
   "explorer.confirmDelete": false,
@@ -33,5 +33,6 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "emmet.triggerExpansionOnTab": true,
   "editor.accessibilitySupport": "on",
-  "css.validate": false
+  "css.validate": false,
+  "audioCues.volume": 0,
 }

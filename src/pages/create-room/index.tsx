@@ -1,15 +1,15 @@
 import "twin.macro";
-import "rsuite/dist/rsuite.min.css";
 
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toLowerCamelCaseObj } from "src/libs";
 import { api } from "src/service/api";
 import { ToLocalStorageUserType } from "src/types";
-import { Steps } from "rsuite";
 import { setTimeout } from "timers";
 import { STEPPER_STATES_LIST } from "src/utils/constants";
 import { CreateRoomStatus } from "src/components/CreateRoom/createRoomStatus";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const CreateRoom = () => {
   const router = useRouter();
@@ -90,11 +90,32 @@ const CreateRoom = () => {
   return (
     <div tw="pt-20 w-2/3 mx-auto">
       <div tw="mb-20">
-        <Steps current={stepperState.current}>
-          {stepperState.titleAndStatus.map((item) => {
-            return <Steps.Item key={item.id} title={item.title} status={item.status} />;
+        <ol tw="flex items-center justify-between w-full font-medium text-center text-gray-500">
+          {stepperState.titleAndStatus.map((item, index) => {
+            return (
+              <li
+                key={item.id}
+                tw="flex items-center"
+                className={`${item.status === "finish" && "text-blue-600 text-xl"} ${
+                  index !== 2 ? "w-2/5" : "w-1/5"
+                }`}
+              >
+                <div
+                  tw="flex items-center w-full flex-nowrap"
+                  className={`${index === 2 && "justify-end"} ${index === 1 && "ml-8"}`}
+                >
+                  {item.status === "finish" ? (
+                    <FontAwesomeIcon icon={faCheckCircle} tw="text-blue-400 mr-2" />
+                  ) : (
+                    <span tw="mr-2">{index + 1}</span>
+                  )}
+                  <p tw="flex-nowrap">{item.title}</p>
+                </div>
+                {index !== 2 && <div tw="border w-[100px]"></div>}
+              </li>
+            );
           })}
-        </Steps>
+        </ol>
       </div>
       <CreateRoomStatus canNavigate={canNavigate} isLoading={isLoading} roomId={roomId} />
     </div>
