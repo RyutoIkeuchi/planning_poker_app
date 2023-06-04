@@ -1,4 +1,5 @@
 import { FIBONACCI_NUMBERS } from "src/utils/constants";
+import "twin.macro";
 
 type Props = {
   canSelectNumberCard: boolean;
@@ -6,7 +7,7 @@ type Props = {
 };
 
 export const FibonacciNumbers = (props: Props) => {
-  const { canSelectNumberCard, handleOpenConfirmModal } = props;  
+  const { canSelectNumberCard, handleOpenConfirmModal } = props;
 
   return (
     <ul tw="flex justify-start mb-4">
